@@ -1,0 +1,19 @@
+Package: networkTomography
+Type: Package
+Title: Tools for network tomography
+Version: 0.1
+Date: 2011-12-31
+Author: Alexander W Blocker, Paul Koullick, Edoardo Airoldi
+Maintainer: Alexander W Blocker <ablocker@gmail.com>
+
+Description: There are two algorithms in this package, both dealing with
+estimating traffic intensity in a object destination network. The included
+example (example1.R) illustrates this test with a four node network. The other
+method is the one described in Tebaldi and West and involves MCMC methods of
+estimation.
+
+License: MIT
+LazyLoad: yes
+
+URL: https://github.com/awblocker/networkTomography
+Depends: Rglpk (>= 0.3), coda (>=  0.11-3)
