@@ -13,7 +13,7 @@
 #' @return if not full, vector of length ncol containing solution obtained by
 #'      IPFP. If full, list containing solution (as x), number of iterations (as
 #'      iter), and norm of Ax - y (as errNorm)
-#' @keywords iteration, array
+#' @keywords iteration array
 #' @export
 #' @examples
 #' A <- buildStarMat(3)
