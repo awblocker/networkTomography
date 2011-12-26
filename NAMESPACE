@@ -1,3 +1,4 @@
 export(buildRoutingMat)
 export(buildStarMat)
+export(ipfp)
 export(strphour)
