@@ -1,2 +1,3 @@
-useDynLib(fastGHQuad)
-exportPattern("^[[:alpha:]]+")
+export(buildRoutingMat)
+export(buildStarMat)
+export(strphour)

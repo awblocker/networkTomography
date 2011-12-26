@@ -13,19 +13,92 @@ strphour <- function(x, fmt="(%m/%d/%y %H:%M:%S)") {
     ptime$hour + ptime$min/60 + ptime$sec/3600
 }
 
-# Build routing matrices for 1router & 2router data
-make_routemat <- function(p) {
+#' Build routing matrix for star network topology
+#' 
+#' @param n integer number of nodes in the network
+#' @return matrix of dimension 2n x n^2 that transforms OD flows to link loads
+#' @keywords array
+#' @export
+#' @examples
+#' buildStarMat(3)
+#'
+buildStarMat <- function(n) {
     # Allocate matrix
-    J <- sqrt(p)*2
+    p <- n*n
+    J <- n*2
     routemat <- matrix(0, J, p)
     
     # Setup nonzero entries
     for (i in 1:(nrow(routemat)/2)) {
         routemat[i,seq((i-1)*J/2+1, i*J/2)] <- 1
-        routemat[i+nrow(routemat)/2, seq(i,ncol(routemat), J/2)] <- 1
+        routemat[i+nrow(routemat)/2,seq(i,ncol(routemat),J/2)] <- 1
     }
 
     return(routemat)
+}
+
+#' Build routing matrices for linked star topologies; that is, a set of
+#' star-topology networks with links between a subset of routers
+#'
+#' @param nVec integer vector containing number of nodes in each sub-network
+#'      (length m)
+#' @param Cmat matrix (m x m) containing a one for each linked sub-network;
+#'      only upper triangular part is used
+#' @return routing matrix of dimension at least 2*sum(nVec) x sum(nVec^2)
+#' @seealso \code{buildStarMat}, which this function depends upon
+#' @export
+#' @examples
+#' nVec <- c(3, 3, 3)
+#' Cmat <- diag(3)
+#' Cmat[1,2] <- Cmat[2,3] <- 1
+#' buildRoutingMat(nVec, Cmat)
+#'
+buildRoutingMat <- function(nVec, Cmat) {
+    # Create overall structure
+    N <- sum(nVec)
+    m <- length(nVec)
+    
+    k <- N*N
+    b <- sum(upper.tri(Cmat))
+    l <- 2*(N+b)
+    
+    A <- matrix(0, l, k)
+    
+    # Build star-topology routing matrix for all nodes
+    A[1:(2*N),] <- buildStarMat(N)
+    
+    # Build between-router part of routing matrix
+    n <- 1
+    for (i in 1:(m-1)) {
+        for (j in (i+1):m) {
+            if (Cmat[i,j] == 1) {
+                # Create row for i -> j
+                srcStart <- c(0,cumsum(nVec))[i] + 1
+                srcEnd <- cumsum(nVec)[i]
+                
+                dstStart <- c(0,cumsum(nVec))[j] + 1 + N
+                dstEnd <- cumsum(nVec)[j] + N
+                
+                A[ 2*N + n, ] <- ( colSums(A[srcStart:srcEnd,]) * 
+                    colSums(A[dstStart:dstEnd,]) )
+
+                # Create row for j -> i
+                srcStart <- c(0,cumsum(nVec))[j] + 1
+                srcEnd <- cumsum(nVec)[j]
+                
+                dstStart <- c(0,cumsum(nVec))[i] + 1 + N
+                dstEnd <- cumsum(nVec)[i] + N
+                
+                A[ 2*N + n + 1, ] <- ( colSums(A[srcStart:srcEnd,]) * 
+                    colSums(A[dstStart:dstEnd,]) )
+
+                # Augment n
+                n <- n + 2
+            }
+        }
+    }
+    
+    return(A)
 }
 
 # Functions to handle diagonal matrices much faster (array is very slow)

@@ -1,7 +1,4 @@
-# Load shared libraries
-dyn.load("src/ipf.so")
-
-ipf <- function(y, A, x0,
+ipfp <- function(y, A, x0,
     tol=.Machine$double.eps, maxit=1e3, verbose=FALSE) {
     # Get active rows
     activeRows <- which(y > 0)
@@ -16,7 +13,7 @@ ipf <- function(y, A, x0,
     x0[activeCols] <- pmax(1, x0[activeCols])
     
     # Run IPF
-    ans <- .Call("ipf", y[activeRows], A[activeRows, activeCols, drop=FALSE],
+    ans <- .Call("ipfp", y[activeRows], A[activeRows, activeCols, drop=FALSE],
             dim(A[activeRows, activeCols, drop=FALSE]), x0[activeCols],
             as.numeric(tol), as.integer(maxit), as.logical(verbose))
     

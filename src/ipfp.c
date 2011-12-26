@@ -28,7 +28,7 @@ void vecProduct(int n, double * x, int incx, double * y, int incy,
 }
 
 /* Function to run IPFP procedure, bringing x0 into agreement with A x = y */
-SEXP ipf (SEXP y, SEXP A, SEXP dims, SEXP x,
+SEXP ipfp (SEXP y, SEXP A, SEXP dims, SEXP x,
         SEXP tol, SEXP maxit, SEXP verbose)
 {
 	// Set number of entries in return list
