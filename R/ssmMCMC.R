@@ -32,7 +32,6 @@ move_step <- function(y, X, tme, lambda, phi,
     # normal
     meanMat <- exp(lambda)
     sdMat <- sqrt( t( t(meanMat)^tau * (exp(phi^2) - 1) ) )
-    # sdMat <- t( t(meanMat) * sqrt(exp(phi^2) - 1) )
     truncMat <- matrix(
         pnorm(0, meanMat, sdMat, lower.tail=FALSE, log.p=TRUE),
         k, m)
@@ -40,24 +39,20 @@ move_step <- function(y, X, tme, lambda, phi,
     # Loop for MCMC iterations
     iter <- 0
     while (iter < ndraws || (min(xAccepts) < minAccepts)) {
-        # Draw lambda, phi | X via Gibbs steps
+        # Draw lambda, phi | X via MH steps
 
         # MH step on lambda
         varPropMat <- 1 / (1/prior$sigma[tme,]^2 +
             t(matrix(1/phi^2, m, k)))
-        # meanPropMat <- ( ( prior$mu[tme,]+rho*lambdatm1 ) / prior$sigma[tme,]^2
-        #     + t( t(log(X))/phi^2 ) ) * varPropMat
         meanPropMat <- lambda
         
         lambdaProp <- matrix(rnorm(k*m, meanPropMat, sqrt(varPropMat)), k, m)
         
         varPropMatRev <- varPropMat
-        # meanPropMatRev <- meanPropMat
         meanPropMatRev <- lambdaProp
         
         # Calculate LLR and LIR
         meanMatProp <- exp(lambdaProp)
-        # sdMatProp <- t( t(meanMatProp) * sqrt(exp(phi^2) - 1) )
         sdMatProp <- sqrt( t( t(meanMatProp)^tau * (exp(phi^2) - 1) ) )
         truncMatProp <- matrix(
             pnorm(0, meanMatProp, sdMatProp, lower.tail=FALSE, log.p=TRUE),
@@ -93,8 +88,6 @@ move_step <- function(y, X, tme, lambda, phi,
         
         # Update means and variances for X
         meanMat <- exp(lambda)
-        # meanMat <- t( exp(t(lambda) + phi^2/2) )
-        # sdMat <- t( t(meanMat) * sqrt(exp(phi^2) - 1) )
         sdMat <- sqrt( t( t(meanMat)^tau * (exp(phi^2) - 1) ) )
         truncMat <- matrix(
             pnorm(0, meanMat, sdMat, lower.tail=FALSE, log.p=TRUE),
@@ -110,7 +103,6 @@ move_step <- function(y, X, tme, lambda, phi,
         
         # Calculate LLR & LIR
         meanMatProp <- exp(lambda)
-        # sdMatProp <- t( t(meanMatProp) * sqrt(exp(phiProp^2) - 1) )
         sdMatProp <- sqrt( t( t(meanMatProp)^tau * (exp(phiProp^2) - 1) ) )
         truncMatProp <- matrix(
             pnorm(0, meanMatProp, sdMatProp, lower.tail=FALSE, log.p=TRUE),
@@ -148,9 +140,7 @@ move_step <- function(y, X, tme, lambda, phi,
 
         # Update means and variances for X
         meanMat <- exp(lambda)
-        # meanMat <- t( exp(t(lambda) + phi^2/2) )
         sdMat <- sqrt( t( t(meanMat)^tau * (exp(phi^2) - 1) ) )
-        # sdMat <- t( t(meanMat) * sqrt(exp(phi^2) - 1) )
         truncMat <- matrix(
             pnorm(0, meanMat, sdMat, lower.tail=FALSE, log.p=TRUE),
             k, m)
@@ -167,16 +157,6 @@ move_step <- function(y, X, tme, lambda, phi,
         # Symmetric proposal -> random walk MH
         
         for (j in 1:(k-l)) {
-            # # Calculate limits of feasible region along sampled directions
-            # j <- sample(k-l,1)
-            # remainderMat <- A1_inv %*% (y - A2[,-j] %*% X2[-j,])
-            # adjVec <- as.numeric(A1_inv %*% A2[,j])
-            # maxVec <- apply(remainderMat/adjVec, 2, function(col)
-            #     min(col[adjVec>0]))
-            # minVec <- apply(remainderMat/adjVec, 2, function(col)
-            #     max(col[adjVec<0]))
-            # minVec <- pmax(0,minVec)
-
             # Draw random directions (uniform on unit sphere)
             # by normalizing MV normal RVs
             dMat <- matrix( rnorm((k-l)*m), k-l, m )
@@ -222,17 +202,8 @@ move_step <- function(y, X, tme, lambda, phi,
             minVec <- pmax(minVec1, minVec2)
 
             proposal <- runif(m, minVec, maxVec)
-            # pLower <- pnorm(minVec, meanMat[l+j,], sdMat[l+j,])
-            # pUpper <- pnorm(maxVec, meanMat[l+j,], sdMat[l+j,])
-            # u <- runif(m, pLower, pUpper)
-            # proposal <- qnorm(u, meanMat[l+j,], sdMat[l+j,])
-            
-            # X2prop <- X2
-            # X2prop[j,] <- proposal
-            # X1prop <- A1_inv %*% (y - A2 %*% X2prop)
             X2prop <- X2 + t( t(dMat) * proposal )
             X1prop <- X1 - t( t(adjMat) * proposal )
-            #Xprop <- rbind(X1prop, X2prop)
             Xprop[1:l,] <- X1prop
             Xprop[(l+1):k,] <- X2prop
 
@@ -241,10 +212,6 @@ move_step <- function(y, X, tme, lambda, phi,
                 dnorm(X, meanMat, sdMat, log=TRUE),
                 k, m) )
             lir <- 0
-            # lir <-(
-            #     dnorm(proposal, meanMat[l+j,], sdMat[l+j,], log=TRUE) -
-            #     dnorm(X2[j,], meanMat[l+j,], sdMat[l+j,], log=TRUE)
-            #     )
 
             logAcceptProb <- rep(-Inf, m)
             validVec <- !is.na(llr-lir)
@@ -252,9 +219,6 @@ move_step <- function(y, X, tme, lambda, phi,
 
             acceptVec <- (log(runif(m)) < logAcceptProb)
 
-            # X2[j,acceptVec] <- proposal[acceptVec]
-            # X1 <- A1_inv %*% (y - A2 %*% X2)
-            # X <- rbind(X1, X2)
             X[,acceptVec] <- Xprop[,acceptVec]
 
             xAccepts[,j] <- xAccepts[,j] + acceptVec
@@ -351,8 +315,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
         lambdatm1 <- lambda
         phitm1 <- phi
 
-        # # Draw set of phis from ad-hoc proposal
-        # phi_prop <- rlnorm(m, log(phitm1)-phiscale^2/2, phiscale)
         # Draw phi from prior
         phi_prop <- 1/rgamma(m, prior$phi$df, prior$phi$scale[tme])
         phi_prop <- sqrt(phi_prop)
@@ -362,20 +324,14 @@ bayesianDynamicFilter <- function (Y, A, prior,
             matrix(rnorm(k*m, prior$mu[tme,], prior$sigma[tme,]),
             m, k, byrow=TRUE) )
         
-#        # Initialize X draws via Betrand's HNF method
-#        x0 <- bhaas$samplesol2(Y[tme,], A_pivot, 2, alpha=1)$sampleMat[1,]
-
         # Draw X's from truncated normal on feasible region via xsample, 
         # then thin
         propMean <- exp( rho*colMeans(lambdatm1) + prior$mu[tme,] )
-            # + (prior$phi$scale[tme]/prior$phi$df)/2)
-        # propSD <- sqrt(exp(prior$phi$scale[tme]/prior$phi$df)-1)*propMean
         propSD <- sqrt( (exp(prior$phi$scale[tme]/prior$phi$df)-1) *
             propMean^tau )
         
         # Check for zero link flows
         activeLink <- !(Y[tme,] == 0)
-        # activeOD <- !pmin( colSums(A_pivot[!activeLink,]), 1 )
         odRanges <- xranges(E=A_pivot, F=Y[tme,], ispos=TRUE)
         activeOD <- (odRanges[,2]-odRanges[,1]>0)
         nActive <- sum(activeOD)
@@ -396,20 +352,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
             tol=sqrt(.Machine$double.eps),
             type=1)$X
         
-#        # Start with mirror algorithm
-#        # Wrong distribution (uniform, not normal) and slow, but
-#        # gets out of corner that lsei found
-#        x0Active <- xsample(
-#            E=A_pivot[activeLink,activeOD], F=Y[tme,activeLink],
-#            G=diag(nActive), H=rep(0,nActive),
-#            iter=10,
-#            x0=x0Active, type='mirror')$X
-#        x0Active <- drop(tail(x0Active, 1))
-#        
-#        if (verbose) {
-#            cat(sprintf("Mirror complete; starting RDA\n"))
-#        }
-        
         # Switch to RDA algorithm
         # Correct distribution (truncated normal) and faster
         X_prop_active <- xsample(
@@ -423,8 +365,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
         if (verbose) {
             cat(sprintf("Accepted ratio = %g\n", X_prop_active$acceptedratio))
         }
-        # X_prop <- X_prop$X
-        # X_prop <- X_prop[seq(1,Xdraws,floor(Xdraws/m)),]
         
         if (nActive == k) {
             X_prop <- X_prop_active$X
@@ -439,8 +379,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
         # Drawing lambda from prior; drawing X from truncated normal on
         # feasible region
         meanMat <- exp(lambda_prop)
-        # meanMat <- exp(lambda_prop + phi_prop^2/2)
-        # sdMat <- ( meanMat * sqrt(exp(phi_prop^2) - 1) )
         sdMat <- sqrt( meanMat^tau * (exp(phi_prop^2) - 1) )
         truncMat <- matrix(
             pnorm(0, meanMat, sdMat, lower.tail=FALSE, log.p=TRUE),
@@ -498,20 +436,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
                 tol=sqrt(.Machine$double.eps),
                 type=1)$X
             
-#            # Start with mirror algorithm
-#            # Wrong distribution (uniform, not normal) and slow, but
-#            # gets out of corner that lsei found
-#            x0Active <- xsample(
-#                E=A_pivot[activeLink,activeOD], F=Y[tme,activeLink],
-#                G=diag(nActive), H=rep(0,nActive),
-#                iter=10,
-#                x0=x0Active, type='mirror')$X
-#            x0Active <- drop(tail(x0Active, 1))
-#            
-#            if (verbose) {
-#                cat(sprintf("Mirror complete; starting RDA\n"))
-#            }
-            
             # Switch to RDA algorithm
             # Correct distribution (truncated normal) and faster
             X_prop_active <- xsample(
@@ -525,8 +449,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
             if (verbose) {
                 cat(sprintf("Accepted ratio = %g\n", X_prop_active$acceptedratio))
             }
-            # X_prop <- X_prop$X
-            # X_prop <- X_prop[seq(1,Xdraws,floor(Xdraws/m)),]
             
             if (nActive == k) {
                 X_prop <- X_prop_active$X
@@ -538,8 +460,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
             # Drawing lambda from prior; drawing X from truncated normal on
             # feasible region
             meanMat <- exp(lambda_prop)
-            # meanMat <- exp(lambda_prop + phi_prop^2/2)
-            # sdMat <- ( meanMat * sqrt(exp(phi_prop^2) - 1) )
             sdMat <- sqrt( meanMat^tau * (exp(phi_prop^2) - 1) )
             truncMat <- matrix(
                 pnorm(0, meanMat, sdMat, lower.tail=FALSE, log.p=TRUE),
@@ -554,6 +474,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
                 k, m))
             
             w <- exp(w - max(w))
+
             # Handle numerical errors
             w[is.na(w)] <- 0
             
@@ -617,9 +538,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
     # Un-reverse results, if needed
     if (backward) {
         Y <- Y[n:1,]
-        # prior$mu <- prior$mu[n:1,]
-        # prior$sigma <- prior$sigma[n:1,]
-
         xList <- xList[n:1]
         lambdaList <- lambdaList[n:1]
         phiList <- phiList[n:1]
@@ -639,6 +557,4 @@ bayesianDynamicFilter <- function (Y, A, prior,
         tStart=tStart, backward=backward, aggregate=aggregate )
     
     return(retval)
-    # return(list( Xhat=Xhat[,unpivot], Xmed=Xmed[,unpivot],
-    #     lambdahat=lambdahat[,unpivot], phihat=phihat ))
 }

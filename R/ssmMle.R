@@ -116,7 +116,6 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
     mle <- optim( log(c(phi, lambda)), obj,
         Ft=Ft, qind=qind, yt=yt, Zt=Zt, R=R, tau=tau, scale=scale,
         nugget=nugget,
-        # method='BFGS')
         method='Nelder-Mead')
 
     # Print optim diagnostics if verbose
