@@ -20,10 +20,10 @@ Depends:
     KFAS,
     limSolve
 Collate:
+    'caoEtAl.R'
     'ipfp.R'
+    'lib.R'
     'ssmMCMC.R'
     'ssmMle.R'
     'twMCMC.R'
-    'utility.R'
     'vardi.algorithm.R'
-    'caoEtAl.R'
