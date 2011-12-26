@@ -136,15 +136,33 @@ diag_ind <- function(n) {
     1L + 0L:(n-1L)*(n+1L)
 }
 
-# Thin vector of indices for MCMC
+#' Thinning vector of indices for MCMC
+#'
+#' Returns a vector of indices with a given spacing for thinning MCMC results
+#'
+#' @param m integer length of results
+#' @param interval thinning interval
+#' @return integer vector of indices for thinning
+#' @keywords manip ts
+#' @export
 thin <- function(m, interval=10) {
     seq(1,m,interval)
 }
 
-# Function to aggregate results; defaults to mean, SD, limits, and
-# given quantiles
-#
-# Needed to prevent out-of-memory issues
+#' Function to aggregate results from matrix to matrix
+#'
+#' Defaults to mean, SD, limits, and given quantiles. Used to limit memory
+#' consumption from MCMC runs.
+#'
+#' @param mat input numeric matrix to summarize
+#' @param q quantiles of mat's columns to provide in summary matrix
+#' @return matrix with each row corresponding to a summary measure and each
+#'      column corresponding to a column of mat
+#' @keywords manip arith
+#' @export
+#' @examples
+#' mat <- matrix(rnorm(5e3), ncol=5)
+#' agg(mat)
 agg <- function(mat, q=c(0.05, 0.16, 0.5, 0.84, 0.95)) {
     # Convert to matrix if needed
     if (is.vector(mat)) {

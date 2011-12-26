@@ -10,7 +10,7 @@ Description: There are two algorithms in this package, both dealing with
     example (example1.R) illustrates this test with a four node network. The
     other method is the one described in Tebaldi and West and involves MCMC
     methods of estimation.
-License: MIT
+License: LGPL (>= 2.0)
 LazyLoad: yes
 URL: https://github.com/awblocker/networkTomography
 Depends:
