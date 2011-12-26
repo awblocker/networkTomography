@@ -1,5 +1,25 @@
+#' Function to run basic IPFP (iterative proportional fitting procedure)
+#'
+#' Use IPFP starting from x0 to produce vector x s.t. Ax = y within tolerance.
+#' Need to ensure that x0 >= 0.
+#'
+#' @param y numeric constraint vector (length nrow)
+#' @param A constraint matrix (nrow x ncol)
+#' @param x0 numeric initial vector (length ncol)
+#' @param tol numeric tolerance for IPFP; defaults to \code{.Machine$double.eps}
+#' @param maxit integer maximum number of iterations for IPFP; defaults to 1e3
+#' @param verbose logical parameter to select verbose output from C function
+#' @param full logical parameter to select full return (with diagnostic info)
+#' @return if not full, vector of length ncol containing solution obtained by
+#'      IPFP. If full, list containing solution (as x), number of iterations (as
+#'      iter), and norm of Ax - y (as errNorm)
+#' @keywords iteration, array
+#' @export
+#' @examples
+#' A <- buildStarMat(3)
+#' x <- x
 ipfp <- function(y, A, x0,
-    tol=.Machine$double.eps, maxit=1e3, verbose=FALSE) {
+    tol=.Machine$double.eps, maxit=1e3, verbose=FALSE, full=FALSE) {
     # Get active rows
     activeRows <- which(y > 0)
     
@@ -15,9 +35,12 @@ ipfp <- function(y, A, x0,
     # Run IPF
     ans <- .Call("ipfp", y[activeRows], A[activeRows, activeCols, drop=FALSE],
             dim(A[activeRows, activeCols, drop=FALSE]), x0[activeCols],
-            as.numeric(tol), as.integer(maxit), as.logical(verbose))
+            as.numeric(tol), as.integer(maxit), as.logical(verbose),
+            PACKAGE='networkTomography')
     
     x0[activeCols] <- ans$x
     
+    if (full)
+        return( list(x=x0, iter=ans$iter, errNorm=ans$errNorm) )
     return(x0)
 }
