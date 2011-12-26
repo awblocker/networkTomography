@@ -1,35 +1,12 @@
 # Functions for EM estimation of network tomography
 # Based on methods of Cao et al. (JASA, 2000)
 
-diag_mat <- function(x) {
-    n <- length(x)
-    y <- matrix(0,n,n)
-    y[1L + 0L:(n-1L) * (n+1L)] <- x
-    return(y)
-}
 
 # Check for deterministically-known OD flows at single time
 getActive <- function(y, A) {
     odRanges <- xranges(E=A, F=y, ispos=TRUE)
     activeOD <- (odRanges[,2]-odRanges[,1]>0)
     return( activeOD )
-}
-
-strphour <- function(x, fmt="(%m/%d/%y %H:%M:%S)") {
-    ptime <- strptime(as.character(x), format=fmt)
-    ptime$hour + ptime$min/60 + ptime$sec/3600
-}
-
-make_routemat <- function(p) {z
-    J <- sqrt(p)*2
-    routemat <- matrix(0, J, p)
-
-    for (i in 1:(nrow(routemat)/2)) {
-        routemat[i,seq((i-1)*J/2+1, i*J/2)] <- 1
-        routemat[i+nrow(routemat)/2,seq(i,ncol(routemat),J/2)] <- 1
-    }
-
-    return(routemat)
 }
 
 lambda_init <- function(Y, A, full=FALSE) {
