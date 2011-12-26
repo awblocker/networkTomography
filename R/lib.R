@@ -52,7 +52,6 @@ buildStarMat <- function(n) {
 #' Cmat <- diag(3)
 #' Cmat[1,2] <- Cmat[2,3] <- 1
 #' buildRoutingMat(nVec, Cmat)
-#'
 buildRoutingMat <- function(nVec, Cmat) {
     # Create overall structure
     N <- sum(nVec)
@@ -101,8 +100,18 @@ buildRoutingMat <- function(nVec, Cmat) {
     return(A)
 }
 
-# Functions to handle diagonal matrices much faster (array is very slow)
-# Make diagonal matrix from vector
+#' Make diagonal matrix from vector
+#'
+#' Build matrix with supplied vector on diagonal; this is much faster than diag
+#' due to the use of matrix instead of array
+#'
+#' @param x numeric vector for diagonal
+#' @return matrix of size length(x) x length(x) with x along diagonal
+#' @keywords array
+#' @seealso \code{diag_ind}
+#' @export
+#' @examples
+#' diag_mat(seq(5))
 diag_mat <- function(x) {
     n <- length(x)
     y <- matrix(0,n,n)
@@ -110,7 +119,19 @@ diag_mat <- function(x) {
     return(y)
 }
 
-# Make vector of 1-dimensional diagonal indices
+#' Make vector of 1-dimensional diagonal indices for square matrix
+#'
+#' Compute vector of indices for efficient access to diagonal of a square matrix
+#'
+#' @param n integer dimension of (square) matrix
+#' @return integer vector of length n with indices (unidimensional) of square
+#'      matrix
+#' @keywords array
+#' @seealso \code{diag_mat}
+#' @export
+#' @examples
+#' ind <- diag_ind(5)
+#' diag_mat(seq(5))[ind]
 diag_ind <- function(n) {
     1L + 0L:(n-1L)*(n+1L)
 }
@@ -118,24 +139,6 @@ diag_ind <- function(n) {
 # Thin vector of indices for MCMC
 thin <- function(m, interval=10) {
     seq(1,m,interval)
-}
-
-# Utility functions for reparameterized log-normal distribution
-# Reparameterization is based on Airoldi & Faloutsos 2004:
-# X ~ logN( lambda, phi; tau ) -> E(X) = lambda, Var(X) = lambda^tau * phi
-
-# RNG
-rlnorm_mv <- function(n, lambda, phi, tau=2) {
-    sigma <- sqrt(log(1+phi*lambda^(tau-2)))
-    mu <- log(lambda) - sigma^2/2
-    return( rlnorm(n, mu, sigma) )
-}
-
-# Density
-dlnorm_mv <- function(x, lambda, phi, tau=2, logp=FALSE) {
-    sigma <- sqrt(log(1+phi*lambda^(tau-2)))
-    mu <- log(lambda) - sigma^2/2
-    return( dlnorm(x, mu, sigma, log=logp) )
 }
 
 # Function to aggregate results; defaults to mean, SD, limits, and
