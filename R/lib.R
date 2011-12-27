@@ -179,7 +179,7 @@ agg <- function(mat, q=c(0.05, 0.16, 0.5, 0.84, 0.95)) {
     
     # Default aggregates
     ans[1,] <- colMeans(mat)
-    ans[2,] <- sd(mat)
+    ans[2,] <- apply(mat, 2, sd)
     ans[3:4,] <- sapply( 1:nc, function(j) range(mat[,j]) )
     
     # Quantiles
