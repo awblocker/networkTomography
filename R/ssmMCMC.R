@@ -425,8 +425,8 @@ bayesianDynamicFilter <- function (Y, A, prior,
                 propMean^tau )
                 
             # Start with IPF beginning from propMean
-            x0 <- ipf(Y[tme,], A_pivot, propMean, tol=1e-6, maxit=Xdraws*1e2,
-                verbose=FALSE)
+            x0 <- ipfp(Y[tme,], A_pivot, propMean, tol=1e-6, maxit=Xdraws*1e2,
+                       verbose=FALSE)
             
             # Now, lsei for refinement
             x0Active <- lsei(
