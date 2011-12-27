@@ -1,7 +1,28 @@
 
-# Function to run MCMC algorithm of Tebaldi & West 1998
-network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
-                         obj_param=3) {
+#' Function to run MCMC sampling for model of Tebaldi & West (1998)
+#'
+#' Runs MCMC sampling for the gamma-Poisson model presented in Tebaldi & West
+#' (1998). The algorithm used is a modification of that presented in the
+#' original paper. It uses a joint proposal for (x_k, lambda_k) to greatly
+#' accelerate convergence.
+#'
+#' @param Y numeric vector of observed link loads at a single time (length k)
+#' @param A routing matrix of dimension (k x n); needs to be full row rank
+#' @param prior parameters for conjugate gamma prior (convolution and rate)
+#' @param ndraws integer number of draws for sampler to produce (excluding
+#'  burn-in)
+#' @param burnin integer number of additional draws to discard as burnin
+#' @param verbose integer level of verbosity; levels > 1 have no effect
+#'  currently
+#' @return list consisting of matrix of draws for X \code{XDraws},
+#'  matrix of draws for X \code{lambdaDraws}, and vector of acceptances per OD
+#'  flow \code{accepts}
+#' @keywords models multivariate
+#' @export
+#' @examples
+#' cat("Example to come -- this is meant to annoy you into writing it",
+#'     file=stderr())
+twMCMC <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0) {
     # Format verification
     Y <- as.numeric(Y)
 
@@ -24,8 +45,7 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
 
     # Initialize X via simplex method (gives integer solutions with linear
     # constraints for transportation problems)
-    # obj <- rpois(n, obj_param)*(rbinom(n,1,1/2)*2 - 1)
-    obj <- rnorm(n, 0, obj_param)
+    obj <- rnorm(n)
     const_mat <- rbind(A_pivot, diag(n))
     const_rhs <- c(Y, rep(1,n))
     const_dir <- c(rep('==',k), rep('>=',n))
@@ -117,7 +137,7 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
     colnames(out) <- c(paste('X', seq(n), sep=''),
                        paste('lambda', seq(n), sep='') )
 
-    return(list(lambda_out=mcmc(out[,seq(n+1,2*n)]), X_out=mcmc(out[,seq(n)]),
+    return(list(lambdaDraws=mcmc(out[,seq(n+1,2*n)]), XDraws=mcmc(out[,seq(n)]),
                 accepts=accepts))
 }
 
