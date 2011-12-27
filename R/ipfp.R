@@ -18,7 +18,10 @@
 #' @useDynLib networkTomography
 #' @examples
 #' A <- buildStarMat(3)
-#' x <- x
+#' x <- rgamma(ncol(A), 10, 100)
+#' y <- A %*% x
+#' x0 <- x * rgamma(length(x), 10, 10)
+#' ans <- ipfp(y, A, x0, full=TRUE)
 ipfp <- function(y, A, x0,
     tol=.Machine$double.eps, maxit=1e3, verbose=FALSE, full=FALSE) {
     # Get active rows
