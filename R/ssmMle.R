@@ -71,7 +71,7 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
 
     # Print tme and window length if verbose
     if (verbose) {
-        cat(sprintf('tme = %d; n = %d\n', tme, n))
+        cat(sprintf('tme = %d; n = %d\n', tme, n), file=stderr())
     }
 
     # Setup array for F
@@ -102,9 +102,9 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
     
     # Print starting values if verbose
     if (verbose) {
-        cat('Starting value for lambda:\n')
+        cat('Starting value for lambda:\n', file=stderr())
         print(lambda)
-        cat('Starting value for phi:\n')
+        cat('Starting value for phi:\n', file=stderr())
         print(phi)
     }
 
@@ -120,8 +120,8 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
 
     # Print optim diagnostics if verbose
     if (verbose) {
-        cat(sprintf('Convergence code: %d\n', mle$convergence))
-        cat('Function evaluations:\n')
+        cat(sprintf('Convergence code: %d\n', mle$convergence), file=stderr())
+        cat('Function evaluations:\n', file=stderr())
         print(mle$counts)
     }
     

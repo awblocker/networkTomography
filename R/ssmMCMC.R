@@ -243,7 +243,7 @@ move_step <- function(y, X, tme, lambda, phi,
 # Function for inference with multilevel state-space model
 # (log-normal autoregressive dynamics, truncated normal observation densities)
 # Can return full (all particles) output
-# Can run forward or backward filtering; combination via seperate function for
+# Can run forward or backward filtering; combination via separate function for
 # smoothing
 bayesianDynamicFilter <- function (Y, A, prior,
     lambda0, sigma0, phi0, 
@@ -269,9 +269,9 @@ bayesianDynamicFilter <- function (Y, A, prior,
 
     # If verbose, print pivot information
     if (verbose) {
-        cat('Pivot information:\n')
+        cat('Pivot information:\n', file=stderr())
         print(pivot)
-        cat(sprintf('rank(A) = %d\n', A_qr$rank))
+        cat(sprintf('rank(A) = %d\n', A_qr$rank), file=stderr())
     }
 
     # Reconfigure prior based on pivot (only using components pertaining to
@@ -307,7 +307,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
     for (tme in tStart:n) {
         # If verbose, print time
         if (verbose) {
-            cat(sprintf('t = %d\n', tme))
+            cat(sprintf('t = %d\n', tme), file=stderr())
             startTime <- proc.time()
         }
 
@@ -337,7 +337,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
         nActive <- sum(activeOD)
         
         if (verbose) {
-            cat(sprintf("nActive = %d\n", nActive))
+            cat(sprintf("nActive = %d\n", nActive), file=stderr())
         }
         
         # Start with IPF beginning from propMean
@@ -363,7 +363,8 @@ bayesianDynamicFilter <- function (Y, A, prior,
             x0=x0Active, type='rda')
         
         if (verbose) {
-            cat(sprintf("Accepted ratio = %g\n", X_prop_active$acceptedratio))
+            cat(sprintf("Accepted ratio = %g\n", X_prop_active$acceptedratio),
+                file=stderr())
         }
         
         if (nActive == k) {
@@ -403,9 +404,10 @@ bayesianDynamicFilter <- function (Y, A, prior,
 
         # If verbose, print importance weight diagnostics
         if (verbose) {
-            cat(sprintf('Effective number of particles: %g\n', nEff))
+            cat(sprintf('Effective number of particles: %g\n', nEff),
+                file=stderr())
             if (nEff < nThresh)
-                cat('Redrawing lambda from prior\n')
+                cat('Redrawing lambda from prior\n', file=stderr())
         }
 
         # If too few particles, redraw lambda from prior
@@ -447,7 +449,9 @@ bayesianDynamicFilter <- function (Y, A, prior,
                 x0=x0Active, type='rda')
             
             if (verbose) {
-                cat(sprintf("Accepted ratio = %g\n", X_prop_active$acceptedratio))
+                cat(sprintf("Accepted ratio = %g\n",
+                            X_prop_active$acceptedratio),
+                    file=stderr())
             }
             
             if (nActive == k) {
@@ -530,7 +534,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
             print(mean(phi))
             print( rbind(exp(colMeans(lambda)), colMeans(X),
                 apply(X,2,median)) )
-            cat(sprintf("Runtime for iteration %d:\n", tme))
+            cat(sprintf("Runtime for iteration %d:\n", tme), file=stderr())
             print(endTime-startTime)
         }
     }
