@@ -11,7 +11,7 @@ getActive <- function(y, A) {
 
 lambda_init <- function(Y, A, full=FALSE) {
     J <- 2*sqrt(ncol(A))
-    
+
     # Append final row if needed
     if (!full) {
         A <- rbind(A, 2-colSums(A))
@@ -20,20 +20,20 @@ lambda_init <- function(Y, A, full=FALSE) {
     # Aggregate data
     link.means <- colMeans(Y)
     if (!full) {
-        link.means <- c(link.means,
-                        sum(link.means[1:J/2])-sum(link.means[J/2:ncol(Y)]))
+        link.means <- c(link.means, sum(link.means[1:J/2]) -
+                        sum(link.means[J/2:ncol(Y)]))
     }
 
     lambda0 <- rep(0,ncol(A))
 
     for (i in 1:(J/2)) {
         # Use source data
-        lambda0[seq((i-1)*J/2+1, i*J/2)] <- lambda0[seq((i-1)*J/2+1, i*J/2)] + 
-            link.means[i]/(J)
+        lambda0[seq((i-1)*J/2+1, i*J/2)] <- (lambda0[seq((i-1)*J/2+1, i*J/2)] +
+                                             link.means[i]/(J))
 
         # Use destination data
-        lambda0[seq(i,ncol(A),J/2)] <- ( lambda0[seq(i,ncol(A),
-            J/2)] + link.means[i+J/2]/(J) )
+        lambda0[seq(i,ncol(A),J/2)] <- (lambda0[seq(i,ncol(A), J/2)] +
+                                        link.means[i+J/2]/(J))
     }
 
     return(lambda0)
@@ -50,8 +50,8 @@ Q_iid <- function(logtheta, c, M, rdiag, epsilon) {
 
     # Calculate first part of Q :
     #  -1/2 sum_t (m_t - lambda)' \Sigma^{-1} (m_t - lambda)
-    Q <- -1/2*sum(apply( M, 1, function(m) sum( (m-lambda)^2 /
-        (phi*lambda^c+epsilon) ) ))
+    Q <- -1/2*sum(apply( M, 1, function(m) sum((m-lambda)^2 /
+                                               (phi*lambda^c+epsilon) ) ))
 
     # Calculate remaining part:
     ## -T/2 (I*log(\phi) + \sum_i c*log(\lambda_i) + 
@@ -59,34 +59,34 @@ Q_iid <- function(logtheta, c, M, rdiag, epsilon) {
     # With nugget, revised to:
     # -T/2 ( \sum_i log(\phi * \lambda_i^c + \varepsilon) +
     # \sum_i r_ii/(\phi * \lambda_i^c + \varepsilon) )
-    Q <- Q - nrow(M)/2*( sum(log( phi*lambda^c + epsilon )) +
-        sum(rdiag/(phi * lambda^c + epsilon) ) )
+    Q <- Q - nrow(M)/2*(sum(log( phi*lambda^c + epsilon )) +
+                        sum(rdiag/(phi * lambda^c + epsilon) ) )
 
     return(Q);
 }
 
 m_estep <- function(yt, lambda, phi, A, c, epsilon) {
     sigma <- diag_mat(phi*lambda^c + epsilon)
-    
+
     m <- lambda
     m <- m  +  sigma %*% t(A) %*%
-        # solve(A %*% diag(phi*lambda^c) %*% t(A)) %*%
-        # chol2inv(chol(A %*% diag(phi*lambda^c + epsilon) %*% t(A))) %*%
-        solve(A %*% sigma %*% t(A), yt - A %*% lambda)
-    
+    # solve(A %*% diag(phi*lambda^c) %*% t(A)) %*%
+    # chol2inv(chol(A %*% diag(phi*lambda^c + epsilon) %*% t(A))) %*%
+    solve(A %*% sigma %*% t(A), yt - A %*% lambda)
+
     return(m)
 }
 
 R_estep <- function(lambda, phi, A, c, epsilon) {
     sigma <- diag_mat(phi*lambda^c + epsilon)
     AdotSigma <- A %*% sigma
-    
+
     R <- diag(phi*lambda^c + epsilon)
     R <- R - t(AdotSigma) %*%
-        # solve(A %*% diag(phi*lambda^c) %*% t(A)) %*% A %*%
-        # chol2inv(chol(A %*% diag(phi*lambda^c + epsilon) %*% t(A))) %*% )
-        solve( AdotSigma %*% t(A), AdotSigma )
-    
+    # solve(A %*% diag(phi*lambda^c) %*% t(A)) %*% A %*%
+    # chol2inv(chol(A %*% diag(phi*lambda^c + epsilon) %*% t(A))) %*% )
+    solve( AdotSigma %*% t(A), AdotSigma )
+
     return(R)
 }
 
@@ -98,15 +98,17 @@ grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
     grad <- rep(NA, length(logtheta))
 
     # Calculate gradient for phi
-    grad[length(grad)] <- ( -nrow(M)/2*(ncol(M)/phi -
-        1/phi/phi*sum(rdiag/lambda^c)) + 1/2/phi/phi*
-        sum(apply(M, 1, function(m) sum((m-lambda)^2/lambda^c))) )
+    grad[length(grad)] <- (-nrow(M)/2*(ncol(M)/phi -
+                                       1/phi/phi*sum(rdiag/lambda^c)) +
+                           1/2/phi/phi* sum(apply(M, 1, function(m)
+                                                  sum((m-lambda)^2/lambda^c))) )
 
     # Calculate gradient for each lambda
-    grad[-length(grad)] <- (-nrow(M)/2*c*(1/lambda - rdiag/phi/lambda^(c+1))
-        + (colSums(M)-nrow(M)*lambda)/phi/lambda^c
-        + c/2/phi*sapply(1:ncol(M),
-        function(j) sum((M[,j]-lambda[j])^2/lambda[j]^(c+1))))
+    grad[-length(grad)] <- (-nrow(M)/2*c*(1/lambda - rdiag/phi/lambda^(c+1)) +
+                            (colSums(M)-nrow(M)*lambda)/phi/lambda^c +
+                            c/2/phi*sapply(1:ncol(M), function(j)
+                                           sum((M[,j]-lambda[j])^2 /
+                                               lambda[j]^(c+1))))
 
     # Jacobian adjustment
     grad <- grad*exp(logtheta)
@@ -116,13 +118,13 @@ grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
 }
 
 locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
-    maxiter = 1e3, tol=1e-6, epsilon=0.01, full=FALSE) {
-    
+                           maxiter = 1e3, tol=1e-6, epsilon=0.01, full=FALSE) {
+
     # Check for inactive (deterministically-known) OD flows
     activeLink <- which(apply(Y, 2, function(col) max(col) > 0))
     activeOD <- apply(Y, 1, getActive, A=A)
     activeOD <- which(apply(activeOD, 1, any))
-    
+
     # Determine number of latent variables
     p <- ncol(A)
 
@@ -135,65 +137,72 @@ locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
     } else {
         lambda <- lambda0
     }
-    
+
     # Subset A and lambda
     A <- A[activeLink,activeOD]
     Y <- Y[,activeLink]
     lambda0 <- lambda0[activeOD]
     lambda <- lambda[activeOD]
-    
+
     if (is.null(phi0)) {
         phi0 <- phi_init(Y, A, lambda0, c)
         phi <- phi0
     } else {
         phi <- phi0
     }
-    
+
     # Calculate bounds
     lower <- rep(log(.Machine$double.eps)/c+log(max(Y)), p)
     upper <- rep(log(max(Y)), p)
 
     # Run first iteration
     # E step - calculation of m_t = E(x_t | y_t, \theta) and 
-    #  R = Var(x_t | y_t, \theta)
+    #          R = Var(x_t | y_t, \theta)
     tryCatch(M <- t(apply(Y, 1, m_estep, lambda=lambda, phi=phi, A=A, c=c,
-        epsilon=epsilon)),
-        error = function(e) {print(phi); print(lambda); print("M"); stop(e);},
-        finally = NULL )
-    R <- tryCatch( R_estep(lambda, phi=phi, A, c, epsilon),
-        error = function(e) {print(phi); print(lambda); print("M"); stop(e);},
-        finally = NULL )
+                          epsilon=epsilon)),
+             error = function(e) {
+                 print(phi); print(lambda); print("M"); stop(e);
+             },
+             finally = NULL )
+    R <- tryCatch(R_estep(lambda, phi=phi, A, c, epsilon),
+                  error = function(e) {
+                      print(phi); print(lambda); print("M"); stop(e);
+                  },
+                  finally = NULL )
     # M step - Optimize Q wrt theta
     mstep <- optim(log(c(lambda0,phi0)),
-        function(...) -Q_iid(...),# gr=function(...) -grad_iid(...),
-        c=c, M=M, rdiag=diag(R), epsilon=epsilon,
-        lower=lower, upper=upper,
-        method="L-BFGS-B" )
+                   function(...) -Q_iid(...),# gr=function(...) -grad_iid(...),
+                   c=c, M=M, rdiag=diag(R), epsilon=epsilon,
+                   lower=lower, upper=upper,
+                   method="L-BFGS-B")
     theta <- exp(mstep$par)
     lambda <- theta[-length(theta)]
     phi <- theta[length(theta)]
 
     # Calculate initial ll
     ll <- -mstep$value
-    
+
     # Run EM iterations
     for (iter in 1:maxiter) {
         # E step - calculation of m_t = E(x_t | y_t, \theta) and 
         #  R = Var(x_t | y_t, \theta)
         tryCatch(M <- t(apply(Y, 1, m_estep, lambda=lambda, phi=phi, A=A, c=c,
-        epsilon=epsilon)),
-        error = function(e) {print(phi); print(lambda); print("M"); stop(e);},
-        finally = NULL )
+                              epsilon=epsilon)),
+                 error = function(e) {
+                     print(phi); print(lambda); print("M"); stop(e);
+                 },
+                 finally = NULL )
         R <- tryCatch( R_estep(lambda, phi=phi, A, c, epsilon),
-            error = function(e) {print(phi); print(lambda); print("M"); stop(e);},
-            finally = NULL )
-        
+                      error = function(e) {
+                          print(phi); print(lambda); print("M"); stop(e);
+                      },
+                      finally = NULL )
+
         # M step - Optimize Q wrt theta
-        mstep <- optim(log(c(lambda0,phi0)),
-            function(...) -Q_iid(...), gr=function(...) -grad_iid(...),
-            c=c, M=M, rdiag=diag(R), epsilon=epsilon,
-            lower=lower, upper=upper,
-            method="L-BFGS-B" )
+        mstep <- optim(par=log(c(lambda0,phi0)), fn=function(...) -Q_iid(...),
+                       gr=function(...) -grad_iid(...), c=c, M=M, rdiag=diag(R),
+                       epsilon=epsilon, lower=lower, upper=upper,
+                       method="L-BFGS-B" )
         theta <- exp(mstep$par)
         lambda <- theta[-length(theta)]
         phi <- theta[length(theta)]
@@ -216,24 +225,24 @@ locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
 }
 
 Q_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
-    eps.lambda, eps.phi) {
+                       eps.lambda, eps.phi) {
     # Get parameter values
     lambda <- exp(logtheta[-length(logtheta)])+eps.lambda
     phi <- exp(logtheta[length(logtheta)])+eps.phi
     logtheta <- c(log(lambda),log(phi))
-    
+
     # Calculate first part of Q (from locally iid model)
     Q <- Q_iid(logtheta, c, M, rdiag)
 
     # Add log-normal prior component
     Q <- (Q - 1/2*t(logtheta-eta0) %*% chol2inv(chol(V+sigma0))
-        %*% (logtheta-eta0))
+          %*% (logtheta-eta0))
 
     return(Q);
 }
 
 grad_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
-    eps.lambda, eps.phi) {
+                          eps.lambda, eps.phi) {
     # Get parameter values
     lambda <- exp(logtheta[-length(logtheta)])+eps.lambda
     phi <- exp(logtheta[length(logtheta)])+eps.phi
@@ -253,10 +262,10 @@ grad_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
 smoothed_EM <- function(Y, A, eta0, sigma0, V, c=2, maxiter = 1e3, tol=1e-6) {
     eps.lambda <- 0
     eps.phi <- 0
-    
+
     # Determine number of latent variables
     p <- ncol(A)
-    
+
     # Setup initial parameters
     theta0 <- exp(eta0)
 
@@ -275,38 +284,34 @@ smoothed_EM <- function(Y, A, eta0, sigma0, V, c=2, maxiter = 1e3, tol=1e-6) {
     # E step - calculation of m_t = E(x_t | y_t, \theta) and 
     #  R = Var(x_t | y_t, \theta)
     M <- t(apply(Y, 1, m_estep, lambda=lambda, phi=phi,
-        A=A, c=c))
+                 A=A, c=c))
     R <- R_estep(lambda, phi=phi, A, c)
-    
+
     # M step - Optimize Q wrt theta
-    mstep <- optim(c(log(lambda0),log(phi0)),
-        function(...) -Q_smoothed(...),
-        gr=function(...) -grad_smoothed(...),
-        c=c, M=M, rdiag=diag(R), eta0=eta0, sigma0=sigma0, V=V,
-        eps.lambda=eps.lambda, eps.phi=eps.phi,
-        method="BFGS")
+    mstep <- optim(par=c(log(lambda0),log(phi0)), fn=function(...)
+                   -Q_smoothed(...), gr=function(...) -grad_smoothed(...), c=c,
+                   M=M, rdiag=diag(R), eta0=eta0, sigma0=sigma0, V=V,
+                   eps.lambda=eps.lambda, eps.phi=eps.phi, method="BFGS")
     theta <- exp(mstep$par)
     lambda <- theta[-length(theta)]+eps.lambda
     phi <- theta[length(theta)]+eps.phi
 
     # Calculate initial ll
     ll <- -mstep$value
-    
+
     # Run EM iterations
     for (iter in 1:maxiter) {
         # E step - calculation of m_t = E(x_t | y_t, \theta) and 
         #  R = Var(x_t | y_t, \theta)
         M <- t(apply(Y, 1, m_estep, lambda=lambda, phi=phi,
-            A=A, c=c))
+                     A=A, c=c))
         R <- R_estep(lambda, phi=phi, A, c)
-        
+
         # M step - Optimize Q wrt theta
-        mstep <- optim(c(log(lambda0),log(phi0)),
-            function(...) -Q_smoothed(...),
-            gr=function(...) -grad_smoothed(...),
-            c=c, M=M, rdiag=diag(R), eta0=eta0, sigma0=sigma0, V=V,
-            eps.lambda=eps.lambda, eps.phi=eps.phi,
-            method="BFGS")
+        mstep <- optim(par=c(log(lambda0),log(phi0)), fn=function(...)
+                       -Q_smoothed(...), gr=function(...) -grad_smoothed(...),
+                       c=c, M=M, rdiag=diag(R), eta0=eta0, sigma0=sigma0, V=V,
+                       eps.lambda=eps.lambda, eps.phi=eps.phi, method="BFGS")
         theta <- exp(mstep$par)
         lambda <- theta[-length(theta)]+eps.lambda
         phi <- theta[length(theta)]+eps.phi
@@ -322,13 +327,12 @@ smoothed_EM <- function(Y, A, eta0, sigma0, V, c=2, maxiter = 1e3, tol=1e-6) {
             ll <- ll.new
         }
     }
-    mstep <- optim(log(theta),
-        function(...) -Q_smoothed(...),
-        gr=function(...) -grad_smoothed(...),
-        c=c, M=M, rdiag=diag(R), eta0=eta0, sigma0=sigma0, V=V,
-        eps.lambda=eps.lambda, eps.phi=eps.phi,
-        method="BFGS", hessian=TRUE)
-    
+    mstep <- optim(par=log(theta), fn=function(...) -Q_smoothed(...),
+                   gr=function(...) -grad_smoothed(...), c=c, M=M,
+                   rdiag=diag(R), eta0=eta0, sigma0=sigma0, V=V,
+                   eps.lambda=eps.lambda, eps.phi=eps.phi, method="BFGS",
+                   hessian=TRUE)
+
     return(list(lambda=lambda, phi=phi, iter=iter, etat=c(log(lambda),log(phi)),
-        sigmat=chol2inv(chol(mstep$hessian))))
+                sigmat=chol2inv(chol(mstep$hessian))))
 }

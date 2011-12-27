@@ -52,7 +52,7 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
     # Calculate dimensions
     k <- ncol(A)
     l <- ncol(y)
-    
+
     # Calculate window parameters
     h <- floor(w/2)
 
@@ -93,7 +93,7 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
 
     # Setup data structures for parameters of interest
     x <- xhat0[max(tme-h,1):min(tme+h,nrow(y)),]
-    
+
     # Setup data
     yt <- t( y[max(1,tme-h):min(tme+h,nrow(y)),] )
     lambda <- colMeans(xhat0[max(1,tme-h):min(tme+h,nrow(y)),])
@@ -101,7 +101,7 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
 
     # Setup starting values
     # a1 <- c(xhat0[max(1,tme-h-1),], rep(1,k))
-    
+
     # Print starting values if verbose
     if (verbose) {
         cat('Starting value for lambda:\n', file=stderr())
@@ -127,7 +127,7 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
         cat('Function evaluations:\n', file=stderr())
         print(mle$counts)
     }
-    
+
     # Obtain Kalman filter output at MLE
     f.out <- mle_filter(mle=mle, Ft=Ft, qind=qind, yt=yt, Zt=Zt, R=R, tau=tau,
                         scale=scale, nugget=nugget)

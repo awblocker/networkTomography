@@ -27,7 +27,7 @@ buildStarMat <- function(n) {
     p <- n*n
     J <- n*2
     routemat <- matrix(0, J, p)
-    
+
     # Setup nonzero entries
     for (i in 1:(nrow(routemat)/2)) {
         routemat[i,seq((i-1)*J/2+1, i*J/2)] <- 1
@@ -56,16 +56,16 @@ buildRoutingMat <- function(nVec, Cmat) {
     # Create overall structure
     N <- sum(nVec)
     m <- length(nVec)
-    
+
     k <- N*N
     b <- sum(upper.tri(Cmat))
     l <- 2*(N+b)
-    
+
     A <- matrix(0, l, k)
-    
+
     # Build star-topology routing matrix for all nodes
     A[1:(2*N),] <- buildStarMat(N)
-    
+
     # Build between-router part of routing matrix
     n <- 1
     for (i in 1:(m-1)) {
@@ -74,29 +74,29 @@ buildRoutingMat <- function(nVec, Cmat) {
                 # Create row for i -> j
                 srcStart <- c(0,cumsum(nVec))[i] + 1
                 srcEnd <- cumsum(nVec)[i]
-                
+
                 dstStart <- c(0,cumsum(nVec))[j] + 1 + N
                 dstEnd <- cumsum(nVec)[j] + N
-                
-                A[ 2*N + n, ] <- ( colSums(A[srcStart:srcEnd,]) * 
-                    colSums(A[dstStart:dstEnd,]) )
+
+                A[ 2*N + n, ] <- (colSums(A[srcStart:srcEnd,]) * 
+                                  colSums(A[dstStart:dstEnd,]) )
 
                 # Create row for j -> i
                 srcStart <- c(0,cumsum(nVec))[j] + 1
                 srcEnd <- cumsum(nVec)[j]
-                
+
                 dstStart <- c(0,cumsum(nVec))[i] + 1 + N
                 dstEnd <- cumsum(nVec)[i] + N
-                
-                A[ 2*N + n + 1, ] <- ( colSums(A[srcStart:srcEnd,]) * 
-                    colSums(A[dstStart:dstEnd,]) )
+
+                A[ 2*N + n + 1, ] <- (colSums(A[srcStart:srcEnd,]) * 
+                                      colSums(A[dstStart:dstEnd,]) )
 
                 # Augment n
                 n <- n + 2
             }
         }
     }
-    
+
     return(A)
 }
 
@@ -168,27 +168,27 @@ agg <- function(mat, q=c(0.05, 0.16, 0.5, 0.84, 0.95)) {
     if (is.vector(mat)) {
         mat <- as.matrix(mat)
     }
-    
+
     ans <- matrix(0, length(q)+4, ncol(mat))
     nc <- ncol(mat)
-    
+
     # Dimnames
     dimnames(ans) <- list()
     dimnames(ans)[[1]] <- vector("character", nrow(ans))
     dimnames(ans)[[1]][1:4] <- c("mean", "sd", "min", "max")
-    
+
     # Default aggregates
     ans[1,] <- colMeans(mat)
     ans[2,] <- apply(mat, 2, sd)
     ans[3:4,] <- sapply( 1:nc, function(j) range(mat[,j]) )
-    
+
     # Quantiles
     if (length(q) > 0) {
-        ans[5:nrow(ans),] <- sapply( 1:nc, function(j)
-            quantile(mat[,j], q) )
+        ans[5:nrow(ans),] <- sapply(1:nc, function(j)
+                                    quantile(mat[,j], q) )
         dimnames(ans)[[1]][5:nrow(ans)] <- sprintf("q%02d", q*100)
     }
-    
+
     return(ans)
 }
 
