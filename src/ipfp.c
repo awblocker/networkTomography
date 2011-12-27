@@ -97,7 +97,7 @@ SEXP ipfp (SEXP y, SEXP A, SEXP dims, SEXP x,
 
     	if(LOGICAL(verbose)[0])
     	{
-    		printf("iteration %d:\t%g\n", iter, errNorm);
+    		Rprintf("iteration %d:\t%g\n", iter, errNorm);
     	}
 
     	// Check for convergence
