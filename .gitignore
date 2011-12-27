@@ -17,3 +17,6 @@
 *.so
 # Rcheck results
 *Rcheck*
+# R history
+.Rhistory*
+.Rapp.history*
