@@ -115,7 +115,7 @@ grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
     return(grad)
 }
 
-locally_iid_EM <- function(Y, c=2, A=NULL, lambda0=NULL, phi0=NULL,
+locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
     maxiter = 1e3, tol=1e-6, epsilon=0.01, full=FALSE) {
     
     # Check for inactive (deterministically-known) OD flows
@@ -124,15 +124,7 @@ locally_iid_EM <- function(Y, c=2, A=NULL, lambda0=NULL, phi0=NULL,
     activeOD <- which(apply(activeOD, 1, any))
     
     # Determine number of latent variables
-    p <- 1
-    
-    if (is.null(A)) {
-        p <- (ncol(Y)/2)^2
-        A <- make_routemat(p)
-        A <- A[-nrow(A),]
-    } else {
-        p <- ncol(A)
-    }
+    p <- ncol(A)
 
     # Setup initial parameters
     if (is.null(lambda0)) {
@@ -258,18 +250,13 @@ grad_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
 }
 
 
-smoothed_EM <- function(data=Y, eta0, sigma0, V, c=2, A=NULL,
-    maxiter = 1e3, tol=1e-6) {
+smoothed_EM <- function(Y, A, eta0, sigma0, V, c=2, maxiter = 1e3, tol=1e-6) {
     eps.lambda <- 0
     eps.phi <- 0
-    # Determine number of latent variables
-    p <- (ncol(Y)/2)^2
     
-    if (is.null(A)) {
-        A <- make_routemat(p)
-        A <- A[-nrow(A),]
-    }
-
+    # Determine number of latent variables
+    p <- ncol(A)
+    
     # Setup initial parameters
     theta0 <- exp(eta0)
 
