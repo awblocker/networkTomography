@@ -14,8 +14,8 @@
 #'      IPFP. If full, list containing solution (as x), number of iterations (as
 #'      iter), and norm of Ax - y (as errNorm)
 #' @keywords iteration array
-#' @export
 #' @examples
+#' @useDynLib networkTomography
 #' A <- buildStarMat(3)
 #' x <- x
 ipfp <- function(y, A, x0,

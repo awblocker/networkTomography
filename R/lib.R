@@ -4,7 +4,6 @@
 #' @param fmt input character format for times
 #' @return numeric vector of decimal times in hours
 #' @keywords character
-#' @export
 #' @examples
 #' strphour("31/08/87 12:53:29")
 #'
@@ -18,7 +17,6 @@ strphour <- function(x, fmt="(%m/%d/%y %H:%M:%S)") {
 #' @param n integer number of nodes in the network
 #' @return matrix of dimension 2n x n^2 that transforms OD flows to link loads
 #' @keywords array
-#' @export
 #' @examples
 #' buildStarMat(3)
 #'
@@ -46,7 +44,6 @@ buildStarMat <- function(n) {
 #'      only upper triangular part is used
 #' @return routing matrix of dimension at least 2*sum(nVec) x sum(nVec^2)
 #' @seealso \code{buildStarMat}, which this function depends upon
-#' @export
 #' @examples
 #' nVec <- c(3, 3, 3)
 #' Cmat <- diag(3)
@@ -109,7 +106,6 @@ buildRoutingMat <- function(nVec, Cmat) {
 #' @return matrix of size length(x) x length(x) with x along diagonal
 #' @keywords array
 #' @seealso \code{diag_ind}
-#' @export
 #' @examples
 #' diag_mat(seq(5))
 diag_mat <- function(x) {
@@ -128,7 +124,6 @@ diag_mat <- function(x) {
 #'      matrix
 #' @keywords array
 #' @seealso \code{diag_mat}
-#' @export
 #' @examples
 #' ind <- diag_ind(5)
 #' diag_mat(seq(5))[ind]
@@ -144,7 +139,6 @@ diag_ind <- function(n) {
 #' @param interval thinning interval
 #' @return integer vector of indices for thinning
 #' @keywords manip ts
-#' @export
 thin <- function(m, interval=10) {
     seq(1,m,interval)
 }
@@ -159,7 +153,6 @@ thin <- function(m, interval=10) {
 #' @return matrix with each row corresponding to a summary measure and each
 #'      column corresponding to a column of mat
 #' @keywords manip arith
-#' @export
 #' @examples
 #' mat <- matrix(rnorm(5e3), ncol=5)
 #' agg(mat)
