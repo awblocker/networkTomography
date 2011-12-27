@@ -1,7 +1,7 @@
 
 # Function to run MCMC algorithm of Tebaldi & West 1998
 network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
-    obj_param=3){
+                         obj_param=3) {
     # Format verification
     Y <- as.numeric(Y)
 
@@ -9,7 +9,7 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
     n <- ncol(A)
     k <- nrow(A)
     X <- matrix(0, ndraws+burnin, n)
-    
+
     # Decompose A matrix into full-rank and singular parts; retain pivot info
     A_qr <- qr(A)
     pivot <- A_qr$pivot
@@ -21,7 +21,7 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
     # Pivot prior
     prior$a <- prior$a[pivot]
     prior$b <- prior$b[pivot]
-    
+
     # Initialize X via simplex method (gives integer solutions with linear
     # constraints for transportation problems)
     # obj <- rpois(n, obj_param)*(rbinom(n,1,1/2)*2 - 1)
@@ -30,7 +30,7 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
     const_rhs <- c(Y, rep(1,n))
     const_dir <- c(rep('==',k), rep('>=',n))
     int_vec <- seq(n)
-    
+
     #init <- lp(objective.in=obj, const.mat=const_mat, const.dir=const_dir,
     #    const.rhs=const_rhs, int.vec=int_vec)
     init <- Rglpk_solve_LP(obj, const_mat, const_dir, const_rhs)
@@ -40,16 +40,16 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
 
     # If verbose, print initial solution
     if (verbose) print(X[1,])
-    
+
     # Initialize lambda with draw from conditional posterior
     lambda <- matrix(0, ndraws+burnin, n)
     lambda[1,] <- rgamma(n, prior$a+X[1,], prior$b+1)
-    
+
     # Setup adjList
     adjList <- lapply(1:(n-k), function(j) A1_inv %*% A2[,j])
     posList <- lapply(adjList, function(x) which(x>0))
     negList <- lapply(adjList, function(x) which(x<0))
-    
+
     # Loop for MCMC iterations
     accepts <- rep(0, n-k)
     for (iter in seq(2,ndraws+burnin)) {
@@ -67,11 +67,11 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
             minX2 <- max(max(limitVec[negVec]), 0)
             proposal <- sample(floor(maxX2)-ceiling(minX2)+1, 1)
             proposal <- proposal - 1 + ceiling(minX2)
-            
+
             # Propose lambda_j+k | X2_j
             lambdaProp <- rgamma(1, proposal + prior$a[j+k] + 1,
-                    prior$b[j+k] + 1)
-           
+                                 prior$b[j+k] + 1)
+
             # If feasible, MH step
             llr <- (log(lambdaProp)*proposal - lgamma(proposal+1) -
                     log(lambda[iter-1,j+k])*X2[j] + lgamma(X2[j]+1) )
@@ -89,14 +89,13 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
                 }
             }
         }
-        #cat(".")
-        
+
         X[iter,] <- c(X1,X2)
-        
+
         # Draw lambda_1, ..., lambda_k
         lambda[iter,1:k] <- rgamma(k, X[iter,1:k] + prior$a[1:k] + 1,
-                prior$b[1:k] + 1)
-        
+                                   prior$b[1:k] + 1)
+
         # If verbose, print updates every 1e3 iterations
         if (verbose>0 & iter %% 1e3 == 0) {
             cat(sprintf('Iter %d\n', iter))
@@ -106,7 +105,7 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
             }
         }
     }
-    
+
     inv <- numeric(n)
     inv[pivot] <- seq(n)
 
@@ -115,10 +114,10 @@ network_mcmc <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0,
     accepts <- accepts[inv]
 
     out <- tail(data.frame(X, lambda),ndraws)
-    colnames(out) <- c( paste('X', seq(n), sep=''),
-        paste('lambda', seq(n), sep='') )
+    colnames(out) <- c(paste('X', seq(n), sep=''),
+                       paste('lambda', seq(n), sep='') )
 
     return(list(lambda_out=mcmc(out[,seq(n+1,2*n)]), X_out=mcmc(out[,seq(n)]),
-        accepts=accepts))
+                accepts=accepts))
 }
 
