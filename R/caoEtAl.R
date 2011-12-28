@@ -2,43 +2,20 @@
 # Based on methods of Cao et al. (JASA, 2000)
 
 
-# Check for deterministically-known OD flows at single time
-getActive <- function(y, A) {
-    odRanges <- xranges(E=A, F=y, ispos=TRUE)
-    activeOD <- (odRanges[,2]-odRanges[,1]>0)
-    return( activeOD )
-}
-
-lambda_init <- function(Y, A, full=FALSE) {
-    J <- 2*sqrt(ncol(A))
-
-    # Append final row if needed
-    if (!full) {
-        A <- rbind(A, 2-colSums(A))
-    }
-
-    # Aggregate data
-    link.means <- colMeans(Y)
-    if (!full) {
-        link.means <- c(link.means, sum(link.means[1:J/2]) -
-                        sum(link.means[J/2:ncol(Y)]))
-    }
-
-    lambda0 <- rep(0,ncol(A))
-
-    for (i in 1:(J/2)) {
-        # Use source data
-        lambda0[seq((i-1)*J/2+1, i*J/2)] <- (lambda0[seq((i-1)*J/2+1, i*J/2)] +
-                                             link.means[i]/(J))
-
-        # Use destination data
-        lambda0[seq(i,ncol(A),J/2)] <- (lambda0[seq(i,ncol(A), J/2)] +
-                                        link.means[i+J/2]/(J))
-    }
-
-    return(lambda0)
-}
-
+#' Simple initialization for phi in model of Cao et al. (2000)
+#'
+#' Uses a crude estimator to get a starting point for phi in the model of
+#' Cao et al. (2000).
+#'
+#' @param Y matrix (n x k) of observed link loads over time
+#' @param A routing matrix (m x k)
+#' @param lambda0 numeric vector (length k) of initial guesses for lambda
+#' @param c power parameter in model of Cao et al. (2000)
+#' @return numeric starting value for phi
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
 phi_init <- function(Y, A, lambda0, c) {
     exp(mean(log(diag(cov(Y))/ (A %*% lambda0^c) )))
 }
@@ -129,14 +106,7 @@ locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
     p <- ncol(A)
 
     # Setup initial parameters
-    if (is.null(lambda0)) {
-        lambda0 <- lambda_init(Y,A,full=full)
-        lambda0[!is.finite(lambda0)] <- 1
-        lambda0[lambda0<=0] <- 1
-        lambda <- lambda0
-    } else {
-        lambda <- lambda0
-    }
+    lambda <- lambda0
 
     # Subset A and lambda
     A <- A[activeLink,activeOD]

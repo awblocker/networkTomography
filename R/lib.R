@@ -192,3 +192,22 @@ agg <- function(mat, q=c(0.05, 0.16, 0.5, 0.84, 0.95)) {
     return(ans)
 }
 
+#' Check for deterministically-known OD flows at single time
+#'
+#' Uses xranges from limSolve to find deterministically-known OD flows
+#'
+#' @param y numeric vector of link loads, dimension m
+#' @param A routing matrix of dimension m x k
+#' @return logical vector of length k; TRUE for unknown OD flows, FALSE for
+#'      known
+#' @keywords algebra
+#' @export
+#' @examples
+#' data(onerouter)
+#' getActive(Y[1,], A)
+getActive <- function(y, A) {
+    odRanges <- xranges(E=A, F=y, ispos=TRUE)
+    activeOD <- (odRanges[,2]-odRanges[,1]>0)
+    return( activeOD )
+}
+
