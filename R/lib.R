@@ -45,7 +45,7 @@ buildStarMat <- function(n) {
 #' @param Cmat matrix (m x m) containing a one for each linked sub-network;
 #'      only upper triangular part is used
 #' @return routing matrix of dimension at least 2*sum(nVec) x sum(nVec^2)
-#' @seealso \code{buildStarMat}, which this function depends upon
+#' @seealso \code{\link{buildStarMat}}, which this function depends upon
 #' @export
 #' @examples
 #' nVec <- c(3, 3, 3)
@@ -108,7 +108,7 @@ buildRoutingMat <- function(nVec, Cmat) {
 #' @param x numeric vector for diagonal
 #' @return matrix of size length(x) x length(x) with x along diagonal
 #' @keywords array
-#' @seealso \code{diag_ind}
+#' @seealso \code{\link{diag_ind}}
 #' @export
 #' @examples
 #' diag_mat(seq(5))
@@ -127,7 +127,7 @@ diag_mat <- function(x) {
 #' @return integer vector of length n with indices (unidimensional) of square
 #'      matrix
 #' @keywords array
-#' @seealso \code{diag_mat}
+#' @seealso \code{\link{diag_mat}}
 #' @export
 #' @examples
 #' ind <- diag_ind(5)

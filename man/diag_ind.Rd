@@ -20,7 +20,7 @@ ind <- diag_ind(5)
 diag_mat(seq(5))[ind]
 }
 \seealso{
-  \code{diag_mat}
+  \code{\link{diag_mat}}
 }
 \keyword{array}
 

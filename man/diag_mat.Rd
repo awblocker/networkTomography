@@ -20,7 +20,7 @@
 diag_mat(seq(5))
 }
 \seealso{
-  \code{diag_ind}
+  \code{\link{diag_ind}}
 }
 \keyword{array}
 

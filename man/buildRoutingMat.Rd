@@ -28,6 +28,7 @@ Cmat[1,2] <- Cmat[2,3] <- 1
 buildRoutingMat(nVec, Cmat)
 }
 \seealso{
-  \code{buildStarMat}, which this function depends upon
+  \code{\link{buildStarMat}}, which this function depends
+  upon
 }
 
