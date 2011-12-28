@@ -20,8 +20,7 @@
 #' @keywords models multivariate
 #' @export
 #' @examples
-#' cat("Example to come -- this is meant to annoy you into writing it\n",
-#'     file=stderr())
+#' data(onerouter)
 twMCMC <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0) {
     # Format verification
     Y <- as.numeric(Y)

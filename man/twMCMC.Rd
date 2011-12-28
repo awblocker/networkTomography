@@ -37,8 +37,7 @@
   accelerate convergence.
 }
 \examples{
-cat("Example to come -- this is meant to annoy you into writing it\\n",
-    file=stderr())
+data(onerouter)
 }
 \keyword{models}
 \keyword{multivariate}

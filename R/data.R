@@ -6,7 +6,7 @@
 #' Cao et al. (2000).
 #'
 #' @docType data
-#' @name 1router
-#' @usage 1router
+#' @name onerouter
+#' @usage onerouter
 #' @keywords datasets
 NULL
