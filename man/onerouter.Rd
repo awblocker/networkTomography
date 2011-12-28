@@ -14,7 +14,7 @@
   formatted for analysis \item \code{tvec}, a vector of
   times \item \code{A}, the routing matrix for this network
   (truncated for full row rank) } In this data, we have
-  \code{A %*% t(X) == t(Y)}.
+  \code{A \%*\% t(X) == t(Y)}.
 }
 
 \section{Variables}{

@@ -15,7 +15,7 @@
 #'  \item \code{A}, the routing matrix for this network (truncated for full row
 #'      rank)
 #' }
-#' In this data, we have \code{A %*% t(X) == t(Y)}.
+#' In this data, we have \code{A \%*\% t(X) == t(Y)}.
 #'
 #' @section Variables:
 #' The data.frame \code{onerouter} contains the following:
@@ -51,7 +51,7 @@ NULL
 #' @section Structure:
 #' The columns of the X matrix correspond to individual OD flows, and the rows
 #' correspond to observations.
-#' In this data, we have \code{A %*% t(X) == t(Y)}.
+#' In this data, we have \code{A \%*\% t(X) == t(Y)}.
 #'
 #' @docType data
 #' @name X
@@ -74,7 +74,7 @@ NULL
 #' @section Structure:
 #' The columns of the Y matrix correspond to individual link loads, and the rows
 #' correspond to observations.
-#' In this data, we have \code{A %*% t(X) == t(Y)}.
+#' In this data, we have \code{A \%*\% t(X) == t(Y)}.
 #'
 #' @docType data
 #' @name Y
@@ -109,7 +109,7 @@ NULL
 #' Data from 4-node network with star topology collected from Bell Labs; used in
 #' Cao et al. (2000). The A matrix contains the routing structure of the given
 #' network. It is 7 x 16 due to the full row rank constraint.
-#' In this data, we have \code{A %*% t(X) == t(Y)}.
+#' In this data, we have \code{A \%*\% t(X) == t(Y)}.
 #'
 #' @section Structure:
 #' The columns of this matrix correspond to individual OD flows (the columns of

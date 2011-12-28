@@ -7,7 +7,7 @@
   from Bell Labs; used in Cao et al. (2000). The A matrix
   contains the routing structure of the given network. It
   is 7 x 16 due to the full row rank constraint. In this
-  data, we have \code{A %*% t(X) == t(Y)}.
+  data, we have \code{A \%*\% t(X) == t(Y)}.
 }
 \section{Structure}{
   The columns of this matrix correspond to individual OD

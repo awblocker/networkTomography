@@ -12,7 +12,7 @@
 \section{Structure}{
   The columns of the Y matrix correspond to individual link
   loads, and the rows correspond to observations. In this
-  data, we have \code{A %*% t(X) == t(Y)}.
+  data, we have \code{A \%*\% t(X) == t(Y)}.
 }
 \references{
   J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
