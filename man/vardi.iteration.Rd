@@ -8,10 +8,17 @@
   \item{A}{routing matrix (m x k)}
 
   \item{yBar}{numeric vector of mean link loads (length m)}
+
+  \item{lambda}{value of lambda from last iteration}
+
+  \item{B}{B matrix computed by
+  \code{\link{vardi.compute.BS}}}
+
+  \item{S}{S matrix computed by
+  \code{\link{vardi.compute.BS}}}
 }
 \value{
-  list containing two entries for the B and S matrices,
-  respectively
+  numeric vector of length k with updated lambda
 }
 \description{
   Function to compute B and S matrices for moment equations

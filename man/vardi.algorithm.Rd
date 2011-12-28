@@ -14,9 +14,9 @@
   flows (length k)}
 
   \item{tol}{numeric tolerance for halting iterations}
-
-  \item{numeric}{vector of length k with estimated OD
-  flows}
+}
+\value{
+  numeric vector of length k with estimated OD flows
 }
 \description{
   Runs moment-matching algorithm of Vardi (1996) until

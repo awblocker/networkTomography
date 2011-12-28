@@ -47,7 +47,10 @@ vardi.compute.BS <- function(A,Y) {
 #'
 #' @param A routing matrix (m x k)
 #' @param yBar numeric vector of mean link loads (length m)
-#' @return list containing two entries for the B and S matrices, respectively
+#' @param lambda value of lambda from last iteration
+#' @param B B matrix computed by \code{\link{vardi.compute.BS}}
+#' @param S S matrix computed by \code{\link{vardi.compute.BS}}
+#' @return numeric vector of length k with updated lambda 
 #' @references Y. Vardi. Network tomography: estimating source-destination
 #' traffic intensities from link data. Journal of the American Statistical
 #' Association, 91:365-377, 1996.
@@ -80,7 +83,7 @@ vardi.iteration <- function(A, yBar, lambda, B, S) {
 #' @param Y matrix of link loads over time (m x n, one column per time)
 #' @param lambda numeric vector of starting values for OD flows (length k)
 #' @param tol numeric tolerance for halting iterations
-#' @param numeric vector of length k with estimated OD flows
+#' @return numeric vector of length k with estimated OD flows
 #' @references Y. Vardi. Network tomography: estimating source-destination
 #' traffic intensities from link data. Journal of the American Statistical
 #' Association, 91:365-377, 1996.
