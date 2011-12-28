@@ -38,6 +38,12 @@
 }
 \examples{
 data(onerouter)
+# Quick, simple run to test the function
+mcmcOut <- twMCMC(Y=Y[1,], A=A, prior=c(1,0),
+                  ndraws=1000, burnin=100,
+                  verbose=0)
+print(summary(mcmcOut$XDraws))
+print(accepts)
 }
 \keyword{models}
 \keyword{multivariate}
