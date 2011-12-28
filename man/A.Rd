@@ -18,7 +18,7 @@
   J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
   Time-varying network tomography: router link data.
   Journal of the American Statistical Association,
-  95:1063–75, 2000.
+  95:1063-75, 2000.
 }
 \seealso{
   \code{\link{onerouter}}, \code{\link{X}},

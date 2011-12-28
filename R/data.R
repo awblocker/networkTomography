@@ -36,7 +36,7 @@
 #' @usage onerouter
 #' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
 #' Time-varying network tomography: router link data.
-#' Journal of the American Statistical Association, 95:1063–75, 2000.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
 #' @seealso \code{\link{X}}, \code{\link{Y}}, \code{\link{tvec}},
 #'      \code{\link{A}}
@@ -58,7 +58,7 @@ NULL
 #' @usage X
 #' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
 #' Time-varying network tomography: router link data.
-#' Journal of the American Statistical Association, 95:1063–75, 2000.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
 #' @seealso \code{\link{onerouter}}, \code{\link{Y}}, \code{\link{tvec}},
 #'      \code{\link{A}}
@@ -81,7 +81,7 @@ NULL
 #' @usage Y
 #' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
 #' Time-varying network tomography: router link data.
-#' Journal of the American Statistical Association, 95:1063–75, 2000.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
 #' @seealso \code{\link{onerouter}}, \code{\link{X}}, \code{\link{tvec}},
 #'      \code{\link{A}}
@@ -98,7 +98,7 @@ NULL
 #' @usage tvec
 #' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
 #' Time-varying network tomography: router link data.
-#' Journal of the American Statistical Association, 95:1063–75, 2000.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
 #' @seealso \code{\link{onerouter}}, \code{\link{X}}, \code{\link{Y}},
 #'      \code{\link{A}}
@@ -120,7 +120,7 @@ NULL
 #' @usage A
 #' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
 #' Time-varying network tomography: router link data.
-#' Journal of the American Statistical Association, 95:1063–75, 2000.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
 #' @seealso \code{\link{onerouter}}, \code{\link{X}}, \code{\link{Y}},
 #'      \code{\link{tvec}}
