@@ -22,11 +22,12 @@
 #' @examples
 #' data(onerouter)
 #' # Quick, simple run to test the function
-#' mcmcOut <- twMCMC(Y=Y[1,], A=A, prior=c(1,0),
+#' prior <- list(a=rep(1, ncol(A)), b=rep(0, ncol(A)))
+#' mcmcOut <- twMCMC(Y=Y[1,], A=A, prior=prior,
 #'                   ndraws=1000, burnin=100,
 #'                   verbose=0)
 #' print(summary(mcmcOut$XDraws))
-#' print(accepts)
+#' print(mcmcOut$accepts)
 twMCMC <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0) {
     # Format verification
     Y <- as.numeric(Y)
