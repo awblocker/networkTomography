@@ -27,3 +27,4 @@ Collate:
     'ssmMle.R'
     'twMCMC.R'
     'vardi.algorithm.R'
+    'data.R'
