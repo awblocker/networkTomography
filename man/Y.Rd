@@ -21,8 +21,9 @@
   95:1063-75, 2000.
 }
 \seealso{
-  \code{\link{onerouter}}, \code{\link{X}},
-  \code{\link{tvec}}, \code{\link{A}}
+  Other onerouter: \code{\link{A}},
+  \code{\link{onerouter}}, \code{\link{tvec}},
+  \code{\link{X}}
 }
 \keyword{datasets}
 

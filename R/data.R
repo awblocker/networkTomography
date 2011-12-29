@@ -38,8 +38,7 @@
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
-#' @seealso \code{\link{X}}, \code{\link{Y}}, \code{\link{tvec}},
-#'      \code{\link{A}}
+#' @family onerouter
 NULL
 
 #' 1router OD data from Cao et al. (2000)
@@ -60,8 +59,7 @@ NULL
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
-#' @seealso \code{\link{onerouter}}, \code{\link{Y}}, \code{\link{tvec}},
-#'      \code{\link{A}}
+#' @family onerouter
 NULL
 
 #' 1router link data from Cao et al. (2000)
@@ -83,8 +81,7 @@ NULL
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
-#' @seealso \code{\link{onerouter}}, \code{\link{X}}, \code{\link{tvec}},
-#'      \code{\link{A}}
+#' @family onerouter
 NULL
 
 #' 1router time data from Cao et al. (2000)
@@ -100,8 +97,7 @@ NULL
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
-#' @seealso \code{\link{onerouter}}, \code{\link{X}}, \code{\link{Y}},
-#'      \code{\link{A}}
+#' @family onerouter
 NULL
 
 #' 1router routing matrix from Cao et al. (2000)
@@ -122,6 +118,5 @@ NULL
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @keywords datasets
-#' @seealso \code{\link{onerouter}}, \code{\link{X}}, \code{\link{Y}},
-#'      \code{\link{tvec}}
+#' @family onerouter
 NULL
