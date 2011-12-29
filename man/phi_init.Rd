@@ -27,4 +27,9 @@
   Journal of the American Statistical Association,
   95:1063-75, 2000.
 }
+\seealso{
+  Other CaoEtAl: \code{\link{grad_iid}},
+  \code{\link{m_estep}}, \code{\link{Q_iid}},
+  \code{\link{R_estep}}
+}
 

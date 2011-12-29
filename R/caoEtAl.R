@@ -16,10 +16,31 @@
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
 #' @export
+#' @family CaoEtAl
 phi_init <- function(Y, A, lambda0, c) {
     exp(mean(log(diag(cov(Y))/ (A %*% lambda0^c) )))
 }
 
+#' Q function for locally IID EM algorithm of Cao et al. (2000)
+#'
+#' Computes the Q function (expected log-likelihood) for the EM algorithm of
+#' Cao et al. (2000) for their locally IID model.
+#'
+#' @param logtheta numeric vector (length k+1) of log(lambda) (1:k) and log(phi)
+#'      (last entry)
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param M matrix (n x k) of conditional expectations for OD flows,
+#'      one time per row
+#' @param rdiag numeric vector (length k) containing diagonal of conditional
+#'      covariance matrix R
+#' @param epsilon numeric nugget to add to diagonal of covariance for numerical
+#'      stability
+#' @return numeric value of Q function; not vectorized in any way
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
 Q_iid <- function(logtheta, c, M, rdiag, epsilon) {
     # Get parameter values
     lambda <- exp(logtheta[-length(logtheta)])
@@ -42,31 +63,85 @@ Q_iid <- function(logtheta, c, M, rdiag, epsilon) {
     return(Q);
 }
 
+#' Compute conditional expectations for locally IID EM algorithm of Cao et al.
+#' (2000)
+#'
+#' Computes conditional expectation of OD flows for E-step of EM algorithm from
+#' Cao et al. (2000) for their locally IID model.
+#'
+#' @param yt numeric vector (length m) of link loads from single time
+#' @param lambda numeric vector (length k) of mean OD flows from last M-step
+#' @param phi numeric scalar scale for covariance matrix of xt
+#' @param A routing matrix (m x k) for network being analyzed
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param epsilon numeric nugget to add to diagonal of covariance for numerical
+#'      stability
+#' @return numeric vector of same size as lambda with conditional expectations
+#'      of x
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
 m_estep <- function(yt, lambda, phi, A, c, epsilon) {
     sigma <- diag_mat(phi*lambda^c + epsilon)
-
+    
     m <- lambda
-    m <- m  +  sigma %*% t(A) %*%
-    # solve(A %*% diag(phi*lambda^c) %*% t(A)) %*%
-    # chol2inv(chol(A %*% diag(phi*lambda^c + epsilon) %*% t(A))) %*%
-    solve(A %*% sigma %*% t(A), yt - A %*% lambda)
-
+    m <- m  +  sigma %*% t(A) %*% solve(A %*% sigma %*% t(A), yt - A %*% lambda)
+    
     return(m)
 }
 
+#' Compute conditional covariance for locally IID EM algorithm of Cao et al.
+#' (2000)
+#'
+#' Computes conditional covariance of OD flows for E-step of EM algorithm from
+#' Cao et al. (2000) for their locally IID model.
+#'
+#' @param lambda numeric vector (length k) of mean OD flows from last M-step
+#' @param phi numeric scalar scale for covariance matrix of xt
+#' @param A routing matrix (m x k) for network being analyzed
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param epsilon numeric nugget to add to diagonal of covariance for numerical
+#'      stability
+#' @return conditional covariance matrix (k x k) of OD flows given parameters
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
 R_estep <- function(lambda, phi, A, c, epsilon) {
     sigma <- diag_mat(phi*lambda^c + epsilon)
     AdotSigma <- A %*% sigma
-
+    
     R <- diag(phi*lambda^c + epsilon)
-    R <- R - t(AdotSigma) %*%
-    # solve(A %*% diag(phi*lambda^c) %*% t(A)) %*% A %*%
-    # chol2inv(chol(A %*% diag(phi*lambda^c + epsilon) %*% t(A))) %*% )
-    solve( AdotSigma %*% t(A), AdotSigma )
-
+    R <- R - t(AdotSigma) %*% solve( AdotSigma %*% t(A), AdotSigma )
+    
     return(R)
 }
 
+#' Compute analytic gradient of Q-function for locally IID EM algorithm of Cao
+#' et al. (2000)
+#'
+#' Computes gradient of Q-function with respect to log(c(lambda,phi)) for EM
+#' algorithm from Cao et al. (2000) for their locally IID model.
+#'
+#' @param logtheta numeric vector (length k+1) of log(lambda) (1:k) and log(phi)
+#'      (last entry)
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param M matrix (n x k) of conditional expectations for OD flows,
+#'      one time per row
+#' @param rdiag numeric vector (length k) containing diagonal of conditional
+#'      covariance matrix R
+#' @param epsilon numeric nugget to add to diagonal of covariance for numerical
+#'      stability
+#' @return numeric vector of same length as logtheta containing calculated
+#'      gradient
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
 grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
     # Get parameter values
     lambda <- exp(logtheta[-length(logtheta)])
