@@ -17,6 +17,9 @@
 #' @return list consisting of matrix of draws for X \code{XDraws},
 #'  matrix of draws for X \code{lambdaDraws}, and vector of acceptances per OD
 #'  flow \code{accepts}
+#' @references C. Tebaldi and M. West. Bayesian inference on network traffic
+#' using link count data. Journal of the American Statistical Association,
+#' 93(442):557-573, 1998.
 #' @keywords models multivariate
 #' @export
 #' @examples

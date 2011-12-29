@@ -46,6 +46,11 @@ mcmcOut <- twMCMC(Y=Y[1,], A=A, prior=prior,
 print(summary(mcmcOut$XDraws))
 print(mcmcOut$accepts)
 }
+\references{
+  C. Tebaldi and M. West. Bayesian inference on network
+  traffic using link count data. Journal of the American
+  Statistical Association, 93(442):557-573, 1998.
+}
 \keyword{models}
 \keyword{multivariate}
 
