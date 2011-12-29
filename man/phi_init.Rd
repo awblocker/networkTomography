@@ -29,7 +29,9 @@
 }
 \seealso{
   Other CaoEtAl: \code{\link{grad_iid}},
-  \code{\link{m_estep}}, \code{\link{Q_iid}},
-  \code{\link{R_estep}}
+  \code{\link{grad_smoothed}},
+  \code{\link{locally_iid_EM}}, \code{\link{m_estep}},
+  \code{\link{Q_iid}}, \code{\link{Q_smoothed}},
+  \code{\link{R_estep}}, \code{\link{smoothed_EM}}
 }
 

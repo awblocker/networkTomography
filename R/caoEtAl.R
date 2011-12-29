@@ -63,8 +63,7 @@ Q_iid <- function(logtheta, c, M, rdiag, epsilon) {
     return(Q);
 }
 
-#' Compute conditional expectations for locally IID EM algorithm of Cao et al.
-#' (2000)
+#' Compute conditional expectations for EM algorithms of Cao et al. (2000)
 #'
 #' Computes conditional expectation of OD flows for E-step of EM algorithm from
 #' Cao et al. (2000) for their locally IID model.
@@ -92,8 +91,7 @@ m_estep <- function(yt, lambda, phi, A, c, epsilon) {
     return(m)
 }
 
-#' Compute conditional covariance for locally IID EM algorithm of Cao et al.
-#' (2000)
+#' Compute conditional covariance matrix for EM algorithms of Cao et al. (2000)
 #'
 #' Computes conditional covariance of OD flows for E-step of EM algorithm from
 #' Cao et al. (2000) for their locally IID model.
@@ -169,8 +167,37 @@ grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
     return(grad)
 }
 
-locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
-                           maxiter = 1e3, tol=1e-6, epsilon=0.01, full=FALSE) {
+#' Run EM algorithm to obtain MLE for locally IID model of Cao et al. (2000)
+#'
+#' Runs EM algorithm to compute MLE for the locally IID model of Cao et al.
+#' (2000). Uses numerical optimization of Q-function for each M-step with
+#' analytic computation of its gradient.
+#'
+#' @param Y matrix (h x k) of observations in local window; columns correspond
+#'      to OD flows, and rows are individual observations
+#' @param A routing matrix (m x k) for network being analyzed
+#' @param lambda0 initial vector of values (length k) for lambda; \code{ipfp} is
+#'      a good way to obtain this
+#' @param phi0 initial value for covariance scale phi; initializes automatically
+#'      using \code{phi_init} if NULL, but you can likely do better
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param maxiter maximum number of EM iterations to run
+#' @param tol tolerance (in relative change in Q function value) for stopping EM
+#'      iterations
+#' @param epsilon numeric nugget to add to diagonal of covariance for numerical
+#'      stability
+#' @param method optimization method to use (in optim calls)
+#' @return list with 3 elements: \code{lambda}, the estimated value of lambda;
+#'      \code{phi}, the estimated value of phi; and \code{iter}, the number of
+#'      iterations run
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
+locally_iid_EM <- function(Y, A, lambda0, phi0=NULL, c=2,
+                           maxiter = 1e3, tol=1e-6, epsilon=0.01,
+                           method="L-BFGS-B") {
 
     # Check for inactive (deterministically-known) OD flows
     activeLink <- which(apply(Y, 2, function(col) max(col) > 0))
@@ -269,6 +296,34 @@ locally_iid_EM <- function(Y, A, c=2, lambda0=NULL, phi0=NULL,
     return(list(lambda=lambda, phi=phi, iter=iter))
 }
 
+#' Q function for smoothed EM algorithm of Cao et al. (2000)
+#'
+#' Computes the Q function (expected log-likelihood) for the EM algorithm of
+#' Cao et al. (2000) for their smoothed model.
+#'
+#' @param logtheta numeric vector (length k+1) of log(lambda) (1:k) and log(phi)
+#'      (last entry)
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param M matrix (n x k) of conditional expectations for OD flows,
+#'      one time per row
+#' @param rdiag numeric vector (length k) containing diagonal of conditional
+#'      covariance matrix R
+#' @param eta0 numeric vector (length k+1) containing value for log(c(lambda,
+#'      phi)) from previous time (or initial value)
+#' @param sigma0 covariance matrix (k+1 x k+1) of log(c(lambda, phi)) from
+#'      previous time (or initial value)
+#' @param V evolution covariance matrix (k+1 x k+1) for log(c(lambda, phi))
+#'      (random walk)
+#' @param eps.lambda numeric small positive value to add to lambda for numerical
+#'      stability; typically 0
+#' @param eps.phi numeric small positive value to add to phi for numerical
+#'      stability; typically 0
+#' @return numeric value of Q function; not vectorized in any way
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
 Q_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
                        eps.lambda, eps.phi) {
     # Get parameter values
@@ -286,6 +341,36 @@ Q_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
     return(Q);
 }
 
+#' Compute analytic gradient of Q-function for smoothed EM algorithm of Cao et
+#' al. (2000)
+#'
+#' Computes gradient of Q-function with respect to log(c(lambda,phi)) for EM
+#' algorithm from Cao et al. (2000) for their smoothed model.
+#'
+#' @param logtheta numeric vector (length k+1) of log(lambda) (1:k) and log(phi)
+#'      (last entry)
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param M matrix (n x k) of conditional expectations for OD flows,
+#'      one time per row
+#' @param rdiag numeric vector (length k) containing diagonal of conditional
+#'      covariance matrix R
+#' @param eta0 numeric vector (length k+1) containing value for log(c(lambda,
+#'      phi)) from previous time (or initial value)
+#' @param sigma0 covariance matrix (k+1 x k+1) of log(c(lambda, phi)) from
+#'      previous time (or initial value)
+#' @param V evolution covariance matrix (k+1 x k+1) for log(c(lambda, phi))
+#'      (random walk)
+#' @param eps.lambda numeric small positive value to add to lambda for numerical
+#'      stability; typically 0
+#' @param eps.phi numeric small positive value to add to phi for numerical
+#'      stability; typically 0
+#' @return numeric vector of same length as logtheta containing calculated
+#'      gradient
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
 grad_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
                           eps.lambda, eps.phi) {
     # Get parameter values
@@ -303,11 +388,43 @@ grad_smoothed <- function(logtheta, c, M, rdiag, eta0, sigma0, V,
     return(grad)
 }
 
-
-smoothed_EM <- function(Y, A, eta0, sigma0, V, c=2, maxiter = 1e3, tol=1e-6) {
-    eps.lambda <- 0
-    eps.phi <- 0
-
+#' Run EM algorithm to obtain MLE (single time) for smoothed model of Cao et al.
+#' (2000)
+#'
+#' Runs EM algorithm to compute MLE for the smoothed model of Cao et al.
+#' (2000). Uses numerical optimization of Q-function for each M-step with
+#' analytic computation of its gradient. This performs estimation for a single
+#' time point using output from the previous one.
+#'
+#' @param Y matrix (h x k) of observations in local window; columns correspond
+#'      to OD flows, and rows are individual observations
+#' @param A routing matrix (m x k) for network being analyzed
+#' @param eta0 numeric vector (length k+1) containing value for log(c(lambda,
+#'      phi)) from previous time (or initial value)
+#' @param sigma0 covariance matrix (k+1 x k+1) of log(c(lambda, phi)) from
+#'      previous time (or initial value)
+#' @param V evolution covariance matrix (k+1 x k+1) for log(c(lambda, phi))
+#'      (random walk)
+#' @param c power parameter in model of Cao et al. (2000)
+#' @param maxiter maximum number of EM iterations to run
+#' @param tol tolerance (in relative change in Q function value) for stopping EM
+#'      iterations
+#' @param eps.lambda numeric small positive value to add to lambda for numerical
+#'      stability; typically 0
+#' @param eps.phi numeric small positive value to add to phi for numerical
+#'      stability; typically 0
+#' @param method optimization method to use (in optim calls)
+#' @return list with 5 elements: \code{lambda}, the estimated value of lambda;
+#'      \code{phi}, the estimated value of phi; \code{iter}, the number of
+#'      iterations run; \code{etat}, log(c(lambda, phi)); and sigmat, the
+#'      inverse of the Q functions Hessian at its mode
+#' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
+#' Time-varying network tomography: router link data.
+#' Journal of the American Statistical Association, 95:1063-75, 2000.
+#' @export
+#' @family CaoEtAl
+smoothed_EM <- function(Y, A, eta0, sigma0, V, c=2, maxiter = 1e3, tol=1e-6,
+                        eps.lambda=0, eps.phi=0, method="L-BFGS-B") {
     # Determine number of latent variables
     p <- ncol(A)
 

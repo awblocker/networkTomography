@@ -1,7 +1,6 @@
 \name{R_estep}
 \alias{R_estep}
-\title{Compute conditional covariance for locally IID EM algorithm of Cao et al.
-(2000)}
+\title{Compute conditional covariance matrix for EM algorithms of Cao et al. (2000)}
 \usage{
   R_estep(lambda, phi, A, c, epsilon)
 }
@@ -37,7 +36,9 @@
 }
 \seealso{
   Other CaoEtAl: \code{\link{grad_iid}},
-  \code{\link{m_estep}}, \code{\link{phi_init}},
-  \code{\link{Q_iid}}
+  \code{\link{grad_smoothed}},
+  \code{\link{locally_iid_EM}}, \code{\link{m_estep}},
+  \code{\link{phi_init}}, \code{\link{Q_iid}},
+  \code{\link{Q_smoothed}}, \code{\link{smoothed_EM}}
 }
 

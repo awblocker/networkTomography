@@ -1,7 +1,6 @@
 \name{m_estep}
 \alias{m_estep}
-\title{Compute conditional expectations for locally IID EM algorithm of Cao et al.
-(2000)}
+\title{Compute conditional expectations for EM algorithms of Cao et al. (2000)}
 \usage{
   m_estep(yt, lambda, phi, A, c, epsilon)
 }
@@ -40,7 +39,9 @@
 }
 \seealso{
   Other CaoEtAl: \code{\link{grad_iid}},
-  \code{\link{phi_init}}, \code{\link{Q_iid}},
-  \code{\link{R_estep}}
+  \code{\link{grad_smoothed}},
+  \code{\link{locally_iid_EM}}, \code{\link{phi_init}},
+  \code{\link{Q_iid}}, \code{\link{Q_smoothed}},
+  \code{\link{R_estep}}, \code{\link{smoothed_EM}}
 }
 
