@@ -1,0 +1,83 @@
+\name{calibration_ssm}
+\alias{calibration_ssm}
+\title{Estimation of the linear SSM calibration model of Blocker & Airoldi (2011)}
+\usage{
+  calibration_ssm(tme, y, A, F, R, xhat0, phihat0, tau = 2,
+    w = 11, maxiter = 10000, tol = 1e-09, scale = 10,
+    nugget = sqrt(.Machine$double.eps), verbose = FALSE,
+    method = "Nelder-Mead")
+}
+\arguments{
+  \item{tme}{integer time at which to center moving window
+  for estimation}
+
+  \item{y}{matrix (n x m) of observed link loads from all
+  times (not just the window used for estimation; one
+  observation per row}
+
+  \item{A}{routing matrix (m x k) for network; should be
+  full row rank}
+
+  \item{F}{matrix (k x k) containing fixed autoregressive
+  parameters for state evolution equation; upper-left block
+  of overall matrix for expanded state}
+
+  \item{R}{covariance matrix for observation equation;
+  typically small and fixed}
+
+  \item{xhat0}{matrix (n x k) of initial estimates for OD
+  flows X (e.g.  obtained via IPFP)}
+
+  \item{phihat0}{numeric vector (length n) of initial
+  estimates for phi}
+
+  \item{tau}{numeric power parameter for mean-variance
+  relationship}
+
+  \item{w}{number of observations to use for rolling-window
+  estimation; handles boundary cases cleanly}
+
+  \item{maxiter}{maximum number of iterations to use in
+  numerical optimization of log-likelihood}
+
+  \item{tol}{tolerance to use for numerical optimization}
+
+  \item{scale}{numeric inflation factor for time-zero state
+  covariance}
+
+  \item{nugget}{small positive value to add to diagonal of
+  state evolution covariance matrix to ensure numerical
+  stability}
+
+  \item{verbose}{logical to select verbose output from
+  algorithm}
+
+  \item{method}{optimization method to use (in optim
+  calls)}
+}
+\value{
+  list containing lambdahat, a numeric vector (length k)
+  containing the MLE for lambda; phihat, the MLE for phi;
+  xhat, the smoothed estimates of the OD flows for the
+  window used as a k x w matrix; and varhat, a k x w matrix
+  containing the diagonal of the estimated covariance for
+  each OD flow in the window
+}
+\description{
+  Estimation of the linear SSM calibration model of Blocker
+  & Airoldi (2011)
+}
+\references{
+  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+  time series on a graph. Proceedings of the Twenty-Seventh
+  Conference Annual Conference on Uncertainty in Artificial
+  Intelligence (UAI-11) 51-60, 2011.
+}
+\seealso{
+  Other calibrationModel: \code{\link{llCalibration}},
+  \code{\link{mle_filter}}
+}
+\keyword{models}
+\keyword{multivariate}
+\keyword{ts}
+

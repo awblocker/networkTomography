@@ -1,6 +1,35 @@
 
-# Function for evaluation of Q-function for calibration SSM
-qCalibration <- function(theta, Ft, qind, yt, Zt, R,
+#' Evaluate marginal log-likelihood for calibration SSM
+#'
+#' Evaluates marginal log-likelihood for calibration SSM of Blocker & Airoldi
+#' (2011) using Kalman smoothing. This is very fast and numerically-stable,
+#' using the univariate Kalman filtering and smoothing functions of \code{KFAS}
+#' with Fortran implementations.
+#'
+#' @param theta numeric vector (length k+1) of parameters. theta[-1] =
+#'      log(lambda), and theta[1] = log(phi)
+#' @param Ft evolution matrix (2k x 2k) for OD flows; include fixed
+#       autoregressive parameters
+#' @param qind integer vector of indices to update lambda portion of Ft matrix;
+#'      typically a subset of \code{diag_ind(2*k)}
+#' @param yt matrix (k x n) of observed link loads, one observation per column
+#' @param Zt observation matrix for system; should be padded version of routing
+#'      matrix A
+#' @param R covariance matrix for observation equation; typically small and
+#'      fixed
+#' @param k integer number of OD flows to infer
+#' @param tau numeric power parameter for mean-variance relationship
+#' @param scale numeric inflation factor for time-zero state covariance
+#' @param nugget small positive value to add to diagonal of state evolution
+#'      covariance matrix to ensure numerical stability
+#' @return numeric marginal log-likelihood obtained via Kalman smoothing
+#' @keywords models multivariate ts
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
+#' @export
+#' @family calibrationModel
+llCalibration <- function(theta, Ft, qind, yt, Zt, R,
                          k=ncol(Ft)/2, tau=2, scale=10,
                          nugget=sqrt(.Machine$double.eps)) {
     # Parse parameters
@@ -23,7 +52,37 @@ qCalibration <- function(theta, Ft, qind, yt, Zt, R,
     return(f.out$lik)
 }
 
-# Function for filtering & smoothing at MLE of calibration SSM
+#' Filtering & smoothing at MLE for calibration SSM
+#'
+#' Run Kalman filtering and smoothing at calculated MLE for parameters of
+#' calibration SSM. This is used to obtain point and covariance estimates for
+#' the actual OD flows X following estimation.
+#'
+#' @param mle numeric vector (length k+1) of parameters. theta[-1] =
+#'      log(lambda), and theta[1] = log(phi)
+#' @param Ft evolution matrix (2k x 2k) for OD flows; include fixed
+#       autoregressive parameters
+#' @param qind integer vector of indices to update lambda portion of Ft matrix;
+#'      typically a subset of \code{diag_ind(2*k)}
+#' @param yt matrix (k x n) of observed link loads, one observation per column
+#' @param Zt observation matrix for system; should be padded version of routing
+#'      matrix A
+#' @param R covariance matrix for observation equation; typically small and
+#'      fixed
+#' @param k integer number of OD flows to infer
+#' @param tau numeric power parameter for mean-variance relationship
+#' @param scale numeric inflation factor for time-zero state covariance
+#' @param nugget small positive value to add to diagonal of state evolution
+#'      covariance matrix to ensure numerical stability
+#' @return numeric marginal log-likelihood obtained via Kalman smoothing
+#' @return list containing result of Kalman smoothing; see \code{\link{ks}} for 
+#'      details
+#' @keywords models multivariate ts
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
+#' @export
+#' @family calibrationModel
 mle_filter <- function(mle, Ft, qind, yt, Zt, R,
                        k=ncol(Ft)/2, tau=2, scale=10,
                        nugget=sqrt(.Machine$double.eps)) {
@@ -44,11 +103,48 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
     f.out <- ks(f.out)
 }
 
-# Function for estimation of the linear SSM calibration model
-# of Blocker & Airoldi (2011)
+#' Estimation of the linear SSM calibration model of Blocker & Airoldi (2011)
+#'
+#' 
+#'
+#' @param tme integer time at which to center moving window for estimation
+#' @param y matrix (n x m) of observed link loads from all times (not just the
+#'      window used for estimation; one observation per row
+#' @param A routing matrix (m x k) for network; should be full row rank
+#' @param F matrix (k x k) containing fixed autoregressive parameters for state
+#'      evolution equation; upper-left block of overall matrix for expanded
+#'      state
+#' @param R covariance matrix for observation equation; typically small and
+#'      fixed
+#' @param xhat0 matrix (n x k) of initial estimates for OD flows X (e.g.
+#'      obtained via IPFP)
+#' @param phihat0 numeric vector (length n) of initial estimates for phi
+#' @param tau numeric power parameter for mean-variance relationship
+#' @param w number of observations to use for rolling-window estimation; handles
+#'      boundary cases cleanly
+#' @param maxiter maximum number of iterations to use in numerical optimization
+#'      of log-likelihood
+#' @param tol tolerance to use for numerical optimization
+#' @param scale numeric inflation factor for time-zero state covariance
+#' @param nugget small positive value to add to diagonal of state evolution
+#'      covariance matrix to ensure numerical stability
+#' @param verbose logical to select verbose output from algorithm
+#' @param method optimization method to use (in optim calls)
+#' @return list containing lambdahat, a numeric vector (length k) containing
+#'      the MLE for lambda; phihat, the MLE for phi; xhat, the smoothed
+#'      estimates of the OD flows for the window used as a k x w matrix; and
+#'      varhat, a k x w matrix containing the diagonal of the estimated
+#'      covariance for each OD flow in the window
+#' @keywords models multivariate ts
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
+#' @export
+#' @family calibrationModel
 calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
                             tau=2, w=11, maxiter=1e4, tol=1e-9, scale=10,
-                            nugget=sqrt(.Machine$double.eps), verbose=FALSE) {
+                            nugget=sqrt(.Machine$double.eps), verbose=FALSE,
+                            method='Nelder-Mead') {
     # Calculate dimensions
     k <- ncol(A)
     l <- ncol(y)
@@ -115,10 +211,10 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
     # of the univariate Kalman filter and smoother of Koopman & Durbin (2000,
     # 2003), this is far more efficient than the EM iterations (quadratic vs.
     # linear convergence, plus much less memory usage in the smoothing stage).
-    mle <- optim(par=log(c(phi, lambda)), fn=qCalibration,
+    mle <- optim(par=log(c(phi, lambda)), fn=llCalibration,
                  Ft=Ft, qind=qind, yt=yt, Zt=Zt, R=R, tau=tau, scale=scale,
                  nugget=nugget,
-                 method='Nelder-Mead',
+                 method=method,
                  control=list(fnscale=-1))
 
     # Print optim diagnostics if verbose
