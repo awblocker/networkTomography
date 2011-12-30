@@ -1,6 +1,6 @@
 \name{calibration_ssm}
 \alias{calibration_ssm}
-\title{Estimation of the linear SSM calibration model of Blocker & Airoldi (2011)}
+\title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
   calibration_ssm(tme, y, A, F, R, xhat0, phihat0, tau = 2,
     w = 11, maxiter = 10000, tol = 1e-09, scale = 10,
@@ -56,16 +56,20 @@
   calls)}
 }
 \value{
-  list containing lambdahat, a numeric vector (length k)
-  containing the MLE for lambda; phihat, the MLE for phi;
-  xhat, the smoothed estimates of the OD flows for the
-  window used as a k x w matrix; and varhat, a k x w matrix
-  containing the diagonal of the estimated covariance for
-  each OD flow in the window
+  list containing \code{lambdahat}, a numeric vector
+  (length k) containing the MLE for lambda; \code{phihat},
+  the MLE for phi; \code{xhat}, the smoothed estimates of
+  the OD flows for the window used as a k x w matrix; and
+  \code{varhat}, a k x w matrix containing the diagonal of
+  the estimated covariance for each OD flow in the window
 }
 \description{
-  Estimation of the linear SSM calibration model of Blocker
-  & Airoldi (2011)
+  Maximum likelihood estimation of the parameters of the
+  calibration model from Blocker & Airoldi (2011) via
+  direct numerical maximization of the marginal
+  log-likelihood. This relies upon efficient Kalman
+  smoothing to evaluate the marginal likelihood, which is
+  provided here by the \code{KFAS} package.
 }
 \references{
   A.W. Blocker and E.M. Airoldi. Deconvolution of mixing

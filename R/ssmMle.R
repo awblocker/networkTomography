@@ -103,9 +103,12 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
     f.out <- ks(f.out)
 }
 
-#' Estimation of the linear SSM calibration model of Blocker & Airoldi (2011)
+#' Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)
 #'
-#' 
+#' Maximum likelihood estimation of the parameters of the calibration model from
+#' Blocker & Airoldi (2011) via direct numerical maximization of the marginal
+#' log-likelihood. This relies upon efficient Kalman smoothing to evaluate the
+#' marginal likelihood, which is provided here by the \code{KFAS} package.
 #'
 #' @param tme integer time at which to center moving window for estimation
 #' @param y matrix (n x m) of observed link loads from all times (not just the
@@ -130,11 +133,11 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #'      covariance matrix to ensure numerical stability
 #' @param verbose logical to select verbose output from algorithm
 #' @param method optimization method to use (in optim calls)
-#' @return list containing lambdahat, a numeric vector (length k) containing
-#'      the MLE for lambda; phihat, the MLE for phi; xhat, the smoothed
-#'      estimates of the OD flows for the window used as a k x w matrix; and
-#'      varhat, a k x w matrix containing the diagonal of the estimated
-#'      covariance for each OD flow in the window
+#' @return list containing \code{lambdahat}, a numeric vector (length k)
+#'      containing the MLE for lambda; \code{phihat}, the MLE for phi;
+#'      \code{xhat}, the smoothed estimates of the OD flows for the window used
+#'      as a k x w matrix; and \code{varhat}, a k x w matrix containing the 
+#'      diagonal of the estimated covariance for each OD flow in the window
 #' @keywords models multivariate ts
 #' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
 #' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
