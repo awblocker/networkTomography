@@ -1,7 +1,34 @@
 
-# Function for move step of sample-resample-move algorithm for multilevel
-# state-space model with log-Normal / truncated Normal distributions
-# (standard parameterizations)
+#' Move step of sample-resample-move algorithm for multilevel state-space model
+#' 
+#' 
+#'
+#' @param y
+#' @param X
+#' @param tme
+#' @param lambda
+#' @param phi
+#' @param lambdatm1
+#' @param phitm1
+#' @param prior
+#' @param A
+#' @param A1_inv
+#' @param A2
+#' @param rho
+#' @param tau
+#' @param m
+#' @param l
+#' @param k
+#' @param ndraws
+#' @param minAccepts
+#' @param verbose
+#' @return list containing updated values of X, lambda, and phi
+#' @keywords models multivariate ts
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
+#' @export
+#' @family bayesianDynamicModel
 move_step <- function(y, X, tme, lambda, phi,
                       lambdatm1, phitm1, prior,
                       A, A1_inv, A2,
@@ -228,15 +255,60 @@ move_step <- function(y, X, tme, lambda, phi,
     return(list( X=t(X), lambda=t(lambda), phi=phi ))
 }
 
-# Function for inference with multilevel state-space model
-# (log-normal autoregressive dynamics, truncated normal observation densities)
-# Can return full (all particles) output
-# Can run forward or backward filtering; combination via separate function for
-# smoothing
+#' Function for inference with multilevel state-space model
+#'
+#' (log-normal autoregressive dynamics, truncated normal observation densities)
+#' Can return full (all particles) output
+#' Can run forward or backward filtering; combination via separate function for
+#' smoothing
+#'
+#' @param Y
+#' @param A
+#' @param prior
+#' @param lambda0
+#' @param sigma0
+#' @param phi0
+#' @param rho
+#' @param tau
+#' @param m
+#' @param verbose
+#' @param Xdraws
+#' @param Xburnin
+#' @param Movedraws
+#' @param nThresh
+#' @param aggregate
+#' @param backward
+#' @param tStart
+#' @return list containing:
+#'      \itemize{
+#'          \item xList
+#'          \item lambdaList
+#'          \item phiList
+#'          \item y
+#'          \item rho
+#'          \item prior
+#'          \item n
+#'          \item l
+#'          \item k
+#'          \item A
+#'          \item A_qr
+#'          \item A1
+#'          \item A1_inv
+#'          \item A2
+#'          \item nEff
+#'          \item tStart
+#'          \item backward
+#'          \item aggregate
+#'      }
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
+#' @export
+#' @family bayesianDynamicModel
 bayesianDynamicFilter <- function (Y, A, prior,
                                    lambda0, sigma0, phi0, 
                                    rho=0.1, tau=2, m=1e3,
-                                   verbose=FALSE, # save.X=FALSE,
+                                   verbose=FALSE,
                                    Xdraws=5*m, Xburnin=m, Movedraws=10,
                                    nThresh=10,
                                    aggregate=FALSE,
@@ -397,7 +469,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
             meanPrior <- colSums( rho^(tme:1 - 1) * prior$mu[1:tme,] )
             sdPrior <- 1/(1-rho^2) * prior$sigma[tme,]
 
-            lambda_prop <- matrix(rnorm(k*m, colSums( rho^(tme:1 - 1) *
+            lambda_prop <- matrix(rnorm(k*m, colSums(rho^(tme:1 - 1) *
                                                      prior$mu[1:tme,] ),
                                         1/(1-rho^2) * prior$sigma[tme,]), m, k,
                                   byrow=TRUE )
