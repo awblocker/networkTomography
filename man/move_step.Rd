@@ -8,43 +8,60 @@
     minAccepts = 0, verbose = FALSE)
 }
 \arguments{
-  \item{y}{}
+  \item{y}{numeric vector (length l) of observed link
+  loads}
 
-  \item{X}{}
+  \item{X}{matrix (m x k) of particles for OD flows, one
+  particle per row, in pivoted order}
 
-  \item{tme}{}
+  \item{tme}{integer time index currently used in
+  estimation}
 
-  \item{lambda}{}
+  \item{lambda}{matrix (m x k) of particles for OD
+  intensities, one particle per row, in pivoted order}
 
-  \item{phi}{}
+  \item{phi}{numeric vector (length m) of particles for
+  phi}
 
-  \item{lambdatm1}{}
+  \item{lambdatm1}{lambda matrix (m x k) of particles for
+  OD intensities from previous time, one particle per row,
+  in pivoted order}
 
-  \item{phitm1}{}
+  \item{phitm1}{numeric vector (length m) of particles for
+  phi from previous time}
 
-  \item{prior}{}
+  \item{prior}{list containing priors for hyperparameters;
+  see \code{\link{bayesianDynamicFilter}} for details}
 
-  \item{A}{}
+  \item{A}{routing matrix (l x k) for network}
 
-  \item{A1_inv}{}
+  \item{A1_inv}{inverse of full-rank portion of routing
+  matrix (l x l)}
 
-  \item{A2}{}
+  \item{A2}{remainder of routing matrix (l x k-l)}
 
-  \item{rho}{}
+  \item{rho}{numeric fixed autoregressive parameter for
+  dynamics on lambda; see reference for details}
 
-  \item{tau}{}
+  \item{tau}{numeric fixed power parameter for variance
+  structure on truncated normal noise; see reference for
+  details}
 
-  \item{m}{}
+  \item{m}{integer number of particles}
 
-  \item{l}{}
+  \item{l}{integer number of observed link loads}
 
-  \item{k}{}
+  \item{k}{integer number of OD flows to infer}
 
-  \item{ndraws}{}
+  \item{ndraws}{integer number of draws to perform (can be
+  overriden by minAccepts)}
 
-  \item{minAccepts}{}
+  \item{minAccepts}{integer minimum number of acceptances
+  before results are returned; activates alternative
+  stopping rule if >= 1}
 
-  \item{verbose}{}
+  \item{verbose}{logical activates verbose diagnostic
+  output}
 }
 \value{
   list containing updated values of X, lambda, and phi

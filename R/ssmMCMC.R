@@ -3,25 +3,34 @@
 #' 
 #' 
 #'
-#' @param y
-#' @param X
-#' @param tme
-#' @param lambda
-#' @param phi
-#' @param lambdatm1
-#' @param phitm1
-#' @param prior
-#' @param A
-#' @param A1_inv
-#' @param A2
-#' @param rho
-#' @param tau
-#' @param m
-#' @param l
-#' @param k
-#' @param ndraws
-#' @param minAccepts
-#' @param verbose
+#' @param y numeric vector (length l) of observed link loads
+#' @param X matrix (m x k) of particles for OD flows, one particle per row, in
+#'      pivoted order
+#' @param tme integer time index currently used in estimation
+#' @param lambda matrix (m x k) of particles for OD intensities, one particle
+#'      per row, in pivoted order
+#' @param phi numeric vector (length m) of particles for phi
+#' @param lambdatm1 lambda matrix (m x k) of particles for OD intensities from
+#'      previous time, one particle per row, in pivoted order
+#' @param phitm1 numeric vector (length m) of particles for phi from previous
+#'      time
+#' @param prior list containing priors for hyperparameters; see
+#'      \code{\link{bayesianDynamicFilter}} for details
+#' @param A routing matrix (l x k) for network
+#' @param A1_inv inverse of full-rank portion of routing matrix (l x l)
+#' @param A2 remainder of routing matrix (l x k-l)
+#' @param rho numeric fixed autoregressive parameter for dynamics on lambda; see
+#'      reference for details
+#' @param tau numeric fixed power parameter for variance structure on truncated
+#'      normal noise; see reference for details
+#' @param m integer number of particles
+#' @param l integer number of observed link loads
+#' @param k integer number of OD flows to infer
+#' @param ndraws integer number of draws to perform (can be overriden by
+#'      minAccepts)
+#' @param minAccepts integer minimum number of acceptances before results are
+#'      returned; activates alternative stopping rule if >= 1
+#' @param verbose logical activates verbose diagnostic output
 #' @return list containing updated values of X, lambda, and phi
 #' @keywords models multivariate ts
 #' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
