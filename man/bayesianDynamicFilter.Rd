@@ -9,39 +9,62 @@
     tStart = 1)
 }
 \arguments{
-  \item{Y}{}
+  \item{Y}{matrix (n x l) of observed link loads over time,
+  one observation per row}
 
-  \item{A}{}
+  \item{A}{routing matrix (l x k) for network; must be of
+  full row rank}
 
-  \item{prior}{}
+  \item{prior}{list containing priors for lambda and phi;
+  must have \itemize{ \item mu, a matrix (n x k) containing
+  the prior means for the log-change in each lambda at each
+  time \item sigma, a matrix (n x k) containing the prior
+  standard deviations for the log-change in each lambda at
+  each time \item a list phi, containing the numeric prior
+  \code{df} and a numeric vector \code{scale} of length n
+  }}
 
-  \item{lambda0}{}
+  \item{lambda0}{numeric vector (length k) of time 0 prior
+  means for OD flows}
 
-  \item{sigma0}{}
+  \item{sigma0}{numeric vector (length k) of time 0 prior
+  standard deviations for OD flows}
 
-  \item{phi0}{}
+  \item{phi0}{numeric starting value for phi at time 0}
 
-  \item{rho}{}
+  \item{rho}{numeric fixed autoregressive parameter for
+  dynamics on lambda; see reference for details}
 
-  \item{tau}{}
+  \item{tau}{numeric fixed power parameter for variance
+  structure on truncated normal noise; see reference for
+  details}
 
-  \item{m}{}
+  \item{m}{integer number of particles to use}
 
-  \item{verbose}{}
+  \item{verbose}{logical activates verbose diagnostic
+  output}
 
-  \item{Xdraws}{}
+  \item{Xdraws}{integer number of draws to perform for
+  \code{xsample} RDA}
 
-  \item{Xburnin}{}
+  \item{Xburnin}{integer number of burnin draws to discard
+  for \code{xsample} proposals RDA in addition to baseline
+  number of draws}
 
-  \item{Movedraws}{}
+  \item{Movedraws}{integer number of iterations to run for
+  each move step}
 
-  \item{nThresh}{}
+  \item{nThresh}{numeric effective number of independent
+  particles below which redraw will be performed}
 
-  \item{aggregate}{}
+  \item{aggregate}{logical to activate aggregation of MCMC
+  results; highly}
 
-  \item{backward}{}
+  \item{backward}{logical to activate reverse filtering
+  (for smoothing}
 
-  \item{tStart}{}
+  \item{tStart}{integer time index to begin iterations
+  from}
 }
 \value{
   list containing: \itemize{ \item xList \item lambdaList

@@ -271,23 +271,40 @@ move_step <- function(y, X, tme, lambda, phi,
 #' Can run forward or backward filtering; combination via separate function for
 #' smoothing
 #'
-#' @param Y
-#' @param A
-#' @param prior
-#' @param lambda0
-#' @param sigma0
-#' @param phi0
-#' @param rho
-#' @param tau
-#' @param m
-#' @param verbose
-#' @param Xdraws
-#' @param Xburnin
-#' @param Movedraws
-#' @param nThresh
-#' @param aggregate
-#' @param backward
-#' @param tStart
+#' @param Y matrix (n x l) of observed link loads over time, one observation per
+#'      row
+#' @param A routing matrix (l x k) for network; must be of full row rank
+#' @param prior list containing priors for lambda and phi; must have
+#'      \itemize{
+#'          \item mu, a matrix (n x k) containing the prior means for the
+#'              log-change in each lambda at each time
+#'          \item sigma, a matrix (n x k) containing the prior standard
+#'              deviations for the log-change in each lambda at each time
+#'          \item a list phi, containing the numeric prior \code{df} and a
+#'              numeric vector \code{scale} of length n
+#'      }
+#' @param lambda0 numeric vector (length k) of time 0 prior means for OD flows
+#' @param sigma0 numeric vector (length k) of time 0 prior standard deviations
+#'      for OD flows
+#' @param phi0 numeric starting value for phi at time 0
+#' @param rho numeric fixed autoregressive parameter for dynamics on lambda; see
+#'      reference for details
+#' @param tau numeric fixed power parameter for variance structure on truncated
+#'      normal noise; see reference for details
+#' @param m integer number of particles to use
+#' @param verbose logical activates verbose diagnostic output
+#' @param Xdraws integer number of draws to perform for \code{xsample} RDA
+#       proposals; must be larger than \code{m}
+#' @param Xburnin integer number of burnin draws to discard for \code{xsample}
+#'      proposals RDA in addition to baseline number of draws
+#' @param Movedraws integer number of iterations to run for each move step
+#' @param nThresh numeric effective number of independent particles below which
+#'      redraw will be performed
+#' @param aggregate logical to activate aggregation of MCMC results; highly
+#       recommended for large networks
+#' @param backward logical to activate reverse filtering (for smoothing
+#       applications)
+#' @param tStart integer time index to begin iterations from
 #' @return list containing:
 #'      \itemize{
 #'          \item xList
@@ -309,8 +326,8 @@ move_step <- function(y, X, tme, lambda, phi,
 #'          \item backward
 #'          \item aggregate
 #'      }
-#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+#' series on a graph. Proceedings of the Twenty-Seventh Conference Annual
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family bayesianDynamicModel
