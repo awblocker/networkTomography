@@ -74,10 +74,19 @@
   }
 }
 \description{
-  (log-normal autoregressive dynamics, truncated normal
-  observation densities) Can return full (all particles)
-  output Can run forward or backward filtering; combination
-  via separate function for smoothing
+  Particle filtering with sample-resample-move algorithm
+  for multilevel state-space model of Blocker & Airoldi
+  (2011). This has log-normal autoregressive dynamics on OD
+  intensities, log-normal emission distributions, and
+  truncated normal observation densities.  This can return
+  full (all particles) output, but it is typically better
+  to aggregate results as you go to reduce memory
+  consumption. It can also run forward or backward
+  filtering for smoothing. These results are combined via a
+  separate function for smoothing; however, this procedure
+  typically performs poorly due to differences between the
+  distributions of particles from forward and reverse
+  filtering.
 }
 \references{
   A.W. Blocker and E.M. Airoldi. Deconvolution of mixing

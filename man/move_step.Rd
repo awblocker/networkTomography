@@ -67,8 +67,14 @@
   list containing updated values of X, lambda, and phi
 }
 \description{
-  Move step of sample-resample-move algorithm for
-  multilevel state-space model
+  Function to execute single MCMC-based move step for
+  \code{\link{bayesianDynamicFilter}}. This can use two
+  types of stopping rules: number of iterations or number
+  of accepted moves for the X particles. The former is used
+  by default, but the latter adapts better to low
+  acceptance rates (sometimes with substantial
+  computational cost). Most updates in this algorithm are
+  Metropolis-Hastings with customized proposals.
 }
 \references{
   A.W. Blocker and E.M. Airoldi. Deconvolution of mixing

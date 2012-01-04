@@ -92,7 +92,12 @@ buildPrior <- function(xHat, varHat, phiHat, Y, A, rho=0.9,
 
 #' Move step of sample-resample-move algorithm for multilevel state-space model
 #' 
-#' 
+#' Function to execute single MCMC-based move step for
+#' \code{\link{bayesianDynamicFilter}}. This can use two types of stopping
+#' rules: number of iterations or number of accepted moves for the X particles.
+#' The former is used by default, but the latter adapts better to low acceptance
+#' rates (sometimes with substantial computational cost). Most updates in this
+#' algorithm are Metropolis-Hastings with customized proposals.
 #'
 #' @param y numeric vector (length l) of observed link loads
 #' @param X matrix (m x k) of particles for OD flows, one particle per row, in
@@ -357,10 +362,16 @@ move_step <- function(y, X, tme, lambda, phi,
 
 #' Function for inference with multilevel state-space model
 #'
-#' (log-normal autoregressive dynamics, truncated normal observation densities)
-#' Can return full (all particles) output
-#' Can run forward or backward filtering; combination via separate function for
-#' smoothing
+#' Particle filtering with sample-resample-move algorithm for multilevel
+#' state-space model of Blocker & Airoldi (2011). This has log-normal
+#' autoregressive dynamics on OD intensities, log-normal emission distributions,
+#' and truncated normal observation densities.  This can return full (all
+#' particles) output, but it is typically better to aggregate results as you go
+#' to reduce memory consumption. It can also run forward or backward filtering
+#' for smoothing. These results are combined via a separate function for
+#' smoothing; however, this procedure typically performs poorly due to
+#' differences between the distributions of particles from forward and reverse
+#' filtering.
 #'
 #' @param Y matrix (n x l) of observed link loads over time, one observation per
 #'      row
