@@ -86,6 +86,7 @@
   Intelligence (UAI-11) 51-60, 2011.
 }
 \seealso{
-  Other bayesianDynamicModel: \code{\link{move_step}}
+  Other bayesianDynamicModel: \code{\link{buildPrior}},
+  \code{\link{move_step}}
 }
 

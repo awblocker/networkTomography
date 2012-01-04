@@ -78,7 +78,8 @@
 }
 \seealso{
   Other bayesianDynamicModel:
-  \code{\link{bayesianDynamicFilter}}
+  \code{\link{bayesianDynamicFilter}},
+  \code{\link{buildPrior}}
 }
 \keyword{models}
 \keyword{multivariate}

@@ -12,6 +12,8 @@
 #'      model
 #' @param Y matrix (n x l) of observed link loads, one time point per row
 #' @param A routing matrix (l x k) for network; must be of full row rank
+#' @param phiPriorDf numeric prior convolution parameter for independent
+#'      inverse-gamma priors on phi_t
 #' @param rho numeric fixed autoregressive parameter for dynamics on lambda; see
 #'      reference for details
 #' @param backward logical to activate construction of reversed prior (for
@@ -19,6 +21,7 @@
 #' @param lambdaMin numeric value at which to floor estimated OD flows for prior
 #'      construction
 #' @param ipfp.maxit integer maximum number of iterations for IPFP 
+#' @param ipfp.tol numeric tolerance for convergence of IPFP iterations
 #' @return list containing priors for lambda and phi, consisting of:
 #'      \itemize{
 #'          \item mu, a matrix (n x k) containing the prior means for the
@@ -35,14 +38,12 @@
 #' @export
 #' @family bayesianDynamicModel
 buildPrior <- function(xHat, varHat, phiHat, Y, A, rho=0.9,
-                       backward=FALSE,
-                       lambdaMin=1, ipfp.maxit=1e6, ipfp.tol=1e-6) {
+                       phiPriorDf=ncol(A)/2, backward=FALSE, lambdaMin=1,
+                       ipfp.maxit=1e6, ipfp.tol=1e-6) {
     # Extract dimensions of problem
     n <- nrow(Y)
     k <- ncol(A)
     l <- nrow(A)
-
-    tvec <- seq(n)
 
     # Floor estimates at lambdaMin for stability on log scale
     lambdaPrior <- apply(xHat, 2, pmax, lambdaMin)
@@ -50,7 +51,7 @@ buildPrior <- function(xHat, varHat, phiHat, Y, A, rho=0.9,
     # Apply IPFP to prior to ensure stability (issues arise when large negative
     # estimates are floored)
     for (i in 1:n) {
-        tmp <- ipf(Y[i,], A, lambdaPrior[i,], maxit=ipfp.maxit, tol=ipfp.tol)
+        tmp <- ipfp(Y[i,], A, lambdaPrior[i,], maxit=ipfp.maxit, tol=ipfp.tol)
         lambdaPrior[i,] <- tmp
     }
 
@@ -59,11 +60,6 @@ buildPrior <- function(xHat, varHat, phiHat, Y, A, rho=0.9,
 
     # Smooth lambdaPrior with running median
     lambdaPrior <- apply(lambdaPrior, 2, runmed, 5)
-
-    # Diagnostic check
-    l2norm <- function(vec) sqrt(sum(vec*vec))
-    err <- (y - lambdaPrior %*% t(A))
-    errNorm <- sapply( 1:n, function(i) l2norm(err[i,]) )
 
     # Reverse if requested
     if (backward) {
@@ -82,12 +78,12 @@ buildPrior <- function(xHat, varHat, phiHat, Y, A, rho=0.9,
 
     # Compute prior standard deviations for changes in log-intensities
     prior$sigma <- {c(1,rep(sqrt(1-rho^2),nrow(lambdaPrior)-1))*
-                    sqrt(log(1+varhat0/lambdaPrior^2))}
+                    sqrt(log(1+varHat/lambdaPrior^2))}
 
     # Construct prior for phi
     prior$phi <- list()
-    prior$phi$df <- k/2
-    prior$phi$scale <- prior$phi$df*log(1+phihat0)
+    prior$phi$df <- phiPriorDf
+    prior$phi$scale <- prior$phi$df*log(1+phiHat)
 
     # Output prior
     return(prior)

@@ -1,5 +1,6 @@
 export(agg)
 export(bayesianDynamicFilter)
+export(buildPrior)
 export(buildRoutingMat)
 export(buildStarMat)
 export(calibration_ssm)
