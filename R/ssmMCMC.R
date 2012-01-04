@@ -1,3 +1,98 @@
+#' Construct prior from calibration model estimates
+#'
+#' Builds prior from appropriately structured output of the calibration model
+#' from Blocker & Airoldi (2011). Handles all formatting so result can be fed
+#' directly to \code{\link{bayesianDynamicFilter}}.
+#'
+#' @param xHat matrix (n x k) of estimates for OD flows from calibration model,
+#'      one time point per row
+#' @param varHat matrix (n x k) of estimated variances for OD flows from
+#'      calibration, one time point per row
+#' @param phiHat numeric vector (length n) of estimates for phi from calibration
+#'      model
+#' @param Y matrix (n x l) of observed link loads, one time point per row
+#' @param A routing matrix (l x k) for network; must be of full row rank
+#' @param rho numeric fixed autoregressive parameter for dynamics on lambda; see
+#'      reference for details
+#' @param backward logical to activate construction of reversed prior (for
+#'      smoothing applications)
+#' @param lambdaMin numeric value at which to floor estimated OD flows for prior
+#'      construction
+#' @param ipfp.maxit integer maximum number of iterations for IPFP 
+#' @return list containing priors for lambda and phi, consisting of:
+#'      \itemize{
+#'          \item mu, a matrix (n x k) containing the prior means for the
+#'              log-change in each lambda at each time
+#'          \item sigma, a matrix (n x k) containing the prior standard
+#'              deviations for the log-change in each lambda at each time
+#'          \item a list phi, containing the numeric prior \code{df} and a
+#'              numeric vector \code{scale} of length n
+#'      }
+#' @keywords models multivariate ts
+#' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
+#' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
+#' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
+#' @export
+#' @family bayesianDynamicModel
+buildPrior <- function(xHat, varHat, phiHat, Y, A, rho=0.9,
+                       backward=FALSE,
+                       lambdaMin=1, ipfp.maxit=1e6, ipfp.tol=1e-6) {
+    # Extract dimensions of problem
+    n <- nrow(Y)
+    k <- ncol(A)
+    l <- nrow(A)
+
+    tvec <- seq(n)
+
+    # Floor estimates at lambdaMin for stability on log scale
+    lambdaPrior <- apply(xHat, 2, pmax, lambdaMin)
+
+    # Apply IPFP to prior to ensure stability (issues arise when large negative
+    # estimates are floored)
+    for (i in 1:n) {
+        tmp <- ipf(Y[i,], A, lambdaPrior[i,], maxit=ipfp.maxit, tol=ipfp.tol)
+        lambdaPrior[i,] <- tmp
+    }
+
+    # Floor again at lambdaMin
+    lambdaPrior <- pmax(lambdaPrior, lambdaMin)
+
+    # Smooth lambdaPrior with running median
+    lambdaPrior <- apply(lambdaPrior, 2, runmed, 5)
+
+    # Diagnostic check
+    l2norm <- function(vec) sqrt(sum(vec*vec))
+    err <- (y - lambdaPrior %*% t(A))
+    errNorm <- sapply( 1:n, function(i) l2norm(err[i,]) )
+
+    # Reverse if requested
+    if (backward) {
+        lambdaPrior <- lambdaPrior[n:1,]
+        varHat <- varHat[n:1,]
+        phiHat <- phiHat[n:1]
+    }
+
+    # Setup priors
+    prior <- list()
+
+    # Compute prior mean for changes in log-intensities
+    prior$mu <- matrix(0, nrow(lambdaPrior), k)
+    prior$mu[1,] <- log(lambdaPrior[1,])
+    prior$mu[-1,] <- log(tail(lambdaPrior, -1)) - rho*log(head(lambdaPrior, -1))
+
+    # Compute prior standard deviations for changes in log-intensities
+    prior$sigma <- {c(1,rep(sqrt(1-rho^2),nrow(lambdaPrior)-1))*
+                    sqrt(log(1+varhat0/lambdaPrior^2))}
+
+    # Construct prior for phi
+    prior$phi <- list()
+    prior$phi$df <- k/2
+    prior$phi$scale <- prior$phi$df*log(1+phihat0)
+
+    # Output prior
+    return(prior)
+}
+
 
 #' Move step of sample-resample-move algorithm for multilevel state-space model
 #' 
