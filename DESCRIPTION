@@ -5,20 +5,23 @@ Version: 0.1
 Date: 2011-12-31
 Author: Alexander W Blocker, Paul Koullick, Edoardo Airoldi
 Maintainer: Alexander W Blocker <ablocker@gmail.com>
-Description: There are two algorithms in this package, both dealing with
-    estimating traffic intensity in a object destination network. The included
-    example (example1.R) illustrates this test with a four node network. The
-    other method is the one described in Tebaldi and West and involves MCMC
-    methods of estimation.
+Description: networkTomography implements the methods developed and evaluated in
+    Blocker & Airoldi (2011). These include that authors' own dynamic multilevel
+    model with calibration based upon a Gaussian state-space model in addition
+    to implementations of the methods of Tebaldi & West (1998; Poisson-Gamma
+    model with MCMC sampling), Cao et al. (2000; Gaussian model with
+    mean-variance relation), and Vardi (1996; method of moments). Data from the
+    1router network of Cao et al. (2000) is included for testing and
+    reproducibility.
 License: LGPL (>= 2.0)
 LazyLoad: yes
 URL: https://github.com/awblocker/networkTomography
 Depends:
     Rglpk (>= 0.3),
-    coda (>=  0.11-3),
+    coda (>= 0.11-3),
     MASS,
     KFAS,
-    limSolve
+    limSolve (>= 1.4)
 Collate:
     'caoEtAl.R'
     'ipfp.R'
