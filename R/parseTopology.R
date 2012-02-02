@@ -41,15 +41,18 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
 
     # Setup routing matrix
     A <- matrix(integer(1), m+agg*2*n, n*n)
-    rownames(A)[1:m] <- str_c(src, dest, sep=sep)
+
+    linkNames <- str_c(src, dest, sep=sep)
 
     if (agg) {
         # Aggregate out flows
-        rownames(A)[(m+1):(m+n)] <- str_c(aggChar, nodes, sep=sep)
+        linkNames <- c(linkNames, str_c(aggChar, nodes, sep=sep))
 
         # Aggregate in flows
-        rownames(A)[(m+1+n):(m+2*n)] <- str_c(nodes, aggChar, sep=sep)
+        linkNames <- c(linkNames, str_c(nodes, aggChar, sep=sep))
     }
+
+    rownames(A) <- linkNames
     
     od <- expand.grid(nodes, nodes)
     odNames <- apply(od, 1, str_c, sep=sep, collapse=sep)
