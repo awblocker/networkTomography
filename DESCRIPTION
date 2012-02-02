@@ -21,7 +21,8 @@ Depends:
     coda (>= 0.11-3),
     MASS,
     KFAS,
-    limSolve (>= 1.4)
+    limSolve (>= 1.4),
+    igraph (>= 0.5)
 Collate:
     'caoEtAl.R'
     'ipfp.R'
