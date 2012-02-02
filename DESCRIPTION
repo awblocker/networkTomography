@@ -32,3 +32,4 @@ Collate:
     'twMCMC.R'
     'vardi.algorithm.R'
     'data.R'
+    'parseTopology.R'
