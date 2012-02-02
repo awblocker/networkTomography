@@ -22,7 +22,8 @@ Depends:
     MASS,
     KFAS,
     limSolve (>= 1.4),
-    igraph (>= 0.5)
+    igraph (>= 0.5),
+    stringr
 Collate:
     'caoEtAl.R'
     'ipfp.R'
