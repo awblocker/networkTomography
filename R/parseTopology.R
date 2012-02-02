@@ -45,10 +45,10 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
     linkNames <- str_c(src, dest, sep=sep)
 
     if (agg) {
-        # Aggregate out flows
+        # Aggregate in flows
         linkNames <- c(linkNames, str_c(aggChar, nodes, sep=sep))
 
-        # Aggregate in flows
+        # Aggregate out flows
         linkNames <- c(linkNames, str_c(nodes, aggChar, sep=sep))
     }
 
@@ -99,7 +99,23 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
         }
     }
 
+    # Add in and out flows if requested
+    if (agg) {
+        # Iterate over nodes
+        for (node in nodes) {
+            # Get names of in and out flows
+            inName <- str_c(aggChar, node, sep=sep)
+            outName <- str_c(node, aggChar, sep=sep)
 
+            # Find in and out OD flows
+            inFlows <- grep(str_c(sep, node), colnames(A), fixed=TRUE)
+            outFlows <- grep(str_c(node, sep), colnames(A), fixed=TRUE)
+
+            # Add ones to appropriate entries in rows
+            A[inName, inFlows] <- 1
+            A[outName, outFlows] <- 1
+        }
+    }
 
     return(list(A=A, topo=topo))
 }
