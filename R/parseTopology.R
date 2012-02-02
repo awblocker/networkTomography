@@ -13,6 +13,8 @@
 #' @param src vector (length m) of sources, one per link, matched with dest
 #' @param dest vector (length n) of destination identifiers, one per link,
 #'          matched with src
+#' @param weights numeric vector (length m) of weights for each link; used in
+#'          shortest-path routing calculations (roughly OSPF)
 #' @param agg logical for whether to include aggregate source and destination
 #'          flows for each node
 #' @param sep character separator between node id's for link and OD names

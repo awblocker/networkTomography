@@ -14,6 +14,10 @@
   \item{dest}{vector (length n) of destination identifiers,
   one per link, matched with src}
 
+  \item{weights}{numeric vector (length m) of weights for
+  each link; used in shortest-path routing calculations
+  (roughly OSPF)}
+
   \item{agg}{logical for whether to include aggregate
   source and destination flows for each node}
 
