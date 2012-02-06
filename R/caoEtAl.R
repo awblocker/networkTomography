@@ -187,6 +187,7 @@ grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
 #' @param epsilon numeric nugget to add to diagonal of covariance for numerical
 #'      stability
 #' @param method optimization method to use (in optim calls)
+#' @param checkActive logical check for deterministically known OD flows
 #' @return list with 3 elements: \code{lambda}, the estimated value of lambda;
 #'      \code{phi}, the estimated value of phi; and \code{iter}, the number of
 #'      iterations run
@@ -197,24 +198,25 @@ grad_iid <- function(logtheta, c, M, rdiag, epsilon) {
 #' @family CaoEtAl
 locally_iid_EM <- function(Y, A, lambda0, phi0=NULL, c=2,
                            maxiter = 1e3, tol=1e-6, epsilon=0.01,
-                           method="L-BFGS-B") {
+                           method="L-BFGS-B", checkActive=FALSE) {
+    if (checkActive) {
+        # Check for inactive (deterministically-known) OD flows
+        activeLink <- which(apply(Y, 2, function(col) max(col) > 0))
+        activeOD <- apply(Y, 1, getActive, A=A)
+        activeOD <- which(apply(activeOD, 1, any))
 
-    # Check for inactive (deterministically-known) OD flows
-    activeLink <- which(apply(Y, 2, function(col) max(col) > 0))
-    activeOD <- apply(Y, 1, getActive, A=A)
-    activeOD <- which(apply(activeOD, 1, any))
-
+        # Subset A and lambda
+        A <- A[activeLink,activeOD]
+        Y <- Y[,activeLink]
+        lambda0 <- lambda0[activeOD]
+        lambda <- lambda[activeOD]
+    }
+    
     # Determine number of latent variables
     p <- ncol(A)
 
     # Setup initial parameters
     lambda <- lambda0
-
-    # Subset A and lambda
-    A <- A[activeLink,activeOD]
-    Y <- Y[,activeLink]
-    lambda0 <- lambda0[activeOD]
-    lambda <- lambda[activeOD]
 
     if (is.null(phi0)) {
         phi0 <- phi_init(Y, A, lambda0, c)

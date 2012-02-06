@@ -4,7 +4,7 @@
 \usage{
   locally_iid_EM(Y, A, lambda0, phi0 = NULL, c = 2,
     maxiter = 1000, tol = 1e-06, epsilon = 0.01,
-    method = "L-BFGS-B")
+    method = "L-BFGS-B", checkActive = FALSE)
 }
 \arguments{
   \item{Y}{matrix (h x k) of observations in local window;
@@ -33,6 +33,9 @@
 
   \item{method}{optimization method to use (in optim
   calls)}
+
+  \item{checkActive}{logical check for deterministically
+  known OD flows}
 }
 \value{
   list with 3 elements: \code{lambda}, the estimated value
