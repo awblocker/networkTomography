@@ -210,6 +210,8 @@ locally_iid_EM <- function(Y, A, lambda0, phi0=NULL, c=2,
         Y <- Y[,activeLink]
         lambda0 <- lambda0[activeOD]
         lambda <- lambda[activeOD]
+    } else {
+        activeOD <- seq(ncol(A))
     }
     
     # Determine number of latent variables
