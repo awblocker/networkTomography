@@ -53,17 +53,37 @@ twMCMC <- function(Y, A, prior, ndraws=1.2e5, burnin=2e4, verbose=0) {
     prior$b <- prior$b[pivot]
 
     # Initialize X via simplex method (gives integer solutions with linear
-    # constraints for transportation problems)
+    # integer constraints for transportation problems)
+    # New and improved! Now gives actual interior integer solutions!
+    bounds <- xranges(E=A_pivot, F=Y, ispos=TRUE)
+    #
     obj <- rnorm(n)
     const_mat <- rbind(A_pivot, diag(n))
-    const_rhs <- c(Y, rep(1,n))
     const_dir <- c(rep('==',k), rep('>=',n))
     int_vec <- seq(n)
 
-    #init <- lp(objective.in=obj, const.mat=const_mat, const.dir=const_dir,
-    #    const.rhs=const_rhs, int.vec=int_vec)
-    init <- Rglpk_solve_LP(obj, const_mat, const_dir, const_rhs)
-    X[1,] <- init$solution
+    const_rhs <- c(Y, round(bounds[,'max']/2))
+    #
+    tries <- 0
+    status <- 1
+    while ( status > 0 ) {
+        init <- Rglpk_solve_LP(obj, const_mat, const_dir, const_rhs)
+        status <- init$status
+        const_rhs[(k+1):(n+k)] <- round(const_rhs[(k+1):(n+k)]/2)
+        tries <- tries + 1
+        #
+        if (status == 0) {
+            x.init <- init$solution
+            err <- A_pivot %*% x.init - Y
+            if (sum(abs(err)) > 0) {
+                # In event of FUBAR, restart
+                obj <- rnorm(n)
+                const_rhs[(k+1):(n+k)] <- round(bounds[,'max']/2)
+            }
+        }
+    }
+
+    X[1,] <- x.init
     X1 <- X[1,seq(k)]
     X2 <- X[1,seq(k+1,n)]
 
