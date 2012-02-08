@@ -5,7 +5,7 @@
   calibration_ssm(tme, y, A, F, R, xhat0, phihat0, tau = 2,
     w = 11, maxiter = 10000, tol = 1e-09, scale = 10,
     nugget = sqrt(.Machine$double.eps), verbose = FALSE,
-    method = "Nelder-Mead")
+    logTrans = FALSE, method = "L-BFGS-B")
 }
 \arguments{
   \item{tme}{integer time at which to center moving window
@@ -51,6 +51,10 @@
 
   \item{verbose}{logical to select verbose output from
   algorithm}
+
+  \item{logTrans}{logical whether to log-transform
+  parameters for optimization.  If FALSE, sets method to
+  "L-BFGS-B".}
 
   \item{method}{optimization method to use (in optim
   calls)}

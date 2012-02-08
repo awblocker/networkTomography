@@ -132,6 +132,8 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #' @param nugget small positive value to add to diagonal of state evolution
 #'      covariance matrix to ensure numerical stability
 #' @param verbose logical to select verbose output from algorithm
+#' @param logTrans logical whether to log-transform parameters for optimization.
+#'      If FALSE, sets method to "L-BFGS-B".
 #' @param method optimization method to use (in optim calls)
 #' @return list containing \code{lambdahat}, a numeric vector (length k)
 #'      containing the MLE for lambda; \code{phihat}, the MLE for phi;
@@ -147,7 +149,7 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
                             tau=2, w=11, maxiter=1e4, tol=1e-9, scale=10,
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
-                            method='Nelder-Mead') {
+                            logTrans=FALSE, method="L-BFGS-B") {
     # Calculate dimensions
     k <- ncol(A)
     l <- ncol(y)
@@ -214,14 +216,32 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
     # of the univariate Kalman filter and smoother of Koopman & Durbin (2000,
     # 2003), this is far more efficient than the EM iterations (quadratic vs.
     # linear convergence, plus much less memory usage in the smoothing stage).
-    mle <- optim(par=log(c(phi, lambda)), fn=llCalibration,
+    if (logTrans) {
+        obj <- llCalibration
+        theta0 <- log(c(phi, lambda))
+        lower <- -Inf
+        upper <- log(max(yt))
+    } else {
+        obj <- function(theta, ...) llCalibration(log(theta), ...)
+        theta0 <- c(phi, lambda)
+        lower <- sqrt(.Machine$double.eps)
+        upper <- max(yt)
+        method <- "L-BFGS-B"
+    }
+
+    mle <- optim(par=theta0, fn=obj,
                  Ft=Ft, qind=qind, yt=yt, Zt=Zt, R=R, tau=tau, scale=scale,
                  nugget=nugget,
                  method=method,
+                 lower=lower, upper=upper,
                  control=list(fnscale=-1))
+    
+    if (!logTrans)
+        mle$par <- log(mle$par)
 
     # Print optim diagnostics if verbose
     if (verbose) {
+        cat(sprintf("Method: %s\n", method), file=stderr())
         cat(sprintf('Convergence code: %d\n', mle$convergence), file=stderr())
         cat('Function evaluations:\n', file=stderr())
         print(mle$counts)
