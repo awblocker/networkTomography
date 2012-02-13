@@ -234,7 +234,7 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
                  nugget=nugget,
                  method=method,
                  lower=lower, upper=upper,
-                 control=list(fnscale=-1))
+                 control=list(fnscale=-1, maxit=maxiter))
     
     if (!logTrans)
         mle$par <- log(mle$par)
