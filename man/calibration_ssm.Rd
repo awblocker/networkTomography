@@ -5,7 +5,7 @@
   calibration_ssm(tme, y, A, F, R, xhat0, phihat0, tau = 2,
     w = 11, maxiter = 10000, tol = 1e-09, scale = 10,
     nugget = sqrt(.Machine$double.eps), verbose = FALSE,
-    logTrans = FALSE, method = "L-BFGS-B")
+    logTrans = FALSE, method = "Nelder-Mead")
 }
 \arguments{
   \item{tme}{integer time at which to center moving window
