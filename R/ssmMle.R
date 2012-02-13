@@ -32,6 +32,7 @@
 llCalibration <- function(theta, Ft, qind, yt, Zt, R,
                          k=ncol(Ft)/2, tau=2, scale=10,
                          nugget=sqrt(.Machine$double.eps)) {
+    optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(theta[-1])
     phi <- exp(theta[1])
@@ -45,7 +46,7 @@ llCalibration <- function(theta, Ft, qind, yt, Zt, R,
 
     # Run Kalman filter & smoother
     f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=R, Qt=V,
-                a1=a1, P1=P1)
+                a1=a1, P1=P1, optcal=optcal)
     f.out <- ks(f.out)
 
     # Return log-likelihood
@@ -86,6 +87,7 @@ llCalibration <- function(theta, Ft, qind, yt, Zt, R,
 mle_filter <- function(mle, Ft, qind, yt, Zt, R,
                        k=ncol(Ft)/2, tau=2, scale=10,
                        nugget=sqrt(.Machine$double.eps)) {
+    optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(mle$par[-1])
     phi <- exp(mle$par[1])
@@ -99,7 +101,7 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 
     # Run Kalman filter & smoother
     f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=R, Qt=V,
-                a1=a1, P1=P1)
+                a1=a1, P1=P1, optcal=optcal)
     f.out <- ks(f.out)
 }
 
@@ -149,7 +151,7 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
                             tau=2, w=11, maxiter=1e4, tol=1e-9, scale=10,
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
-                            logTrans=FALSE, method="L-BFGS-B") {
+                            logTrans=FALSE, method="Nelder-Mead") {
     # Calculate dimensions
     k <- ncol(A)
     l <- ncol(y)
