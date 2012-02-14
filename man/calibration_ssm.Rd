@@ -3,7 +3,7 @@
 \title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
   calibration_ssm(tme, y, A, F, R, xhat0, phihat0, tau = 2,
-    w = 11, maxiter = 10000, tol = 1e-09, scale = 10,
+    w = 11, maxiter = 10000, tol = 1e-09, initScale = 10,
     nugget = sqrt(.Machine$double.eps), verbose = FALSE,
     logTrans = FALSE, method = "Nelder-Mead")
 }
@@ -42,8 +42,8 @@
 
   \item{tol}{tolerance to use for numerical optimization}
 
-  \item{scale}{numeric inflation factor for time-zero state
-  covariance}
+  \item{initScale}{numeric inflation factor for time-zero
+  state covariance}
 
   \item{nugget}{small positive value to add to diagonal of
   state evolution covariance matrix to ensure numerical

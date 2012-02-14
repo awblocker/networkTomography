@@ -3,7 +3,7 @@
 \title{Filtering & smoothing at MLE for calibration SSM}
 \usage{
   mle_filter(mle, Ft, qind, yt, Zt, R, k = ncol(Ft)/2,
-    tau = 2, scale = 10,
+    tau = 2, initScale = 10,
     nugget = sqrt(.Machine$double.eps))
 }
 \arguments{
@@ -31,8 +31,8 @@
   \item{tau}{numeric power parameter for mean-variance
   relationship}
 
-  \item{scale}{numeric inflation factor for time-zero state
-  covariance}
+  \item{initScale}{numeric inflation factor for time-zero
+  state covariance}
 
   \item{nugget}{small positive value to add to diagonal of
   state evolution covariance matrix to ensure numerical
