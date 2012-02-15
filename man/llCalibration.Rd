@@ -44,8 +44,8 @@
 }
 \description{
   Evaluates marginal log-likelihood for calibration SSM of
-  Blocker & Airoldi (2011) using Kalman smoothing. This is
-  very fast and numerically-stable, using the univariate
+  Blocker & Airoldi (2011) using Kalman filtering. This is
+  very fast and numerically stable, using the univariate
   Kalman filtering and smoothing functions of \code{KFAS}
   with Fortran implementations.
 }

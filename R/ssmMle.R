@@ -2,7 +2,7 @@
 #' Evaluate marginal log-likelihood for calibration SSM
 #'
 #' Evaluates marginal log-likelihood for calibration SSM of Blocker & Airoldi
-#' (2011) using Kalman smoothing. This is very fast and numerically-stable,
+#' (2011) using Kalman filtering. This is very fast and numerically stable,
 #' using the univariate Kalman filtering and smoothing functions of \code{KFAS}
 #' with Fortran implementations.
 #'
@@ -44,10 +44,9 @@ llCalibration <- function(theta, Ft, qind, yt, Zt, R,
     Ft[qind] <- lambda
     V <- diag_mat(c(phi*lambda^tau + nugget, rep(0,k)))
 
-    # Run Kalman filter & smoother
+    # Run Kalman filter
     f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=R, Qt=V,
                 a1=a1, P1=P1, optcal=optcal)
-    f.out <- ks(f.out)
 
     # Return log-likelihood
     return(f.out$lik)
@@ -57,7 +56,7 @@ llCalibration <- function(theta, Ft, qind, yt, Zt, R,
 #'
 #' Run Kalman filtering and smoothing at calculated MLE for parameters of
 #' calibration SSM. This is used to obtain point and covariance estimates for
-#' the actual OD flows X following estimation.
+#' the actual OD flows X following estimation of other parameters.
 #'
 #' @param mle numeric vector (length k+1) of parameters. theta[-1] =
 #'      log(lambda), and theta[1] = log(phi)
@@ -103,6 +102,8 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
     f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=R, Qt=V,
                 a1=a1, P1=P1, optcal=optcal)
     f.out <- ks(f.out)
+
+    return(f.out)
 }
 
 #' Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)

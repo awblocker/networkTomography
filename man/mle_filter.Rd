@@ -49,7 +49,7 @@
   Run Kalman filtering and smoothing at calculated MLE for
   parameters of calibration SSM. This is used to obtain
   point and covariance estimates for the actual OD flows X
-  following estimation.
+  following estimation of other parameters.
 }
 \references{
   A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
