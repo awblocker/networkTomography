@@ -122,8 +122,8 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #'      state
 #' @param R covariance matrix for observation equation; typically small and
 #'      fixed
-#' @param xhat0 matrix (n x k) of initial estimates for OD flows X (e.g.
-#'      obtained via IPFP)
+#' @param lambda0 matrix (n x k) of initial estimates for lambda (e.g. obtained
+#'      via IPFP)
 #' @param phihat0 numeric vector (length n) of initial estimates for phi
 #' @param tau numeric power parameter for mean-variance relationship
 #' @param w number of observations to use for rolling-window estimation; handles
@@ -149,7 +149,7 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family calibrationModel
-calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
+calibration_ssm <- function(tme, y, A, F, R, lambda0, phihat0,
                             tau=2, w=11, maxiter=1e4, tol=1e-9, initScale=10,
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
                             logTrans=FALSE, method="Nelder-Mead") {
@@ -195,12 +195,9 @@ calibration_ssm <- function(tme, y, A, F, R, xhat0, phihat0,
     Zt <- matrix(0, l, 2*k)
     Zt[,1:k] <- A
 
-    # Setup data structures for parameters of interest
-    x <- xhat0[max(tme-h,1):min(tme+h,nrow(y)),]
-
     # Setup data
     yt <- t( y[max(1,tme-h):min(tme+h,nrow(y)),] )
-    lambda <- colMeans(xhat0[max(1,tme-h):min(tme+h,nrow(y)),])
+    lambda <- lambda0[tme,]
     phi <- mean(phihat0[max(1,tme-h):min(tme+h,nrow(y))])
 
     # Setup starting values

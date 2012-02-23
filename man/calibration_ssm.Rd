@@ -2,10 +2,11 @@
 \alias{calibration_ssm}
 \title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
-  calibration_ssm(tme, y, A, F, R, xhat0, phihat0, tau = 2,
-    w = 11, maxiter = 10000, tol = 1e-09, initScale = 10,
-    nugget = sqrt(.Machine$double.eps), verbose = FALSE,
-    logTrans = FALSE, method = "Nelder-Mead")
+  calibration_ssm(tme, y, A, F, R, lambda0, phihat0,
+    tau = 2, w = 11, maxiter = 10000, tol = 1e-09,
+    initScale = 10, nugget = sqrt(.Machine$double.eps),
+    verbose = FALSE, logTrans = FALSE,
+    method = "Nelder-Mead")
 }
 \arguments{
   \item{tme}{integer time at which to center moving window
@@ -25,8 +26,8 @@
   \item{R}{covariance matrix for observation equation;
   typically small and fixed}
 
-  \item{xhat0}{matrix (n x k) of initial estimates for OD
-  flows X (e.g.  obtained via IPFP)}
+  \item{lambda0}{matrix (n x k) of initial estimates for
+  lambda (e.g. obtained via IPFP)}
 
   \item{phihat0}{numeric vector (length n) of initial
   estimates for phi}
