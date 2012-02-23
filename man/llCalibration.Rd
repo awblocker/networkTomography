@@ -2,28 +2,24 @@
 \alias{llCalibration}
 \title{Evaluate marginal log-likelihood for calibration SSM}
 \usage{
-  llCalibration(theta, Ft, qind, yt, Zt, R, k = ncol(Ft)/2,
-    tau = 2, initScale = 10,
+  llCalibration(theta, Ft, yt, Zt, Rt, k = ncol(Ft),
+    tau = 2, initScale = 1/(1 - diag(Ft)^2),
     nugget = sqrt(.Machine$double.eps))
 }
 \arguments{
   \item{theta}{numeric vector (length k+1) of parameters.
   theta[-1] = log(lambda), and theta[1] = log(phi)}
 
-  \item{Ft}{evolution matrix (2k x 2k) for OD flows;
-  include fixed}
-
-  \item{qind}{integer vector of indices to update lambda
-  portion of Ft matrix; typically a subset of
-  \code{diag_ind(2*k)}}
+  \item{Ft}{evolution matrix (k x k) for OD flows; include
+  fixed}
 
   \item{yt}{matrix (k x n) of observed link loads, one
   observation per column}
 
-  \item{Zt}{observation matrix for system; should be padded
-  version of routing matrix A}
+  \item{Zt}{observation matrix for system; should be
+  routing matrix A}
 
-  \item{R}{covariance matrix for observation equation;
+  \item{Rt}{covariance matrix for observation equation;
   typically small and fixed}
 
   \item{k}{integer number of OD flows to infer}
@@ -32,7 +28,8 @@
   relationship}
 
   \item{initScale}{numeric inflation factor for time-zero
-  state covariance}
+  state covariance; defaults to steady-state variance
+  setting}
 
   \item{nugget}{small positive value to add to diagonal of
   state evolution covariance matrix to ensure numerical

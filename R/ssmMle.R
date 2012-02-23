@@ -8,18 +8,16 @@
 #'
 #' @param theta numeric vector (length k+1) of parameters. theta[-1] =
 #'      log(lambda), and theta[1] = log(phi)
-#' @param Ft evolution matrix (2k x 2k) for OD flows; include fixed
+#' @param Ft evolution matrix (k x k) for OD flows; include fixed
 #       autoregressive parameters
-#' @param qind integer vector of indices to update lambda portion of Ft matrix;
-#'      typically a subset of \code{diag_ind(2*k)}
 #' @param yt matrix (k x n) of observed link loads, one observation per column
-#' @param Zt observation matrix for system; should be padded version of routing
-#'      matrix A
-#' @param R covariance matrix for observation equation; typically small and
+#' @param Zt observation matrix for system; should be routing matrix A
+#' @param Rt covariance matrix for observation equation; typically small and
 #'      fixed
 #' @param k integer number of OD flows to infer
 #' @param tau numeric power parameter for mean-variance relationship
-#' @param initScale numeric inflation factor for time-zero state covariance
+#' @param initScale numeric inflation factor for time-zero state covariance;
+#'      defaults to steady-state variance setting
 #' @param nugget small positive value to add to diagonal of state evolution
 #'      covariance matrix to ensure numerical stability
 #' @return numeric marginal log-likelihood obtained via Kalman smoothing
@@ -29,23 +27,23 @@
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family calibrationModel
-llCalibration <- function(theta, Ft, qind, yt, Zt, R,
-                         k=ncol(Ft)/2, tau=2, initScale=10,
+llCalibration <- function(theta, Ft, yt, Zt, Rt,
+                         k=ncol(Ft), tau=2, initScale=1/(1-diag(Ft)^2),
                          nugget=sqrt(.Machine$double.eps)) {
     optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(theta[-1])
     phi <- exp(theta[1])
 
-    P1 <- diag_mat(initScale*c(phi*lambda^tau + nugget,rep(0,k)))
-    a1 <- c(lambda, rep(1,k))
+    P1 <- diag_mat(initScale*(phi*lambda^tau + nugget))
+    a1 <- lambda/(1-diag(Ft))
 
     # Setup matrices
-    Ft[qind] <- lambda
-    V <- diag_mat(c(phi*lambda^tau + nugget, rep(0,k)))
+    yt <- t(t(yt)-lambda/(1-diag(Ft)))
+    V <- diag_mat(phi*lambda^tau + nugget)
 
     # Run Kalman filter
-    f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=R, Qt=V,
+    f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=Rt, Qt=V,
                 a1=a1, P1=P1, optcal=optcal)
 
     # Return log-likelihood
@@ -60,18 +58,16 @@ llCalibration <- function(theta, Ft, qind, yt, Zt, R,
 #'
 #' @param mle numeric vector (length k+1) of parameters. theta[-1] =
 #'      log(lambda), and theta[1] = log(phi)
-#' @param Ft evolution matrix (2k x 2k) for OD flows; include fixed
+#' @param Ft evolution matrix (k x k) for OD flows; include fixed
 #       autoregressive parameters
-#' @param qind integer vector of indices to update lambda portion of Ft matrix;
-#'      typically a subset of \code{diag_ind(2*k)}
 #' @param yt matrix (k x n) of observed link loads, one observation per column
-#' @param Zt observation matrix for system; should be padded version of routing
-#'      matrix A
-#' @param R covariance matrix for observation equation; typically small and
+#' @param Zt observation matrix for system; should be routing matrix A
+#' @param Rt covariance matrix for observation equation; typically small and
 #'      fixed
 #' @param k integer number of OD flows to infer
 #' @param tau numeric power parameter for mean-variance relationship
-#' @param initScale numeric inflation factor for time-zero state covariance
+#' @param initScale numeric inflation factor for time-zero state covariance;
+#'      defaults to steady-state variance setting
 #' @param nugget small positive value to add to diagonal of state evolution
 #'      covariance matrix to ensure numerical stability
 #' @return numeric marginal log-likelihood obtained via Kalman smoothing
@@ -83,23 +79,23 @@ llCalibration <- function(theta, Ft, qind, yt, Zt, R,
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family calibrationModel
-mle_filter <- function(mle, Ft, qind, yt, Zt, R,
-                       k=ncol(Ft)/2, tau=2, initScale=10,
+mle_filter <- function(mle, Ft, yt, Zt, Rt,
+                       k=ncol(Ft), tau=2, initScale=1/(1-diag(Ft)^2),
                        nugget=sqrt(.Machine$double.eps)) {
     optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(mle$par[-1])
     phi <- exp(mle$par[1])
 
-    P1 <- diag_mat(initScale*c(phi*lambda^tau + nugget,rep(0,k)))
-    a1 <- c(lambda, rep(1,k))
+    P1 <- diag_mat(initScale*(phi*lambda^tau + nugget))
+    a1 <- lambda/(1-diag(Ft))
 
     # Setup matrices
-    Ft[qind] <- lambda
-    V <- diag_mat(c(phi*lambda^tau + nugget, rep(0,k)))
+    yt <- t(t(yt)-lambda/(1-diag(Ft)))
+    V <- diag_mat(phi*lambda^tau + nugget)
 
     # Run Kalman filter & smoother
-    f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=R, Qt=V,
+    f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=Rt, Qt=V,
                 a1=a1, P1=P1, optcal=optcal)
     f.out <- ks(f.out)
 
@@ -120,7 +116,7 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #' @param F matrix (k x k) containing fixed autoregressive parameters for state
 #'      evolution equation; upper-left block of overall matrix for expanded
 #'      state
-#' @param R covariance matrix for observation equation; typically small and
+#' @param Rt covariance matrix for observation equation; typically small and
 #'      fixed
 #' @param lambda0 matrix (n x k) of initial estimates for lambda (e.g. obtained
 #'      via IPFP)
@@ -131,7 +127,8 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #' @param maxiter maximum number of iterations to use in numerical optimization
 #'      of log-likelihood
 #' @param tol tolerance to use for numerical optimization
-#' @param initScale numeric inflation factor for time-zero state covariance
+#' @param initScale numeric inflation factor for time-zero state covariance;
+#'      defaults to steady-state variance setting
 #' @param nugget small positive value to add to diagonal of state evolution
 #'      covariance matrix to ensure numerical stability
 #' @param verbose logical to select verbose output from algorithm
@@ -149,8 +146,8 @@ mle_filter <- function(mle, Ft, qind, yt, Zt, R,
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family calibrationModel
-calibration_ssm <- function(tme, y, A, F, R, lambda0, phihat0,
-                            tau=2, w=11, maxiter=1e4, tol=1e-9, initScale=10,
+calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
+                            maxiter=1e4, tol=1e-9, initScale=1/(1-diag(F)^2),
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
                             logTrans=FALSE, method="Nelder-Mead") {
     # Calculate dimensions
@@ -180,28 +177,10 @@ calibration_ssm <- function(tme, y, A, F, R, lambda0, phihat0,
         cat(sprintf('tme = %d; n = %d\n', tme, n), file=stderr())
     }
 
-    # Setup array for F
-    Ft <- matrix(0, 2*k, 2*k)
-    dind <- diag_ind(2*k)
-    # Diagonal block
-    Ft[dind[seq(k+1,2*k)]] <- 1
-    # F block
-    Ft[1:k, 1:k] <- F
-
-    # Indices for Q block
-    qind <- 2L*k*k + 1 + 0L:(k-1L)*(2L*k+1L)
-
-    # Setup Zt
-    Zt <- matrix(0, l, 2*k)
-    Zt[,1:k] <- A
-
     # Setup data
     yt <- t( y[max(1,tme-h):min(tme+h,nrow(y)),] )
     lambda <- lambda0[tme,]
-    phi <- mean(phihat0[max(1,tme-h):min(tme+h,nrow(y))])
-
-    # Setup starting values
-    # a1 <- c(xhat0[max(1,tme-h-1),], rep(1,k))
+    phi <- phihat0[tme]
 
     # Print starting values if verbose
     if (verbose) {
@@ -230,7 +209,7 @@ calibration_ssm <- function(tme, y, A, F, R, lambda0, phihat0,
     }
 
     mle <- optim(par=theta0, fn=obj,
-                 Ft=Ft, qind=qind, yt=yt, Zt=Zt, R=R, tau=tau,
+                 Ft=Ft, yt=yt, Zt=A, Rt=Rt, tau=tau,
                  initScale=initScale,
                  nugget=nugget,
                  method=method,
@@ -249,7 +228,7 @@ calibration_ssm <- function(tme, y, A, F, R, lambda0, phihat0,
     }
 
     # Obtain Kalman filter output at MLE
-    f.out <- mle_filter(mle=mle, Ft=Ft, qind=qind, yt=yt, Zt=Zt, R=R, tau=tau,
+    f.out <- mle_filter(mle=mle, Ft=Ft, yt=yt, Zt=Zt, Rt=Rt, tau=tau,
                         initScale=initScale, nugget=nugget)
     varhat <- apply(f.out$Pt, 3, diag)
 

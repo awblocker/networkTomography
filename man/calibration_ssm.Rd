@@ -2,11 +2,11 @@
 \alias{calibration_ssm}
 \title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
-  calibration_ssm(tme, y, A, F, R, lambda0, phihat0,
+  calibration_ssm(tme, y, A, Ft, Rt, lambda0, phihat0,
     tau = 2, w = 11, maxiter = 10000, tol = 1e-09,
-    initScale = 10, nugget = sqrt(.Machine$double.eps),
-    verbose = FALSE, logTrans = FALSE,
-    method = "Nelder-Mead")
+    initScale = 1/(1 - diag(F)^2),
+    nugget = sqrt(.Machine$double.eps), verbose = FALSE,
+    logTrans = FALSE, method = "Nelder-Mead")
 }
 \arguments{
   \item{tme}{integer time at which to center moving window
@@ -23,7 +23,7 @@
   parameters for state evolution equation; upper-left block
   of overall matrix for expanded state}
 
-  \item{R}{covariance matrix for observation equation;
+  \item{Rt}{covariance matrix for observation equation;
   typically small and fixed}
 
   \item{lambda0}{matrix (n x k) of initial estimates for
@@ -44,7 +44,8 @@
   \item{tol}{tolerance to use for numerical optimization}
 
   \item{initScale}{numeric inflation factor for time-zero
-  state covariance}
+  state covariance; defaults to steady-state variance
+  setting}
 
   \item{nugget}{small positive value to add to diagonal of
   state evolution covariance matrix to ensure numerical
