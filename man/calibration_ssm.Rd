@@ -3,10 +3,10 @@
 \title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
   calibration_ssm(tme, y, A, Ft, Rt, lambda0, phihat0,
-    tau = 2, w = 11, maxiter = 10000, tol = 1e-09,
-    initScale = 1/(1 - diag(F)^2),
+    tau = 2, w = 11, initScale = 1/(1 - diag(F)^2),
     nugget = sqrt(.Machine$double.eps), verbose = FALSE,
-    logTrans = FALSE, method = "Nelder-Mead")
+    logTrans = FALSE, method = "Nelder-Mead",
+    optimArgs = list())
 }
 \arguments{
   \item{tme}{integer time at which to center moving window
@@ -19,7 +19,7 @@
   \item{A}{routing matrix (m x k) for network; should be
   full row rank}
 
-  \item{F}{matrix (k x k) containing fixed autoregressive
+  \item{Ft}{matrix (k x k) containing fixed autoregressive
   parameters for state evolution equation; upper-left block
   of overall matrix for expanded state}
 
@@ -38,11 +38,6 @@
   \item{w}{number of observations to use for rolling-window
   estimation; handles boundary cases cleanly}
 
-  \item{maxiter}{maximum number of iterations to use in
-  numerical optimization of log-likelihood}
-
-  \item{tol}{tolerance to use for numerical optimization}
-
   \item{initScale}{numeric inflation factor for time-zero
   state covariance; defaults to steady-state variance
   setting}
@@ -60,6 +55,10 @@
 
   \item{method}{optimization method to use (in optim
   calls)}
+
+  \item{optimArgs}{list of arguments to append to control
+  argument for optim.  Can include all arguments except for
+  fnscale, which is automatically set}
 }
 \value{
   list containing \code{lambdahat}, a numeric vector

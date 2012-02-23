@@ -113,7 +113,7 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' @param y matrix (n x m) of observed link loads from all times (not just the
 #'      window used for estimation; one observation per row
 #' @param A routing matrix (m x k) for network; should be full row rank
-#' @param F matrix (k x k) containing fixed autoregressive parameters for state
+#' @param Ft matrix (k x k) containing fixed autoregressive parameters for state
 #'      evolution equation; upper-left block of overall matrix for expanded
 #'      state
 #' @param Rt covariance matrix for observation equation; typically small and
@@ -124,9 +124,6 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' @param tau numeric power parameter for mean-variance relationship
 #' @param w number of observations to use for rolling-window estimation; handles
 #'      boundary cases cleanly
-#' @param maxiter maximum number of iterations to use in numerical optimization
-#'      of log-likelihood
-#' @param tol tolerance to use for numerical optimization
 #' @param initScale numeric inflation factor for time-zero state covariance;
 #'      defaults to steady-state variance setting
 #' @param nugget small positive value to add to diagonal of state evolution
@@ -135,6 +132,8 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' @param logTrans logical whether to log-transform parameters for optimization.
 #'      If FALSE, sets method to "L-BFGS-B".
 #' @param method optimization method to use (in optim calls)
+#' @param optimArgs list of arguments to append to control argument for optim.
+#'      Can include all arguments except for fnscale, which is automatically set
 #' @return list containing \code{lambdahat}, a numeric vector (length k)
 #'      containing the MLE for lambda; \code{phihat}, the MLE for phi;
 #'      \code{xhat}, the smoothed estimates of the OD flows for the window used
@@ -147,9 +146,10 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' @export
 #' @family calibrationModel
 calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
-                            maxiter=1e4, tol=1e-9, initScale=1/(1-diag(F)^2),
+                            initScale=1/(1-diag(F)^2),
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
-                            logTrans=FALSE, method="Nelder-Mead") {
+                            logTrans=FALSE, method="Nelder-Mead",
+                            optimArgs=list()) {
     # Calculate dimensions
     k <- ncol(A)
     l <- ncol(y)
@@ -214,7 +214,7 @@ calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
                  nugget=nugget,
                  method=method,
                  lower=lower, upper=upper,
-                 control=list(fnscale=-1, maxit=maxiter))
+                 control=c(list(fnscale=-1), optimArgs))
     
     if (!logTrans)
         mle$par <- log(mle$par)
@@ -228,7 +228,7 @@ calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
     }
 
     # Obtain Kalman filter output at MLE
-    f.out <- mle_filter(mle=mle, Ft=Ft, yt=yt, Zt=Zt, Rt=Rt, tau=tau,
+    f.out <- mle_filter(mle=mle, Ft=Ft, yt=yt, Zt=A, Rt=Rt, tau=tau,
                         initScale=initScale, nugget=nugget)
     varhat <- apply(f.out$Pt, 3, diag)
 
