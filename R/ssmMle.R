@@ -39,7 +39,7 @@ llCalibration <- function(theta, Ft, yt, Zt, Rt,
     a1 <- lambda/(1-diag(Ft))
 
     # Setup matrices
-    yt <- yt - as.vector(Zt %*% {lambda/(1-diag(Ft))})
+    yt <- yt - as.vector(Zt %*% a1)
     V <- diag_mat(phi*lambda^tau + nugget)
 
     # Run Kalman filter
@@ -91,7 +91,7 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
     a1 <- lambda/(1-diag(Ft))
 
     # Setup matrices
-    yt <- yt - as.vector(Zt %*% {lambda/(1-diag(Ft))})
+    yt <- yt - as.vector(Zt %*% a1)
     V <- diag_mat(phi*lambda^tau + nugget)
 
     # Run Kalman filter & smoother
