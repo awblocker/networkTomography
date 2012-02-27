@@ -3,7 +3,7 @@
 \title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
   calibration_ssm(tme, y, A, Ft, Rt, lambda0, phihat0,
-    tau = 2, w = 11, initScale = 1/(1 - diag(F)^2),
+    tau = 2, w = 11, initScale = 1/(1 - diag(Ft)^2),
     nugget = sqrt(.Machine$double.eps), verbose = FALSE,
     logTrans = FALSE, method = "Nelder-Mead",
     optimArgs = list())
