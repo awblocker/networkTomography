@@ -186,8 +186,7 @@ calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
     if (verbose) {
         cat('Starting value for lambda:\n', file=stderr())
         print(lambda)
-        cat('Starting value for phi:\n', file=stderr())
-        print(phi)
+        cat('Starting value for phi:\t%g\n', phi, file=stderr())
     }
 
     # Run numerical optimization using prediction error formulation
@@ -203,10 +202,16 @@ calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
     } else {
         obj <- function(theta, ...) llCalibration(log(theta), ...)
         theta0 <- c(phi, lambda)
-        lower <- sqrt(.Machine$double.eps)
+        lower <- c(sqrt(.Machine$double.eps), rep(1, k))
         upper <- max(yt)
         method <- "L-BFGS-B"
     }
+
+    # Print initial value for objective function if verbose
+    if (verbose)
+        cat('Initial value of objective function:\t%g\n', 
+            obj(theta0, Ft=Ft, yt=yt, Zt=A, Rt=Rt, tau=tau, initScale=initScale,
+                nugget=nugget), file=stderr())
 
     mle <- optim(par=theta0, fn=obj,
                  Ft=Ft, yt=yt, Zt=A, Rt=Rt, tau=tau,
