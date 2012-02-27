@@ -27,9 +27,9 @@
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family calibrationModel
-llCalibration <- function(theta, Ft, yt, Zt, Rt,
-                         k=ncol(Ft), tau=2, initScale=1/(1-diag(Ft)^2),
-                         nugget=sqrt(.Machine$double.eps)) {
+llCalibration <- function(theta, Ft, yt, Zt, Rt, k=ncol(Ft), tau=2,
+                          initScale=1/(1-diag(Ft)^2),
+                          nugget=sqrt(.Machine$double.eps)) {
     optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(theta[-1])
@@ -146,7 +146,7 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' @export
 #' @family calibrationModel
 calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
-                            initScale=1/(1-diag(F)^2),
+                            initScale=1/(1-diag(Ft)^2),
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
                             logTrans=FALSE, method="Nelder-Mead",
                             optimArgs=list()) {
