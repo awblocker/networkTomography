@@ -5,7 +5,7 @@
   calibration_ssm(tme, y, A, Ft, Rt, lambda0, phihat0,
     tau = 2, w = 11, initScale = 1/(1 - diag(Ft)^2),
     nugget = sqrt(.Machine$double.eps), verbose = FALSE,
-    logTrans = FALSE, method = "Nelder-Mead",
+    logTrans = TRUE, method = "L-BFGS-B",
     optimArgs = list())
 }
 \arguments{
