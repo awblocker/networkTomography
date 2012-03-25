@@ -518,34 +518,55 @@ bayesianDynamicFilter <- function (Y, A, prior,
         propSD <- sqrt( (exp(prior$phi$scale[tme]/prior$phi$df)-1) *
                        propMean^tau )
 
-        # Check for zero link flows
-        activeLink <- !(Y[tme,] == 0)
+        # Check for known OD flows
         odRanges <- xranges(E=A_pivot, F=Y[tme,], ispos=TRUE)
         activeOD <- (odRanges[,2]-odRanges[,1]>0)
+        #
+        A.active <- A_pivot[,activeOD]
+        At.active.qr <- qr(t(A.active))
+        if (At.active.qr$rank < nrow(A.active)) {
+            knownOD <- !activeOD
+
+            activeLink <- At.active.qr$pivot[1:At.active.qr$rank]
+            A.active <- A.active[activeLink,,drop=FALSE]
+            
+            x.adj <- rep(0, ncol(A_pivot))
+            x.adj[knownOD] <- odRanges[knownOD, 2]
+            Y.active <- Y[tme,] - A_pivot %*% x.adj
+            Y.active <- Y.active[activeLink]
+        } else {
+            activeLink <- 1:nrow(A_pivot)
+            Y.active <- Y[tme,activeLink]
+        }
+        #
         nActive <- sum(activeOD)
 
         if (verbose) {
             cat(sprintf("nActive = %d\n", nActive), file=stderr())
+            if (verbose > 1)
+                print(activeLink)
         }
 
         # Start with IPF beginning from propMean
-        x0 <- ipfp(Y[tme,], A_pivot, propMean, tol=1e-6, maxit=Xdraws*1e2,
-                   verbose=FALSE)
+        x0Active <- ipfp(Y.active, A.active, propMean[activeOD], tol=1e-6,
+                   maxit=Xdraws*1e2, verbose=FALSE)
 
         # Now, lsei for refinement
-        x0Active <- lsei(A=diag(nActive), B=x0[activeOD],
-                         E=A_pivot[activeLink,activeOD,drop=FALSE],
-                         F=Y[tme,activeLink], G=diag(nActive), H=rep(0,nActive),
+        x0Active <- lsei(A=diag(nActive), B=x0Active, E=A.active,
+                         F=Y.active, G=diag(nActive), H=rep(0,nActive),
                          tol=sqrt(.Machine$double.eps), type=1)$X
+
+        if (verbose > 1)
+            print(x0Active)
 
         # Switch to RDA algorithm
         # Correct distribution (truncated normal) and faster
         X_prop_active <- xsample(A=diag(nActive), B=propMean[activeOD],
-                                 E=A_pivot[activeLink,activeOD,drop=FALSE],
-                                 F=Y[tme,activeLink], G=diag(nActive),
-                                 H=rep(0,nActive), sdB=propSD[activeOD],
-                                 iter=Xdraws, outputlength=m,
-                                 burninlength=Xburnin, x0=x0Active, type='rda')
+                                 E=A.active, F=Y.active,
+                                 G=diag(nActive), H=rep(0,nActive),
+                                 sdB=propSD[activeOD], iter=Xdraws,
+                                 outputlength=m, burninlength=Xburnin,
+                                 x0=x0Active, type='rda')
 
         if (verbose) {
             cat(sprintf("Accepted ratio = %g\n", X_prop_active$acceptedratio),
@@ -557,6 +578,10 @@ bayesianDynamicFilter <- function (Y, A, prior,
         } else {
             X_prop <- matrix(0, m, k)
             X_prop[,activeOD] <- X_prop_active$X
+            #
+            X_prop <- t(X_prop)
+            X_prop[!activeOD,] <- odRanges[!activeOD,2]
+            X_prop <- t(X_prop)
         }
 
         # Calculate weights
@@ -609,25 +634,22 @@ bayesianDynamicFilter <- function (Y, A, prior,
                            propMean^tau )
 
             # Start with IPF beginning from propMean
-            x0 <- ipfp(Y[tme,], A_pivot, propMean, tol=1e-6, maxit=Xdraws*1e2,
-                       verbose=FALSE)
+            x0Active <- ipfp(Y.active, A.active, propMean[activeOD], tol=1e-6,
+                       maxit=Xdraws*1e2, verbose=FALSE)
 
             # Now, lsei for refinement
-            x0Active <- lsei(A=diag(nActive), B=x0[activeOD],
-                             E=A_pivot[activeLink,activeOD],
-                             F=Y[tme,activeLink], G=diag(nActive),
-                             H=rep(0,nActive), tol=sqrt(.Machine$double.eps),
-                             type=1)$X
+            x0Active <- lsei(A=diag(nActive), B=x0Active, E=A.active,
+                             F=Y.active, G=diag(nActive), H=rep(0,nActive),
+                             tol=sqrt(.Machine$double.eps), type=1)$X
 
             # Switch to RDA algorithm
             # Correct distribution (truncated normal) and faster
             X_prop_active <- xsample(A=diag(nActive), B=propMean[activeOD],
-                                     E=A_pivot[activeLink,activeOD],
-                                     F=Y[tme,activeLink], G=diag(nActive),
-                                     H=rep(0,nActive), sdB=propSD[activeOD],
-                                     iter=Xdraws, outputlength=m,
-                                     burninlength=Xburnin, x0=x0Active,
-                                     type='rda')
+                                     E=A.active, F=Y.active,
+                                     G=diag(nActive), H=rep(0,nActive),
+                                     sdB=propSD[activeOD], iter=Xdraws,
+                                     outputlength=m, burninlength=Xburnin,
+                                     x0=x0Active, type='rda')
 
             if (verbose) {
                 cat(sprintf("Accepted ratio = %g\n",
@@ -640,6 +662,10 @@ bayesianDynamicFilter <- function (Y, A, prior,
             } else {
                 X_prop <- matrix(0, m, k)
                 X_prop[,activeOD] <- X_prop_active$X
+                #
+                X_prop <- t(X_prop)
+                X_prop[!activeOD,] <- odRanges[!activeOD,2]
+                X_prop <- t(X_prop)
             }
 
             # Drawing lambda from prior; drawing X from truncated normal on
@@ -707,8 +733,9 @@ bayesianDynamicFilter <- function (Y, A, prior,
         if (verbose) {
             endTime <- proc.time()
             print(mean(phi))
-            print( rbind(exp(colMeans(lambda)), colMeans(X),
-                         apply(X,2,median)) )
+            print( t(data.frame(lambdaHat=exp(colMeans(lambda)),
+                                xMean=colMeans(X), xMed=apply(X,2,median),
+                                xSD=apply(X,2,sd))) )
             cat(sprintf("Runtime for iteration %d:\n", tme), file=stderr())
             print(endTime-startTime)
         }
@@ -733,7 +760,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
                    y=Y, rho=rho, prior=prior, n=n, l=l, k=k,
                    A=A, A_qr=A_qr, A1=A1, A1_inv=A1_inv, A2=A2,
                    nEff=nEffVec,
-                   tStart=tStart, backward=backward, aggregate=aggregate )
+                   tStart=tStart, backward=backward, aggregate=aggregate)
 
     return(retval)
 }
