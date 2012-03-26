@@ -287,7 +287,11 @@ move_step <- function(y, X, tme, lambda, phi,
             # Calculate relevant matrices for feasible region calculations
             remainderMat <- X1
             adjMat <- A1_inv %*% A2 %*% dMat
-            interceptMat <- remainderMat / adjMat
+            adjMat.nonzero <- which(abs(adjMat)>.Machine$double.eps)
+            interceptMat <- matrix(0, nrow=nrow(remainderMat),
+                                   ncol=ncol(remainderMat))
+            interceptMat[adjMat.nonzero] <- remainderMat[adjMat.nonzero] /
+                                            adjMat[adjMat.nonzero]
 
             # Find vector of maxima for \delta X2 st X1 >= 0
             maxVec1 <- sapply(1:m, function(i)
@@ -555,9 +559,6 @@ bayesianDynamicFilter <- function (Y, A, prior,
         x0Active <- lsei(A=diag(nActive), B=x0Active, E=A.active,
                          F=Y.active, G=diag(nActive), H=rep(0,nActive),
                          tol=sqrt(.Machine$double.eps), type=1)$X
-
-        if (verbose > 2)
-            print(x0Active)
 
         # Switch to RDA algorithm
         # Correct distribution (truncated normal) and faster
