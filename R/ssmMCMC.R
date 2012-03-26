@@ -549,14 +549,14 @@ bayesianDynamicFilter <- function (Y, A, prior,
 
         # Start with IPF beginning from propMean
         x0Active <- ipfp(Y.active, A.active, propMean[activeOD], tol=1e-6,
-                   maxit=Xdraws*1e2, verbose=FALSE)
+                         maxit=Xdraws*1e2, verbose=FALSE)
 
         # Now, lsei for refinement
         x0Active <- lsei(A=diag(nActive), B=x0Active, E=A.active,
                          F=Y.active, G=diag(nActive), H=rep(0,nActive),
                          tol=sqrt(.Machine$double.eps), type=1)$X
 
-        if (verbose > 1)
+        if (verbose > 2)
             print(x0Active)
 
         # Switch to RDA algorithm
@@ -635,7 +635,7 @@ bayesianDynamicFilter <- function (Y, A, prior,
 
             # Start with IPF beginning from propMean
             x0Active <- ipfp(Y.active, A.active, propMean[activeOD], tol=1e-6,
-                       maxit=Xdraws*1e2, verbose=FALSE)
+                             maxit=Xdraws*1e2, verbose=FALSE)
 
             # Now, lsei for refinement
             x0Active <- lsei(A=diag(nActive), B=x0Active, E=A.active,
@@ -704,6 +704,15 @@ bayesianDynamicFilter <- function (Y, A, prior,
         lambda <- lambda_prop[ind,]
         phi <- phi_prop[ind]
         X <- X_prop[ind,]
+
+        if (verbose > 1) {
+            # Check constraints
+            yHat <- A_pivot %*% t(X)
+            err.l1 <- apply(yHat-Y[tme,], 2, function(x)
+                            sum(abs(x)))
+            cat("L_1 deviation from constraints\n", file=stderr())
+            print(summary(err.l1))
+        }
 
         # Move step
         move.out <- move_step(y=Y[tme,], X=X, tme, lambda=lambda, phi=phi,
