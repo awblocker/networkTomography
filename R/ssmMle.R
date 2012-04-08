@@ -237,8 +237,13 @@ calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
                         initScale=initScale, nugget=nugget)
     varhat <- apply(f.out$Pt, 3, diag)
 
+    # Reformat for output
+    lambdahat   <- exp(mle$par[-1])
+    xhat        <- f.out$ahat[1:k,t_ind] + lambdahat / (1-diag(Ft))
+    phihat      <- exp(mle$par[1])
+    varhat      <- varhat[1:k,t_ind]
+
     # Return results
-    return(list(lambdahat=exp(mle$par[-1]), phihat=exp(mle$par[1]),
-                xhat=f.out$ahat[1:k,t_ind], varhat=varhat[1:k,t_ind]))
+    return(list(lambdahat=lambdahat, phihat=phihat, xhat=xhat, varhat=varhat))
 }
 
