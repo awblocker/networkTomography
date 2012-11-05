@@ -18,8 +18,8 @@
   deterministically-known OD flows
 }
 \examples{
-data(onerouter)
-getActive(Y[1,], A)
+data(bell.labs)
+getActive(bell.labs$Y[1,], bell.labs$A)
 }
 \keyword{algebra}
 

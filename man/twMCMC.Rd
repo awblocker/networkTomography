@@ -37,10 +37,10 @@
   accelerate convergence.
 }
 \examples{
-data(onerouter)
+data(bell.labs)
 # Quick, simple run to test the function
-prior <- list(a=rep(1, ncol(A)), b=rep(0, ncol(A)))
-mcmcOut <- twMCMC(Y=Y[1,], A=A, prior=prior,
+prior <- list(a=rep(1, ncol(bell.labs$A)), b=rep(0, ncol(bell.labs$A)))
+mcmcOut <- twMCMC(Y=bell.labs$Y[1,], A=bell.labs$A, prior=prior,
                   ndraws=1000, burnin=100,
                   verbose=0)
 print(summary(mcmcOut$XDraws))

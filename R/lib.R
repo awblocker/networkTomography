@@ -203,8 +203,8 @@ agg <- function(mat, q=c(0.05, 0.16, 0.5, 0.84, 0.95)) {
 #' @keywords algebra
 #' @export
 #' @examples
-#' data(onerouter)
-#' getActive(Y[1,], A)
+#' data(bell.labs)
+#' getActive(bell.labs$Y[1,], bell.labs$A)
 getActive <- function(y, A) {
     odRanges <- xranges(E=A, F=y, ispos=TRUE)
     activeOD <- (odRanges[,2]-odRanges[,1]>0)
