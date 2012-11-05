@@ -7,7 +7,7 @@
   from Bell Labs; used in Cao et al. (2000).
 }
 \section{Objects}{
-  This the list bell.labs, which contains several objects:
+  The list bell.labs, which contains several objects:
   \itemize{ \item \code{A}, the routing matrix for this
   network (truncated for full row rank) \item \code{df}, a
   data.frame with all data \item \code{X}, a matrix of
