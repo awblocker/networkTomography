@@ -40,7 +40,7 @@
   smoothing
 
   list containing result of Kalman smoothing; see
-  \code{\link{ks}} for details
+  \code{\link{SSModel}} and \code{\link{KFS}} for details
 }
 \description{
   Run Kalman filtering and smoothing at calculated MLE for

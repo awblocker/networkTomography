@@ -28,26 +28,28 @@
 #' @export
 #' @family calibrationModel
 llCalibration <- function(theta, Ft, yt, Zt, Rt, k=ncol(Ft), tau=2,
-                          initScale=1/(1-diag(Ft)^2),
+                          initScale=1 / (1 - diag(Ft)^2),
                           nugget=sqrt(.Machine$double.eps)) {
-    optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(theta[-1])
     phi <- exp(theta[1])
 
     P1 <- diag_mat(initScale*(phi*lambda^tau + nugget))
-    a1 <- lambda/(1-diag(Ft))
+    a1 <- lambda / (1 - diag(Ft))
 
     # Setup matrices
     yt <- yt - as.vector(Zt %*% a1)
+    yt <- as.ts(t(yt))
     V <- diag_mat(phi*lambda^tau + nugget)
 
     # Run Kalman filter
-    f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=Rt, Qt=V,
-                a1=a1, P1=P1, optcal=optcal)
+    ssm <- SSModel(y=yt, Z=Zt, T=Ft, R=diag_mat(rep(1, ncol(Ft))),
+                   H=Rt, Q=V, a1=a1, P1=P1,
+                   distribution='Gaussian', transform='none')
+    filter.out <- KFS(ssm, smoothing='none')
 
     # Return log-likelihood
-    return(f.out$lik)
+    return(filter.out$logLik)
 }
 
 #' Filtering & smoothing at MLE for calibration SSM
@@ -71,8 +73,8 @@ llCalibration <- function(theta, Ft, yt, Zt, Rt, k=ncol(Ft), tau=2,
 #' @param nugget small positive value to add to diagonal of state evolution
 #'      covariance matrix to ensure numerical stability
 #' @return numeric marginal log-likelihood obtained via Kalman smoothing
-#' @return list containing result of Kalman smoothing; see \code{\link{ks}} for 
-#'      details
+#' @return list containing result of Kalman smoothing; see \code{\link{SSModel}}
+#'      and \code{\link{KFS}} for details
 #' @keywords models multivariate ts
 #' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
 #' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
@@ -80,26 +82,27 @@ llCalibration <- function(theta, Ft, yt, Zt, Rt, k=ncol(Ft), tau=2,
 #' @export
 #' @family calibrationModel
 mle_filter <- function(mle, Ft, yt, Zt, Rt,
-                       k=ncol(Ft), tau=2, initScale=1/(1-diag(Ft)^2),
+                       k=ncol(Ft), tau=2, initScale=1 / (1 - diag(Ft)^2),
                        nugget=sqrt(.Machine$double.eps)) {
-    optcal <- c(FALSE, FALSE, FALSE, FALSE)
     # Parse parameters
     lambda <- exp(mle$par[-1])
     phi <- exp(mle$par[1])
 
     P1 <- diag_mat(initScale*(phi*lambda^tau + nugget))
-    a1 <- lambda/(1-diag(Ft))
+    a1 <- lambda / (1 - diag(Ft))
 
     # Setup matrices
     yt <- yt - as.vector(Zt %*% a1)
+    yt <- as.ts(t(yt))
     V <- diag_mat(phi*lambda^tau + nugget)
 
-    # Run Kalman filter & smoother
-    f.out <- kf(yt=yt, Zt=Zt, Tt=Ft, Rt=diag(ncol(Ft)), Ht=Rt, Qt=V,
-                a1=a1, P1=P1, optcal=optcal)
-    f.out <- ks(f.out)
+    # Run Kalman filter
+    ssm <- SSModel(y=yt, Z=Zt, T=Ft, R=diag_mat(rep(1, ncol(Ft))),
+                   H=Rt, Q=V, a1=a1, P1=P1,
+                   distribution='Gaussian', transform='none')
+    filter.out <- KFS(ssm, smoothing='state')
 
-    return(f.out)
+    return(filter.out)
 }
 
 #' Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)
@@ -145,8 +148,21 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
 #' @export
 #' @family calibrationModel
+#' @examples
+#' data(bell.labs)
+#' 
+#' lambda0 <- matrix(1, nrow(bell.labs$Y), ncol(bell.labs$A))
+#' lambda0[100,] <- ipfp(y=bell.labs$Y[100,], A=bell.labs$A,
+#'                       x0=rep(1, ncol(bell.labs$A)))
+#' phihat0 <- rep(1, nrow(bell.labs$Y))
+#' Ft <- 0.5 * diag_mat(rep(1, ncol(bell.labs$A)))
+#' Rt <- 0.01 * diag_mat(rep(1, nrow(bell.labs$A)))
+#' 
+#' fit.calibration <- calibration_ssm(tme=100, y=bell.labs$Y, A=bell.labs$A,
+#'                                    Ft=Ft, Rt=Rt, lambda0=lambda0,
+#'                                    phihat0=phihat0, w=23)
 calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
-                            initScale=1/(1-diag(Ft)^2),
+                            initScale=1 / (1 - diag(Ft)^2),
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,
                             logTrans=TRUE, method="L-BFGS-B",
                             optimArgs=list()) {
@@ -235,11 +251,11 @@ calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
     # Obtain Kalman filter output at MLE
     f.out <- mle_filter(mle=mle, Ft=Ft, yt=yt, Zt=A, Rt=Rt, tau=tau,
                         initScale=initScale, nugget=nugget)
-    varhat <- apply(f.out$Pt, 3, diag)
+    varhat <- apply(f.out$P, 3, diag)
 
     # Reformat for output
     lambdahat   <- exp(mle$par[-1])
-    xhat        <- f.out$ahat[1:k,t_ind] + lambdahat / (1-diag(Ft))
+    xhat        <- f.out$alphahat[1:k,t_ind] + lambdahat / (1 - diag(Ft))
     phihat      <- exp(mle$par[1])
     varhat      <- varhat[1:k,t_ind]
 
