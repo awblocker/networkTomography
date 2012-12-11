@@ -20,3 +20,4 @@
 # R history
 .Rhistory*
 .Rapp.history*
+.Rproj.user
