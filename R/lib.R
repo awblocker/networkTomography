@@ -211,3 +211,64 @@ getActive <- function(y, A) {
     return( activeOD )
 }
 
+#' Find indices of source and destination for each point-to-point flow
+#' 
+#' @param A routing matrix of dimension m x k. This should be the reduced-rank
+#'      version including all aggregate source and destination flows.
+#' @return list consisting of two component, src and dst, which are integer
+#'      vectors of length k containing the index (in y = A x) of the source and
+#'      destination flows that each point-to-point flow is part of.
+#' @keywords algebra
+#' @export
+#' @examples
+#' data(cmu)
+#' src.dst.ind <- getSrcDstIndices(cmu$A.full)
+getSrcDstIndices <- function(A) {
+    indList <- list(src=integer(ncol(A)), dst=integer(ncol(A)))
+
+    for (i in 1:ncol(A)) {
+        # Get link loads that include xi
+        ind <- which(A[,i] > 0)
+        
+        # Get number of flows in each of these loads; assuming these are source
+        # and destination
+        l <- sapply(ind, function(j) sum(A[j,] > 0))
+
+        srcDestInd <- ind[which(rank(l, ties.method="min") <= 2)]
+        indList$src[i] <- srcDestInd[1]
+        indList$dst[i] <- srcDestInd[2]
+    }
+    return(indList)
+}
+
+#' Compute pivoted decomposition of routing matrix A into full-rank and
+#' remainder, as in Cao et al. 2000, via the QR decomposition.
+#' 
+#' @param A routing matrix of dimension m x k
+#' @return list containing two matrices: A1 (m x m), a full-rank subset of the
+#'      columns of A, and A2 (m x k - m), the remaining columns
+#' @keywords algebra
+#' @export
+decomposeA <- function(A) {
+    Aqr <- qr(A)
+    A1  <- A[,Aqr$pivot[seq(Aqr$rank)]]
+    A2  <- A[,Aqr$pivot[seq(Aqr$rank+1,ncol(A))]]
+    return(list(A1=A1, A2=A2))
+}
+
+#' Compute total traffic from a particular time.
+#' 
+#' @param yt length-m numeric vectors of observed aggregate flows at a
+#'      particular time
+#' @param A1 m x m matrix containing the full-rank portion of the network's
+#'      routing matrix, as supplied by \code{\link{decomposeA}}
+#' @keywords algebra
+#' @export
+#' @examples
+#' data(bell.labs)
+#' A.decomp <- decomposeA(bell.labs$A)
+#' total.traffic <- calcN(yt=bell.labs$Y[1,], A1=A.decomp$A1)
+#' total.traffic == sum(bell.labs$X[1,])
+calcN <- function(yt, A1) {
+    sum(solve(A1, yt))
+}

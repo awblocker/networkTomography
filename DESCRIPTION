@@ -23,7 +23,8 @@ Depends:
     KFAS (>= 0.9),
     limSolve (>= 1.4),
     igraph (>= 0.5),
-    stringr
+    stringr,
+    plyr
 Collate:
     'caoEtAl.R'
     'ipfp.R'
@@ -34,3 +35,5 @@ Collate:
     'vardi.algorithm.R'
     'data.R'
     'parseTopology.R'
+    'gravity.R'
+    'tomogravity.R'
