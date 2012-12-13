@@ -213,11 +213,15 @@ getActive <- function(y, A) {
 
 #' Find indices of source and destination for each point-to-point flow
 #' 
-#' @param A routing matrix of dimension m x k. This should be the reduced-rank
-#'      version including all aggregate source and destination flows.
-#' @return list consisting of two component, src and dst, which are integer
-#'      vectors of length k containing the index (in y = A x) of the source and
-#'      destination flows that each point-to-point flow is part of.
+#' This works only for routing matrices that include all aggregate source and
+#' destination flows. It is often easier to build these indices manually via
+#' string processing or during the construction of the routing matrix.
+#' 
+#' @param A routing matrix of dimension m x k. This should be the reduced-rank 
+#'   version including all aggregate source and destination flows.
+#' @return list consisting of two component, src and dst, which are integer 
+#'   vectors of length k containing the index (in y = A x) of the source and 
+#'   destination flows that each point-to-point flow is part of.
 #' @keywords algebra
 #' @export
 #' @examples
@@ -270,5 +274,5 @@ decomposeA <- function(A) {
 #' total.traffic <- calcN(yt=bell.labs$Y[1,], A1=A.decomp$A1)
 #' total.traffic == sum(bell.labs$X[1,])
 calcN <- function(yt, A1) {
-    sum(solve(A1, yt))
+    sum(qr.solve(A1, yt))
 }

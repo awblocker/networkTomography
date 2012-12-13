@@ -16,8 +16,11 @@
   point-to-point flow is part of.
 }
 \description{
-  Find indices of source and destination for each
-  point-to-point flow
+  This works only for routing matrices that include all
+  aggregate source and destination flows. It is often
+  easier to build these indices manually via string
+  processing or during the construction of the routing
+  matrix.
 }
 \examples{
 data(cmu)
