@@ -5,13 +5,14 @@ Version: 0.2
 Author: Alexander W Blocker, Paul Koullick, Edoardo Airoldi
 Maintainer: Alexander W Blocker <ablocker@gmail.com>
 Description: networkTomography implements the methods developed and evaluated in
-    Blocker & Airoldi (2011). These include that authors' own dynamic multilevel
-    model with calibration based upon a Gaussian state-space model in addition
-    to implementations of the methods of Tebaldi & West (1998; Poisson-Gamma
-    model with MCMC sampling), Cao et al. (2000; Gaussian model with
-    mean-variance relation), and Vardi (1996; method of moments). Data from the
-    1router network of Cao et al. (2000) is included for testing and
-    reproducibility.
+    Blocker and Airoldi (2011) and Airoldi and Blocker (2012). These include the
+    authors' own dynamic multilevel model with calibration based upon a Gaussian
+    state-space model in addition to implementations of the methods of Tebaldi &
+    West (1998; Poisson-Gamma model with MCMC sampling), Zhang et al. (2002;
+    tomogravity), Cao et al. (2000; Gaussian model with mean-variance relation),
+    and Vardi (1996; method of moments). Data from the 1router network of Cao et
+    al. (2000), the Abilene network of Fang et al. (2007), and the CMU network
+    of Blocker and Airoldi (2011) are included for testing and reproducibility.
 License: LGPL-2
 LazyLoad: yes
 URL: https://github.com/awblocker/networkTomography
