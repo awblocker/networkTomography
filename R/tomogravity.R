@@ -169,8 +169,8 @@ tomogravity.fit <- function(yt, A, srcDstInd, lambda, N=1, normalize=FALSE,
 #' @family tomogravity
 #' @examples
 #' data(cmu)
-#' estimate <- tomogravity(Y=cmu$Y.full[1:3, ], A=cmu$A.full, lambda=0.01,
-#'                         .progress='text')
+#' estimate <- tomogravity(Y=cmu$Y.full[1, , drop=FALSE], A=cmu$A.full,
+#'                         lambda=0.01, .progress='text')
 tomogravity <- function(Y, A, lambda, lower=0, normalize=FALSE,
                         .progress="none", control=list()) {
     # Decompose routing matrix A

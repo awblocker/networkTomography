@@ -158,9 +158,10 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
 #' Ft <- 0.5 * diag_mat(rep(1, ncol(bell.labs$A)))
 #' Rt <- 0.01 * diag_mat(rep(1, nrow(bell.labs$A)))
 #' 
-#' fit.calibration <- calibration_ssm(tme=100, y=bell.labs$Y, A=bell.labs$A,
-#'                                    Ft=Ft, Rt=Rt, lambda0=lambda0,
-#'                                    phihat0=phihat0, w=23)
+#' # Not run
+#' #fit.calibration <- calibration_ssm(tme=100, y=bell.labs$Y, A=bell.labs$A,
+#' #                                   Ft=Ft, Rt=Rt, lambda0=lambda0,
+#' #                                   phihat0=phihat0, w=23)
 calibration_ssm <- function(tme, y, A, Ft, Rt, lambda0, phihat0, tau=2, w=11,
                             initScale=1 / (1 - diag(Ft)^2),
                             nugget=sqrt(.Machine$double.eps), verbose=FALSE,

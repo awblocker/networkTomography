@@ -50,8 +50,8 @@
 }
 \examples{
 data(cmu)
-estimate <- tomogravity(Y=cmu$Y.full[1:3, ], A=cmu$A.full, lambda=0.01,
-                        .progress='text')
+estimate <- tomogravity(Y=cmu$Y.full[1, , drop=FALSE], A=cmu$A.full,
+                        lambda=0.01, .progress='text')
 }
 \seealso{
   Other tomogravity: \code{\link{tomogravity.fit}}
