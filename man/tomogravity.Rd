@@ -2,21 +2,20 @@
 \alias{tomogravity}
 \title{Run tomogravity estimation on complete time series of aggregate flows}
 \usage{
-  tomogravity(Y, Yfull, A, Afull, lambda, lower = 0,
-    normalize = FALSE, .progress = "none",
-    control = list())
+  tomogravity(Y, A, lambda, lower = 0, normalize = FALSE,
+    .progress = "none", control = list())
 }
 \arguments{
   \item{Y}{n x m matrix contain one vector of observed
-  aggregate flows per row}
+  aggregate flows per row.  This should include all
+  observed aggegrate flows with none removed due to
+  redundancy.}
 
-  \item{Yfull}{}
+  \item{A}{m x k routing matrix. This need not be of full
+  row rank and must include all source and destination
+  flows.}
 
-  \item{A}{}
-
-  \item{Afull}{}
-
-  \item{lambda}{regularization parameter for mutual
+  \item{lambda}{Regularization parameter for mutual
   information prior. Note that this is scaled by the
   squared total traffic in the objective function before
   scaling the mututal information prior.}
@@ -45,13 +44,14 @@
   per row }
 }
 \description{
-  Run tomogravity estimation on complete time series of
-  aggregate flows
+  The aggregate flows Y and their corresponding routing
+  matrix A must include all aggregate source and
+  destination flows.
 }
 \examples{
 data(cmu)
-estimate <- tomogravity(Y=cmu$Y[1:3,], Yfull=cmu$Y.full[1:3,],
-     A=cmu$A, Afull=cmu$A.full, lambda=0.01, .progress='text')
+estimate <- tomogravity(Y=cmu$Y.full[1:3, ], A=cmu$A.full, lambda=0.01,
+                        .progress='text')
 }
 \seealso{
   Other tomogravity: \code{\link{tomogravity.fit}}

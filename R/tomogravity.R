@@ -89,7 +89,7 @@ dobj.dxt.tomogravity <- function(xt, yt, A, srcDstInd, lambda) {
 #' @examples
 #' data(cmu)
 #' srcDstInd <- getSrcDstIndices(cmu$A.full)
-#' estimate <- tomogravity.fit(yt=cmu$Y.full[1,], A=cmu$A.full,
+#' estimate <- tomogravity.fit(yt=cmu$Y.full[1, ], A=cmu$A.full,
 #'      srcDstInd=srcDstInd, lambda=0.01)
 tomogravity.fit <- function(yt, A, srcDstInd, lambda, N=1, normalize=FALSE,
                             lower=0, control=list()) {
@@ -110,11 +110,11 @@ tomogravity.fit <- function(yt, A, srcDstInd, lambda, N=1, normalize=FALSE,
     nActive <- ncol(A)
     
     # Initialize via IPFP
-    xt.init <- ipfp(yt, A[,pos], rep(1, nActive))
+    xt.init <- ipfp(yt, A[, pos], rep(1, nActive))
 
     # Run optimization
     result <- optim(par=xt.init/norm, fn=obj.tomogravity, gr=NULL,
-                    yt=yt/norm, A=A[,pos], srcDstInd=srcDstInd,
+                    yt=yt/norm, A=A[, pos], srcDstInd=srcDstInd,
                     lambda=lambda,
                     method="L-BFGS-B",
                     lower=rep(lower, nActive),
@@ -132,47 +132,47 @@ tomogravity.fit <- function(yt, A, srcDstInd, lambda, N=1, normalize=FALSE,
 
     retval <- c(result, list(xt.init=init))
     retval$par <- xt.hat
-    retval$gr <- dobj.dxt.tomogravity(result$par, yt=yt/norm, A=A[,pos],
+    retval$gr <- dobj.dxt.tomogravity(result$par, yt=yt/norm, A=A[, pos],
                                       srcDstInd=srcDstInd, lambda=lambda)
     return(retval)
 }
 
 #' Run tomogravity estimation on complete time series of aggregate flows
 #' 
-#' @param Y n x m matrix contain one vector of observed aggregate flows per row
-#' @param Yfull
-#' @param A
-#' @param Afull
-#' @param lambda regularization parameter for mutual information prior. Note 
+#' The aggregate flows Y and their corresponding routing matrix A must include 
+#' all aggregate source and destination flows.
+#' 
+#' @param Y n x m matrix contain one vector of observed aggregate flows per row.
+#'   This should include all observed aggegrate flows with none removed due to 
+#'   redundancy.
+#' @param A m x k routing matrix. This need not be of full row rank and must 
+#'   include all source and destination flows.
+#' @param lambda Regularization parameter for mutual information prior. Note 
 #'   that this is scaled by the squared total traffic in the objective function 
 #'   before scaling the mututal information prior.
 #' @param lower Component-wise lower bound for xt in L-BFGS-B optimization.
 #' @param normalize If TRUE, xt and yt are scaled by N. Typically used in 
 #'   conjunction with calcN to normalize traffic to proportions, easing the 
 #'   tuning of lambda.
-#' @param .progress name of the progress bar to use, see
+#' @param .progress name of the progress bar to use, see 
 #'   \code{\link{create_progress_bar}} in plyr documentation
 #' @param control List of control information for optim.
-#' @return A list containing three elements:
-#'      \itemize{
-#'          \item resultList, a list containing the output from running
-#'          \code{\link{tomogravity.fit}} on each timepoint
-#'          \item changeFromInit, a vector of length n containing the
-#'          relative L_1 change between the initial (IPFP) point-to-point flow
-#'          estimates and the final tomogravity estimates
-#'          \item Xhat, a n x k matrix containing a vector of estimated
-#'          point-to-point flows (for each time point) per row
-#'      }
+#' @return A list containing three elements: \itemize{ \item resultList, a list 
+#'   containing the output from running \code{\link{tomogravity.fit}} on each 
+#'   timepoint \item changeFromInit, a vector of length n containing the 
+#'   relative L_1 change between the initial (IPFP) point-to-point flow 
+#'   estimates and the final tomogravity estimates \item Xhat, a n x k matrix 
+#'   containing a vector of estimated point-to-point flows (for each time point)
+#'   per row }
 #' @keywords models multivariate ts
 #' @export
 #' @family tomogravity
 #' @examples
 #' data(cmu)
-#' estimate <- tomogravity(Y=cmu$Y[1:3,], Yfull=cmu$Y.full[1:3,],
-#'      A=cmu$A, Afull=cmu$A.full, lambda=0.01, .progress='text')
-tomogravity <- function(Y, Yfull, A, Afull, lambda, lower=0,
-                        normalize=FALSE, .progress="none",
-                        control=list()) {
+#' estimate <- tomogravity(Y=cmu$Y.full[1:3, ], A=cmu$A.full, lambda=0.01,
+#'                         .progress='text')
+tomogravity <- function(Y, A, lambda, lower=0, normalize=FALSE,
+                        .progress="none", control=list()) {
     # Decompose routing matrix A
     Adecomp <- decomposeA(A)
 
@@ -180,11 +180,11 @@ tomogravity <- function(Y, Yfull, A, Afull, lambda, lower=0,
     Nvec <- apply(Y, 1, calcN, A1=Adecomp$A1)
 
     # Calculate independence flows for each time
-    srcDstInd <- getSrcDstIndices(Afull)
+    srcDstInd <- getSrcDstIndices(A)
 
     # Run tomogravity inference for each time
     resultList <- llply(seq(nrow(Y)), function(tme)
-                        tomogravity.fit(yt=Yfull[tme,], A=Afull,
+                        tomogravity.fit(yt=Y[tme, ], A=A,
                                         srcDstInd=srcDstInd, lambda=lambda,
                                         normalize=normalize,
                                         lower=lower,
