@@ -2,7 +2,6 @@ Package: networkTomography
 Type: Package
 Title: Tools for network tomography
 Version: 0.2
-Date: 2012-12-11
 Author: Alexander W Blocker, Paul Koullick, Edoardo Airoldi
 Maintainer: Alexander W Blocker <ablocker@gmail.com>
 Description: networkTomography implements the methods developed and evaluated in
@@ -13,10 +12,11 @@ Description: networkTomography implements the methods developed and evaluated in
     mean-variance relation), and Vardi (1996; method of moments). Data from the
     1router network of Cao et al. (2000) is included for testing and
     reproducibility.
-License: LGPL (>= 2.0)
+License: LGPL-2
 LazyLoad: yes
 URL: https://github.com/awblocker/networkTomography
 Depends:
+    R (>= 2.10.0),
     Rglpk (>= 0.3),
     coda (>= 0.11-3),
     MASS,
