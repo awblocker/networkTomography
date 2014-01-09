@@ -100,7 +100,7 @@ NULL
 
 #' Abilene data from Fang et al. (2007)
 #'
-#' Data from the 12 node Abliene network from Fang et al. (2007). Both the OD
+#' Data from the 12 node Abilene network from Fang et al. (2007). Both the OD
 #' flows and the topology correspond to the actual network. This is the X1
 #' dataset from the given paper.
 #'
