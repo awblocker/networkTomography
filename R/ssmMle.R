@@ -42,14 +42,10 @@ llCalibration <- function(theta, Ft, yt, Zt, Rt, k=ncol(Ft), tau=2,
     yt <- as.ts(t(yt))
     V <- diag_mat(phi*lambda^tau + nugget)
 
-    # Run Kalman filter
-    ssm <- SSModel(y=yt, Z=Zt, T=Ft, R=diag_mat(rep(1, ncol(Ft))),
-                   H=Rt, Q=V, a1=a1, P1=P1,
-                   distribution='Gaussian', transform='none')
-    filter.out <- KFS(ssm, smoothing='none')
-
-    # Return log-likelihood
-    return(filter.out$logLik)
+    ssm <- SSModel(yt~SSMcustom(Z=Zt, T=Ft, R=diag_mat(rep(1, ncol(Ft))),
+                                Q=V, a1=a1, P1=P1),
+                   H=Rt, distribution='gaussian')
+    return(logLik(ssm)) # S3 method for log-likelihood of SSModel object
 }
 
 #' Filtering & smoothing at MLE for calibration SSM
@@ -97,9 +93,9 @@ mle_filter <- function(mle, Ft, yt, Zt, Rt,
     V <- diag_mat(phi*lambda^tau + nugget)
 
     # Run Kalman filter
-    ssm <- SSModel(y=yt, Z=Zt, T=Ft, R=diag_mat(rep(1, ncol(Ft))),
-                   H=Rt, Q=V, a1=a1, P1=P1,
-                   distribution='Gaussian', transform='none')
+    ssm <- SSModel(yt~SSMcustom(Z=Zt, T=Ft, R=diag_mat(rep(1, ncol(Ft))),
+                                Q=V, a1=a1, P1=P1),
+                   H=Rt, distribution='gaussian')
     filter.out <- KFS(ssm, smoothing='state')
 
     return(filter.out)
