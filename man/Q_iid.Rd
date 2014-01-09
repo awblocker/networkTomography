@@ -2,7 +2,7 @@
 \alias{Q_iid}
 \title{Q function for locally IID EM algorithm of Cao et al. (2000)}
 \usage{
-  Q_iid(logtheta, c, M, rdiag, epsilon)
+Q_iid(logtheta, c, M, rdiag, epsilon)
 }
 \arguments{
   \item{logtheta}{numeric vector (length k+1) of
@@ -20,24 +20,23 @@
   covariance for numerical stability}
 }
 \value{
-  numeric value of Q function; not vectorized in any way
+numeric value of Q function; not vectorized in any way
 }
 \description{
-  Computes the Q function (expected log-likelihood) for the
-  EM algorithm of Cao et al. (2000) for their locally IID
-  model.
+Computes the Q function (expected log-likelihood) for the
+EM algorithm of Cao et al. (2000) for their locally IID
+model.
 }
 \references{
-  J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
-  Time-varying network tomography: router link data.
-  Journal of the American Statistical Association,
-  95:1063-75, 2000.
+J. Cao, D. Davis, S. Van Der Viel, and B. Yu. Time-varying
+network tomography: router link data. Journal of the
+American Statistical Association, 95:1063-75, 2000.
 }
 \seealso{
-  Other CaoEtAl: \code{\link{grad_iid}},
-  \code{\link{grad_smoothed}},
-  \code{\link{locally_iid_EM}}, \code{\link{m_estep}},
-  \code{\link{phi_init}}, \code{\link{Q_smoothed}},
-  \code{\link{R_estep}}, \code{\link{smoothed_EM}}
+Other CaoEtAl: \code{\link{Q_smoothed}};
+\code{\link{R_estep}}; \code{\link{grad_iid}};
+\code{\link{grad_smoothed}}; \code{\link{locally_iid_EM}};
+\code{\link{m_estep}}; \code{\link{phi_init}};
+\code{\link{smoothed_EM}}
 }
 

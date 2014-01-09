@@ -2,7 +2,7 @@
 \alias{calcN}
 \title{Compute total traffic from a particular time.}
 \usage{
-  calcN(yt, A1)
+calcN(yt, A1)
 }
 \arguments{
   \item{yt}{length-m numeric vectors of observed aggregate
@@ -13,7 +13,7 @@
   \code{\link{decomposeA}}}
 }
 \description{
-  Compute total traffic from a particular time.
+Compute total traffic from a particular time.
 }
 \examples{
 data(bell.labs)

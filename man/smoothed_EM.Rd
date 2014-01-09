@@ -3,9 +3,8 @@
 \title{Run EM algorithm to obtain MLE (single time) for smoothed model of Cao et al.
 (2000)}
 \usage{
-  smoothed_EM(Y, A, eta0, sigma0, V, c = 2, maxiter = 1000,
-    tol = 1e-06, eps.lambda = 0, eps.phi = 0,
-    method = "L-BFGS-B")
+smoothed_EM(Y, A, eta0, sigma0, V, c = 2, maxiter = 1000, tol = 1e-06,
+  eps.lambda = 0, eps.phi = 0, method = "L-BFGS-B")
 }
 \arguments{
   \item{Y}{matrix (h x k) of observations in local window;
@@ -43,30 +42,29 @@
   calls)}
 }
 \value{
-  list with 5 elements: \code{lambda}, the estimated value
-  of lambda; \code{phi}, the estimated value of phi;
-  \code{iter}, the number of iterations run; \code{etat},
-  log(c(lambda, phi)); and sigmat, the inverse of the Q
-  functions Hessian at its mode
+list with 5 elements: \code{lambda}, the estimated value of
+lambda; \code{phi}, the estimated value of phi;
+\code{iter}, the number of iterations run; \code{etat},
+log(c(lambda, phi)); and sigmat, the inverse of the Q
+functions Hessian at its mode
 }
 \description{
-  Runs EM algorithm to compute MLE for the smoothed model
-  of Cao et al. (2000). Uses numerical optimization of
-  Q-function for each M-step with analytic computation of
-  its gradient. This performs estimation for a single time
-  point using output from the previous one.
+Runs EM algorithm to compute MLE for the smoothed model of
+Cao et al. (2000). Uses numerical optimization of
+Q-function for each M-step with analytic computation of its
+gradient. This performs estimation for a single time point
+using output from the previous one.
 }
 \references{
-  J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
-  Time-varying network tomography: router link data.
-  Journal of the American Statistical Association,
-  95:1063-75, 2000.
+J. Cao, D. Davis, S. Van Der Viel, and B. Yu. Time-varying
+network tomography: router link data. Journal of the
+American Statistical Association, 95:1063-75, 2000.
 }
 \seealso{
-  Other CaoEtAl: \code{\link{grad_iid}},
-  \code{\link{grad_smoothed}},
-  \code{\link{locally_iid_EM}}, \code{\link{m_estep}},
-  \code{\link{phi_init}}, \code{\link{Q_iid}},
-  \code{\link{Q_smoothed}}, \code{\link{R_estep}}
+Other CaoEtAl: \code{\link{Q_iid}};
+\code{\link{Q_smoothed}}; \code{\link{R_estep}};
+\code{\link{grad_iid}}; \code{\link{grad_smoothed}};
+\code{\link{locally_iid_EM}}; \code{\link{m_estep}};
+\code{\link{phi_init}}
 }
 

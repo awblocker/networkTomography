@@ -2,11 +2,14 @@
 \name{abilene}
 \alias{abilene}
 \title{Abilene data from Fang et al. (2007)}
+\usage{
+abilene
+}
 \description{
-  Data from the 12 node Abliene network from Fang et al.
-  (2007). Both the OD flows and the topology correspond to
-  the actual network. This is the X1 dataset from the given
-  paper.
+Data from the 12 node Abilene network from Fang et al.
+(2007). Both the OD flows and the topology correspond to
+the actual network. This is the X1 dataset from the given
+paper.
 }
 \section{Objects}{
   The list abilene, which contains several objects:
@@ -36,12 +39,12 @@
   matrix Y.full, corresponding to A.full. }
 }
 \references{
-  J. Fang, Y. Vardi, and C.-H. Zhang. An iterative
-  tomogravity algorithm for the estimation of network
-  traffic. In R. Liu, W. Strawderman, and C.-H. Zhang,
-  editors, Complex Datasets and Inverse Problems:
-  Tomography, Networks and Beyond, volume 54 of Lecture
-  Notes-Monograph Series. IMS, 2007.
+J. Fang, Y. Vardi, and C.-H. Zhang. An iterative
+tomogravity algorithm for the estimation of network
+traffic. In R. Liu, W. Strawderman, and C.-H. Zhang,
+editors, Complex Datasets and Inverse Problems: Tomography,
+Networks and Beyond, volume 54 of Lecture Notes-Monograph
+Series. IMS, 2007.
 }
 \keyword{datasets}
 

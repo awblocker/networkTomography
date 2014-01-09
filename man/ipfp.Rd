@@ -2,8 +2,8 @@
 \alias{ipfp}
 \title{Function to run basic IPFP (iterative proportional fitting procedure)}
 \usage{
-  ipfp(y, A, x0, tol = .Machine$double.eps, maxit = 1000,
-    verbose = FALSE, full = FALSE)
+ipfp(y, A, x0, tol = .Machine$double.eps, maxit = 1000, verbose = FALSE,
+  full = FALSE)
 }
 \arguments{
   \item{y}{numeric constraint vector (length nrow)}
@@ -25,14 +25,14 @@
   diagnostic info)}
 }
 \value{
-  if not full, vector of length ncol containing solution
-  obtained by IPFP. If full, list containing solution (as
-  x), number of iterations (as iter), and norm of Ax - y
-  (as errNorm)
+if not full, vector of length ncol containing solution
+obtained by IPFP. If full, list containing solution (as x),
+number of iterations (as iter), and norm of Ax - y (as
+errNorm)
 }
 \description{
-  Use IPFP starting from x0 to produce vector x s.t. Ax = y
-  within tolerance. Need to ensure that x0 >= 0.
+Use IPFP starting from x0 to produce vector x s.t. Ax = y
+within tolerance. Need to ensure that x0 >= 0.
 }
 \examples{
 A <- buildStarMat(3)

@@ -2,8 +2,8 @@
 \alias{buildRoutingMatrix}
 \title{Build routing matrix from table of link relationships}
 \usage{
-  buildRoutingMatrix(nodes, src, dest, weights = NULL,
-    agg = FALSE, sep = "_", aggChar = "*", verbose = 0)
+buildRoutingMatrix(nodes, src, dest, weights = NULL, agg = FALSE,
+  sep = "_", aggChar = "*", verbose = 0)
 }
 \arguments{
   \item{nodes}{vector (lenght n) of node identifiers}
@@ -31,21 +31,20 @@
   >=1 are increasing levels of reporting}
 }
 \value{
-  List consisting of routing matrix \code{A} (dense) of
-  dimensions m x n and iGraph object for network
-  \code{topo}
+List consisting of routing matrix \code{A} (dense) of
+dimensions m x n and iGraph object for network \code{topo}
 }
 \description{
-  Constructs routing matrix from link relationships.
-  Determines routes using (weighted) shortest-path
-  calculation (mirroring OSPF). Currently handles tied
-  paths arbitrarily; will incorporate fractions for tie
-  resolution in next version. Can optionally include
-  aggregate source and destination flows for each node;
-  this can make a major difference for some topologies.
-  Tomogravity methods typically make use of such
-  information, which most routers collect. Note that
-  resulting routing matrix need not be of full row rank.
+Constructs routing matrix from link relationships.
+Determines routes using (weighted) shortest-path
+calculation (mirroring OSPF). Currently handles tied paths
+arbitrarily; will incorporate fractions for tie resolution
+in next version. Can optionally include aggregate source
+and destination flows for each node; this can make a major
+difference for some topologies. Tomogravity methods
+typically make use of such information, which most routers
+collect. Note that resulting routing matrix need not be of
+full row rank.
 }
 \keyword{array}
 

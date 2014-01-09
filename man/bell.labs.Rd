@@ -2,9 +2,12 @@
 \name{bell.labs}
 \alias{bell.labs}
 \title{Bell Labs 1router data from Cao et al. (2000)}
+\usage{
+bell.labs
+}
 \description{
-  Data from 4-node network with star topology collected
-  from Bell Labs; used in Cao et al. (2000).
+Data from 4-node network with star topology collected from
+Bell Labs; used in Cao et al. (2000).
 }
 \section{Objects}{
   The list bell.labs, which contains several objects:
@@ -38,10 +41,9 @@
   in decimal hours since midnight for each observation. }
 }
 \references{
-  J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
-  Time-varying network tomography: router link data.
-  Journal of the American Statistical Association,
-  95:1063-75, 2000.
+J. Cao, D. Davis, S. Van Der Viel, and B. Yu. Time-varying
+network tomography: router link data. Journal of the
+American Statistical Association, 95:1063-75, 2000.
 }
 \keyword{datasets}
 

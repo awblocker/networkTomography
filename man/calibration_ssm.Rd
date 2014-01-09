@@ -2,11 +2,10 @@
 \alias{calibration_ssm}
 \title{Estimation for the linear SSM calibration model of Blocker & Airoldi (2011)}
 \usage{
-  calibration_ssm(tme, y, A, Ft, Rt, lambda0, phihat0,
-    tau = 2, w = 11, initScale = 1/(1 - diag(Ft)^2),
-    nugget = sqrt(.Machine$double.eps), verbose = FALSE,
-    logTrans = TRUE, method = "L-BFGS-B",
-    optimArgs = list())
+calibration_ssm(tme, y, A, Ft, Rt, lambda0, phihat0, tau = 2, w = 11,
+  initScale = 1/(1 - diag(Ft)^2), nugget = sqrt(.Machine$double.eps),
+  verbose = FALSE, logTrans = TRUE, method = "L-BFGS-B",
+  optimArgs = list())
 }
 \arguments{
   \item{tme}{integer time at which to center moving window
@@ -61,20 +60,20 @@
   fnscale, which is automatically set}
 }
 \value{
-  list containing \code{lambdahat}, a numeric vector
-  (length k) containing the MLE for lambda; \code{phihat},
-  the MLE for phi; \code{xhat}, the smoothed estimates of
-  the OD flows for the window used as a k x w matrix; and
-  \code{varhat}, a k x w matrix containing the diagonal of
-  the estimated covariance for each OD flow in the window
+list containing \code{lambdahat}, a numeric vector (length
+k) containing the MLE for lambda; \code{phihat}, the MLE
+for phi; \code{xhat}, the smoothed estimates of the OD
+flows for the window used as a k x w matrix; and
+\code{varhat}, a k x w matrix containing the diagonal of
+the estimated covariance for each OD flow in the window
 }
 \description{
-  Maximum likelihood estimation of the parameters of the
-  calibration model from Blocker & Airoldi (2011) via
-  direct numerical maximization of the marginal
-  log-likelihood. This relies upon efficient Kalman
-  smoothing to evaluate the marginal likelihood, which is
-  provided here by the \code{KFAS} package.
+Maximum likelihood estimation of the parameters of the
+calibration model from Blocker & Airoldi (2011) via direct
+numerical maximization of the marginal log-likelihood. This
+relies upon efficient Kalman smoothing to evaluate the
+marginal likelihood, which is provided here by the
+\code{KFAS} package.
 }
 \examples{
 data(bell.labs)
@@ -92,14 +91,14 @@ Rt <- 0.01 * diag_mat(rep(1, nrow(bell.labs$A)))
 #                                   phihat0=phihat0, w=23)
 }
 \references{
-  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-  time series on a graph. Proceedings of the Twenty-Seventh
-  Conference Annual Conference on Uncertainty in Artificial
-  Intelligence (UAI-11) 51-60, 2011.
+A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+series on a graph. Proceedings of the Twenty-Seventh
+Conference Annual Conference on Uncertainty in Artificial
+Intelligence (UAI-11) 51-60, 2011.
 }
 \seealso{
-  Other calibrationModel: \code{\link{llCalibration}},
-  \code{\link{mle_filter}}
+Other calibrationModel: \code{\link{llCalibration}};
+\code{\link{mle_filter}}
 }
 \keyword{models}
 \keyword{multivariate}

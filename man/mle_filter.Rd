@@ -2,9 +2,8 @@
 \alias{mle_filter}
 \title{Filtering & smoothing at MLE for calibration SSM}
 \usage{
-  mle_filter(mle, Ft, yt, Zt, Rt, k = ncol(Ft), tau = 2,
-    initScale = 1/(1 - diag(Ft)^2),
-    nugget = sqrt(.Machine$double.eps))
+mle_filter(mle, Ft, yt, Zt, Rt, k = ncol(Ft), tau = 2, initScale = 1/(1 -
+  diag(Ft)^2), nugget = sqrt(.Machine$double.eps))
 }
 \arguments{
   \item{mle}{numeric vector (length k+1) of parameters.
@@ -36,27 +35,27 @@
   stability}
 }
 \value{
-  numeric marginal log-likelihood obtained via Kalman
-  smoothing
+numeric marginal log-likelihood obtained via Kalman
+smoothing
 
-  list containing result of Kalman smoothing; see
-  \code{\link{SSModel}} and \code{\link{KFS}} for details
+list containing result of Kalman smoothing; see
+\code{\link{SSModel}} and \code{\link{KFS}} for details
 }
 \description{
-  Run Kalman filtering and smoothing at calculated MLE for
-  parameters of calibration SSM. This is used to obtain
-  point and covariance estimates for the actual OD flows X
-  following estimation of other parameters.
+Run Kalman filtering and smoothing at calculated MLE for
+parameters of calibration SSM. This is used to obtain point
+and covariance estimates for the actual OD flows X
+following estimation of other parameters.
 }
 \references{
-  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-  time series on a graph. Proceedings of the Twenty-Seventh
-  Conference Annual Conference on Uncertainty in Artificial
-  Intelligence (UAI-11) 51-60, 2011.
+A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+series on a graph. Proceedings of the Twenty-Seventh
+Conference Annual Conference on Uncertainty in Artificial
+Intelligence (UAI-11) 51-60, 2011.
 }
 \seealso{
-  Other calibrationModel: \code{\link{calibration_ssm}},
-  \code{\link{llCalibration}}
+Other calibrationModel: \code{\link{calibration_ssm}};
+\code{\link{llCalibration}}
 }
 \keyword{models}
 \keyword{multivariate}

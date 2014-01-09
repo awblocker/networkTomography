@@ -2,8 +2,8 @@
 \alias{tomogravity}
 \title{Run tomogravity estimation on complete time series of aggregate flows}
 \usage{
-  tomogravity(Y, A, lambda, lower = 0, normalize = FALSE,
-    .progress = "none", control = list())
+tomogravity(Y, A, lambda, lower = 0, normalize = FALSE,
+  .progress = "none", control = list())
 }
 \arguments{
   \item{Y}{n x m matrix contain one vector of observed
@@ -33,20 +33,20 @@
   \item{control}{List of control information for optim.}
 }
 \value{
-  A list containing three elements: \itemize{ \item
-  resultList, a list containing the output from running
-  \code{\link{tomogravity.fit}} on each timepoint \item
-  changeFromInit, a vector of length n containing the
-  relative L_1 change between the initial (IPFP)
-  point-to-point flow estimates and the final tomogravity
-  estimates \item Xhat, a n x k matrix containing a vector
-  of estimated point-to-point flows (for each time point)
-  per row }
+A list containing three elements: \itemize{ \item
+resultList, a list containing the output from running
+\code{\link{tomogravity.fit}} on each timepoint \item
+changeFromInit, a vector of length n containing the
+relative L_1 change between the initial (IPFP)
+point-to-point flow estimates and the final tomogravity
+estimates \item Xhat, a n x k matrix containing a vector of
+estimated point-to-point flows (for each time point) per
+row }
 }
 \description{
-  The aggregate flows Y and their corresponding routing
-  matrix A must include all aggregate source and
-  destination flows.
+The aggregate flows Y and their corresponding routing
+matrix A must include all aggregate source and destination
+flows.
 }
 \examples{
 data(cmu)
@@ -54,7 +54,7 @@ estimate <- tomogravity(Y=cmu$Y.full[1, , drop=FALSE], A=cmu$A.full,
                         lambda=0.01, .progress='text')
 }
 \seealso{
-  Other tomogravity: \code{\link{tomogravity.fit}}
+Other tomogravity: \code{\link{tomogravity.fit}}
 }
 \keyword{models}
 \keyword{multivariate}

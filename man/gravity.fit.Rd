@@ -2,7 +2,7 @@
 \alias{gravity.fit}
 \title{Gravity estimation for a single time point}
 \usage{
-  gravity.fit(yt, srcDstInd)
+gravity.fit(yt, srcDstInd)
 }
 \arguments{
   \item{yt}{length-m numeric vector of observed aggregate
@@ -13,11 +13,11 @@
   produced by \code{\link{getSrcDstIndices}}}
 }
 \value{
-  xhat, a numeric vector of length k providing gravity
-  estimates of the point-to-point flows of interest
+xhat, a numeric vector of length k providing gravity
+estimates of the point-to-point flows of interest
 }
 \description{
-  Gravity estimation for a single time point
+Gravity estimation for a single time point
 }
 \examples{
 data(cmu)
@@ -25,7 +25,7 @@ srcDstInd <- getSrcDstIndices(cmu$A.full)
 estimate <- gravity.fit(yt=cmu$Y.full[1,], srcDstInd=srcDstInd)
 }
 \seealso{
-  Other gravity: \code{\link{gravity}}
+Other gravity: \code{\link{gravity}}
 }
 \keyword{models}
 \keyword{multivariate}

@@ -2,10 +2,9 @@
 \alias{move_step}
 \title{Move step of sample-resample-move algorithm for multilevel state-space model}
 \usage{
-  move_step(y, X, tme, lambda, phi, lambdatm1, phitm1,
-    prior, A, A1_inv, A2, rho, tau, m = ncol(X),
-    l = nrow(A1_inv), k = length(lambda), ndraws = 10,
-    minAccepts = 0, verbose = FALSE)
+move_step(y, X, tme, lambda, phi, lambdatm1, phitm1, prior, A, A1_inv, A2, rho,
+  tau, m = ncol(X), l = nrow(A1_inv), k = length(lambda), ndraws = 10,
+  minAccepts = 0, verbose = FALSE)
 }
 \arguments{
   \item{y}{numeric vector (length l) of observed link
@@ -64,28 +63,28 @@
   output}
 }
 \value{
-  list containing updated values of X, lambda, and phi
+list containing updated values of X, lambda, and phi
 }
 \description{
-  Function to execute single MCMC-based move step for
-  \code{\link{bayesianDynamicFilter}}. This can use two
-  types of stopping rules: number of iterations or number
-  of accepted moves for the X particles. The former is used
-  by default, but the latter adapts better to low
-  acceptance rates (sometimes with substantial
-  computational cost). Most updates in this algorithm are
-  Metropolis-Hastings with customized proposals.
+Function to execute single MCMC-based move step for
+\code{\link{bayesianDynamicFilter}}. This can use two types
+of stopping rules: number of iterations or number of
+accepted moves for the X particles. The former is used by
+default, but the latter adapts better to low acceptance
+rates (sometimes with substantial computational cost). Most
+updates in this algorithm are Metropolis-Hastings with
+customized proposals.
 }
 \references{
-  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-  time series on a graph. Proceedings of the Twenty-Seventh
-  Conference Annual Conference on Uncertainty in Artificial
-  Intelligence (UAI-11) 51-60, 2011.
+A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+series on a graph. Proceedings of the Twenty-Seventh
+Conference Annual Conference on Uncertainty in Artificial
+Intelligence (UAI-11) 51-60, 2011.
 }
 \seealso{
-  Other bayesianDynamicModel:
-  \code{\link{bayesianDynamicFilter}},
-  \code{\link{buildPrior}}
+Other bayesianDynamicModel:
+\code{\link{bayesianDynamicFilter}};
+\code{\link{buildPrior}}
 }
 \keyword{models}
 \keyword{multivariate}

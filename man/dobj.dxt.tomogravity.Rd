@@ -2,7 +2,7 @@
 \alias{dobj.dxt.tomogravity}
 \title{Analytic gradient of objective function of Zhang et al. 2003}
 \usage{
-  dobj.dxt.tomogravity(xt, yt, A, srcDstInd, lambda)
+dobj.dxt.tomogravity(xt, yt, A, srcDstInd, lambda)
 }
 \arguments{
   \item{xt}{length-k numeric vector of point-to-point
@@ -23,13 +23,12 @@
   scaling the mututal information prior.}
 }
 \value{
-  numeric vector of length k containing gradient of
-  objective function with respect to xt
+numeric vector of length k containing gradient of objective
+function with respect to xt
 }
 \description{
-  Requires bounded optimization to maintain positive OD
-  flows, and only those flows that are not
-  deterministically zero should be included in the
-  estimation.
+Requires bounded optimization to maintain positive OD
+flows, and only those flows that are not deterministically
+zero should be included in the estimation.
 }
 

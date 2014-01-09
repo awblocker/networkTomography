@@ -2,8 +2,8 @@
 \alias{tomogravity.fit}
 \title{Tomogravity estimation for a single time point using L-BFGS-B}
 \usage{
-  tomogravity.fit(yt, A, srcDstInd, lambda, N = 1,
-    normalize = FALSE, lower = 0, control = list())
+tomogravity.fit(yt, A, srcDstInd, lambda, N = 1, normalize = FALSE,
+  lower = 0, control = list())
 }
 \arguments{
   \item{yt}{length-m numeric vector of observed aggregate
@@ -33,14 +33,14 @@
   \item{control}{List of control information for optim.}
 }
 \value{
-  A list as returned by optim, with element \code{par}
-  containing the estimated point-to-point flows and
-  elementer \code{gr} containing the analytic gradient
-  evaluated at the estimate.
+A list as returned by optim, with element \code{par}
+containing the estimated point-to-point flows and elementer
+\code{gr} containing the analytic gradient evaluated at the
+estimate.
 }
 \description{
-  Tomogravity estimation for a single time point using
-  L-BFGS-B
+Tomogravity estimation for a single time point using
+L-BFGS-B
 }
 \examples{
 data(cmu)
@@ -49,7 +49,7 @@ estimate <- tomogravity.fit(yt=cmu$Y.full[1, ], A=cmu$A.full,
      srcDstInd=srcDstInd, lambda=0.01)
 }
 \seealso{
-  Other tomogravity: \code{\link{tomogravity}}
+Other tomogravity: \code{\link{tomogravity}}
 }
 \keyword{models}
 \keyword{multivariate}

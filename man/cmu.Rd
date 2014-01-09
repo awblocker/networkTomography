@@ -2,12 +2,14 @@
 \name{cmu}
 \alias{cmu}
 \title{CMU data from Blocker & Airoldi (2011)}
+\usage{
+cmu
+}
 \description{
-  Data from the 12 node CMU network used in Blocker &
-  Airoldi (2011). The OD flows are actual, observed traffic
-  from a CMU network. The topology does not, however,
-  correspond to the original network due to security
-  considerations.
+Data from the 12 node CMU network used in Blocker & Airoldi
+(2011). The OD flows are actual, observed traffic from a
+CMU network. The topology does not, however, correspond to
+the original network due to security considerations.
 }
 \section{Objects}{
   The list cmu, which contains several objects: \itemize{
@@ -37,10 +39,10 @@
   matrix Y.full, corresponding to A.full. }
 }
 \references{
-  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-  time series on a graph. Proceedings of the Twenty-Seventh
-  Conference Annual Conference on Uncertainty in Artificial
-  Intelligence (UAI-11) 51-60, 2011.
+A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+series on a graph. Proceedings of the Twenty-Seventh
+Conference Annual Conference on Uncertainty in Artificial
+Intelligence (UAI-11) 51-60, 2011.
 }
 \keyword{datasets}
 

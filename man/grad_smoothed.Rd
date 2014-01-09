@@ -3,8 +3,7 @@
 \title{Compute analytic gradient of Q-function for smoothed EM algorithm of Cao et
 al. (2000)}
 \usage{
-  grad_smoothed(logtheta, c, M, rdiag, eta0, sigma0, V,
-    eps.lambda, eps.phi)
+grad_smoothed(logtheta, c, M, rdiag, eta0, sigma0, V, eps.lambda, eps.phi)
 }
 \arguments{
   \item{logtheta}{numeric vector (length k+1) of
@@ -36,25 +35,24 @@ al. (2000)}
   for numerical stability; typically 0}
 }
 \value{
-  numeric vector of same length as logtheta containing
-  calculated gradient
+numeric vector of same length as logtheta containing
+calculated gradient
 }
 \description{
-  Computes gradient of Q-function with respect to
-  log(c(lambda,phi)) for EM algorithm from Cao et al.
-  (2000) for their smoothed model.
+Computes gradient of Q-function with respect to
+log(c(lambda,phi)) for EM algorithm from Cao et al. (2000)
+for their smoothed model.
 }
 \references{
-  J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
-  Time-varying network tomography: router link data.
-  Journal of the American Statistical Association,
-  95:1063-75, 2000.
+J. Cao, D. Davis, S. Van Der Viel, and B. Yu. Time-varying
+network tomography: router link data. Journal of the
+American Statistical Association, 95:1063-75, 2000.
 }
 \seealso{
-  Other CaoEtAl: \code{\link{grad_iid}},
-  \code{\link{locally_iid_EM}}, \code{\link{m_estep}},
-  \code{\link{phi_init}}, \code{\link{Q_iid}},
-  \code{\link{Q_smoothed}}, \code{\link{R_estep}},
-  \code{\link{smoothed_EM}}
+Other CaoEtAl: \code{\link{Q_iid}};
+\code{\link{Q_smoothed}}; \code{\link{R_estep}};
+\code{\link{grad_iid}}; \code{\link{locally_iid_EM}};
+\code{\link{m_estep}}; \code{\link{phi_init}};
+\code{\link{smoothed_EM}}
 }
 

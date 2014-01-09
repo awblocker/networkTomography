@@ -2,9 +2,8 @@
 \alias{llCalibration}
 \title{Evaluate marginal log-likelihood for calibration SSM}
 \usage{
-  llCalibration(theta, Ft, yt, Zt, Rt, k = ncol(Ft),
-    tau = 2, initScale = 1/(1 - diag(Ft)^2),
-    nugget = sqrt(.Machine$double.eps))
+llCalibration(theta, Ft, yt, Zt, Rt, k = ncol(Ft), tau = 2,
+  initScale = 1/(1 - diag(Ft)^2), nugget = sqrt(.Machine$double.eps))
 }
 \arguments{
   \item{theta}{numeric vector (length k+1) of parameters.
@@ -36,25 +35,25 @@
   stability}
 }
 \value{
-  numeric marginal log-likelihood obtained via Kalman
-  smoothing
+numeric marginal log-likelihood obtained via Kalman
+smoothing
 }
 \description{
-  Evaluates marginal log-likelihood for calibration SSM of
-  Blocker & Airoldi (2011) using Kalman filtering. This is
-  very fast and numerically stable, using the univariate
-  Kalman filtering and smoothing functions of \code{KFAS}
-  with Fortran implementations.
+Evaluates marginal log-likelihood for calibration SSM of
+Blocker & Airoldi (2011) using Kalman filtering. This is
+very fast and numerically stable, using the univariate
+Kalman filtering and smoothing functions of \code{KFAS}
+with Fortran implementations.
 }
 \references{
-  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-  time series on a graph. Proceedings of the Twenty-Seventh
-  Conference Annual Conference on Uncertainty in Artificial
-  Intelligence (UAI-11) 51-60, 2011.
+A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+series on a graph. Proceedings of the Twenty-Seventh
+Conference Annual Conference on Uncertainty in Artificial
+Intelligence (UAI-11) 51-60, 2011.
 }
 \seealso{
-  Other calibrationModel: \code{\link{calibration_ssm}},
-  \code{\link{mle_filter}}
+Other calibrationModel: \code{\link{calibration_ssm}};
+\code{\link{mle_filter}}
 }
 \keyword{models}
 \keyword{multivariate}

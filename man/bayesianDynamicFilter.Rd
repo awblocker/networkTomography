@@ -2,11 +2,10 @@
 \alias{bayesianDynamicFilter}
 \title{Function for inference with multilevel state-space model}
 \usage{
-  bayesianDynamicFilter(Y, A, prior, lambda0, sigma0, phi0,
-    rho = 0.1, tau = 2, m = 1000, verbose = FALSE,
-    Xdraws = 5 * m, Xburnin = m, Movedraws = 10,
-    nThresh = 10, aggregate = FALSE, backward = FALSE,
-    tStart = 1)
+bayesianDynamicFilter(Y, A, prior, lambda0, sigma0, phi0, rho = 0.1,
+  tau = 2, m = 1000, verbose = FALSE, Xdraws = 5 * m, Xburnin = m,
+  Movedraws = 10, nThresh = 10, aggregate = FALSE, backward = FALSE,
+  tStart = 1)
 }
 \arguments{
   \item{Y}{matrix (n x l) of observed link loads over time,
@@ -67,35 +66,34 @@
   from}
 }
 \value{
-  list containing: \itemize{ \item xList \item lambdaList
-  \item phiList \item y \item rho \item prior \item n \item
-  l \item k \item A \item A_qr \item A1 \item A1_inv \item
-  A2 \item nEff \item tStart \item backward \item aggregate
-  }
+list containing: \itemize{ \item xList \item lambdaList
+\item phiList \item y \item rho \item prior \item n \item l
+\item k \item A \item A_qr \item A1 \item A1_inv \item A2
+\item nEff \item tStart \item backward \item aggregate }
 }
 \description{
-  Particle filtering with sample-resample-move algorithm
-  for multilevel state-space model of Blocker & Airoldi
-  (2011). This has log-normal autoregressive dynamics on OD
-  intensities, log-normal emission distributions, and
-  truncated normal observation densities.  This can return
-  full (all particles) output, but it is typically better
-  to aggregate results as you go to reduce memory
-  consumption. It can also run forward or backward
-  filtering for smoothing. These results are combined via a
-  separate function for smoothing; however, this procedure
-  typically performs poorly due to differences between the
-  distributions of particles from forward and reverse
-  filtering.
+Particle filtering with sample-resample-move algorithm for
+multilevel state-space model of Blocker & Airoldi (2011).
+This has log-normal autoregressive dynamics on OD
+intensities, log-normal emission distributions, and
+truncated normal observation densities.  This can return
+full (all particles) output, but it is typically better to
+aggregate results as you go to reduce memory consumption.
+It can also run forward or backward filtering for
+smoothing. These results are combined via a separate
+function for smoothing; however, this procedure typically
+performs poorly due to differences between the
+distributions of particles from forward and reverse
+filtering.
 }
 \references{
-  A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
-  time series on a graph. Proceedings of the Twenty-Seventh
-  Conference Annual Conference on Uncertainty in Artificial
-  Intelligence (UAI-11) 51-60, 2011.
+A.W. Blocker and E.M. Airoldi. Deconvolution of mixing time
+series on a graph. Proceedings of the Twenty-Seventh
+Conference Annual Conference on Uncertainty in Artificial
+Intelligence (UAI-11) 51-60, 2011.
 }
 \seealso{
-  Other bayesianDynamicModel: \code{\link{buildPrior}},
-  \code{\link{move_step}}
+Other bayesianDynamicModel: \code{\link{buildPrior}};
+\code{\link{move_step}}
 }
 
