@@ -26,10 +26,8 @@
 #'        n and iGraph object for network \code{topo}
 #' @keywords array
 #' @export
-buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
-                               agg=FALSE,
-                               sep='_', aggChar='*',
-                               verbose=0) {
+buildRoutingMatrix <- function(nodes, src, dest, weights=NULL, agg=FALSE,
+                               sep='_', aggChar='*', verbose=0) {
     # Format input
     nodes <- as.character(nodes)
     src <- as.character(src)
@@ -42,20 +40,20 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
     # Setup routing matrix
     A <- matrix(integer(1), m+agg*2*n, n*n)
 
-    linkNames <- str_c(src, dest, sep=sep)
+    linkNames <- paste(src, dest, sep=sep)
 
     if (agg) {
         # Aggregate in flows
-        linkNames <- c(linkNames, str_c(aggChar, nodes, sep=sep))
+        linkNames <- c(linkNames, paste(aggChar, nodes, sep=sep))
 
         # Aggregate out flows
-        linkNames <- c(linkNames, str_c(nodes, aggChar, sep=sep))
+        linkNames <- c(linkNames, paste(nodes, aggChar, sep=sep))
     }
 
     rownames(A) <- linkNames
     
     od <- expand.grid(nodes, nodes)
-    odNames <- apply(od, 1, str_c, sep=sep, collapse=sep)
+    odNames <- apply(od, 1, paste, sep=sep, collapse=sep)
     colnames(A) <- odNames
 
     # Build topology (adjacency) matrix
@@ -78,7 +76,7 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
         # Iterate through destinations
         for (dest in seq(n)[-orig]) {
             # Get links that this OD flow hits
-            odName <- str_c(nodes[orig], nodes[dest], sep=sep)
+            odName <- paste(nodes[orig], nodes[dest], sep=sep)
             nLinks <- length(pathList[[dest]]) - 1
 
             links <- sapply(seq(nLinks), function(j)
@@ -89,7 +87,7 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
 
             # Add ones to the correct entries in the corresponding column of A
             for (l in 1:nLinks) {
-                linkName <- str_c(nodes[links[,l]], collapse=sep)
+                linkName <- paste(nodes[links[,l]], collapse=sep)
                 
                 if (verbose > 1)
                     cat(sprintf("\tLink: %s\tOD: %s\n", linkName, odName),
@@ -104,12 +102,12 @@ buildRoutingMatrix <- function(nodes, src, dest, weights=NULL,
         # Iterate over nodes
         for (node in nodes) {
             # Get names of in and out flows
-            inName <- str_c(aggChar, node, sep=sep)
-            outName <- str_c(node, aggChar, sep=sep)
+            inName <- paste(aggChar, node, sep=sep)
+            outName <- paste(node, aggChar, sep=sep)
 
             # Find in and out OD flows
-            inFlows <- grep(str_c(sep, node), colnames(A), fixed=TRUE)
-            outFlows <- grep(str_c(node, sep), colnames(A), fixed=TRUE)
+            inFlows <- grep(paste0(sep, node), colnames(A), fixed=TRUE)
+            outFlows <- grep(paste0(node, sep), colnames(A), fixed=TRUE)
 
             # Add ones to appropriate entries in rows
             A[inName, inFlows] <- 1

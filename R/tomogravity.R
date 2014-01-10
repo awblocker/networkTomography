@@ -185,10 +185,10 @@ tomogravity <- function(Y, A, lambda, lower=0, normalize=FALSE,
     # Run tomogravity inference for each time
     resultList <- llply(seq(nrow(Y)), function(tme)
                         tomogravity.fit(yt=Y[tme, ], A=A,
-                                        srcDstInd=srcDstInd, lambda=lambda,
-                                        normalize=normalize,
-                                        lower=lower,
-                                        control=control),
+                                         srcDstInd=srcDstInd, lambda=lambda,
+                                         normalize=normalize,
+                                         lower=lower,
+                                         control=control),
                         .progress=.progress)
 
     # Compute change from initalization as diagnostic

@@ -18,11 +18,10 @@ LazyLoad: yes
 URL: https://github.com/awblocker/networkTomography
 Depends:
     R (>= 2.10.0),
-    Rglpk (>= 0.3),
+Imports:
     coda (>= 0.11-3),
-    MASS,
-    KFAS (>= 0.9),
-    limSolve (>= 1.4),
     igraph (>= 0.5),
-    stringr,
-    plyr
+    KFAS (>= 1.0),
+    limSolve (>= 1.4),
+    plyr,
+    Rglpk (>= 0.3),
