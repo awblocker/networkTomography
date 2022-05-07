@@ -22,3 +22,5 @@
 .Rapp.history*
 .Rproj.user
 Rprof.out
+CRAN-SUBMISSION
+revdep/*

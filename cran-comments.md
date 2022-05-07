@@ -6,8 +6,11 @@ This change removes all C code from networkTomography.
 ## Test environments
 
 * local x86_64-pc-linux-gnu R 4.2.0
-* Ubuntu 16.04.7 LTS (on travis-ci), R 4.0.2 and dev 2022-02-09 r81690
-* win-builder (devel and release)
+* Windows Server 2022, R-devel, 64 bit (via R-hub)
+* Ubuntu Linux 20.04.1 LTS, R-release, GCC (via R-hub)
+* Fedora Linux, R-devel, clang, gfortran (via R-hub)
+* mac-builder release
+* win-builder devel
 
 ## R CMD check results
 
@@ -17,8 +20,8 @@ R CMD check succeeded
 
 ## revdepcheck results
 
-We checked 10 reverse dependencies, comparing R CMD check results
-across CRAN and dev versions of this package.
+We checked 1 reverse dependencies, comparing R CMD check results across CRAN and
+dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
