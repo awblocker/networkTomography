@@ -1,7 +1,7 @@
 Package: networkTomography
 Type: Package
 Title: Tools for network tomography
-Version: 0.3
+Version: 0.4
 Author: Alexander W Blocker, Paul Koullick, Edoardo Airoldi
 Maintainer: Alexander W Blocker <ablocker@gmail.com>
 Description: networkTomography implements the methods developed and evaluated in
@@ -18,10 +18,12 @@ LazyLoad: yes
 URL: https://github.com/awblocker/networkTomography
 Depends:
     R (>= 2.10.0),
+    ipfp
 Imports:
     coda (>= 0.11-3),
     igraph (>= 0.5),
     KFAS (>= 1.0),
     limSolve (>= 1.4),
     plyr,
-    Rglpk (>= 0.3),
+    Rglpk (>= 0.3)
+RoxygenNote: 7.1.2

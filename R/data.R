@@ -45,7 +45,7 @@
 #'
 #' @docType data
 #' @name bell.labs
-#' @usage bell.labs
+#' @usage data(bell.labs)
 #' @references J. Cao, D. Davis, S. Van Der Viel, and B. Yu.
 #' Time-varying network tomography: router link data.
 #' Journal of the American Statistical Association, 95:1063-75, 2000.
@@ -90,7 +90,7 @@ NULL
 #'
 #' @docType data
 #' @name cmu
-#' @usage cmu
+#' @usage data(cmu)
 #' @references A.W. Blocker and E.M. Airoldi. Deconvolution of mixing
 #' time series on a graph. Proceedings of the Twenty-Seventh Conference Annual
 #' Conference on Uncertainty in Artificial Intelligence (UAI-11) 51-60, 2011.
@@ -135,7 +135,7 @@ NULL
 #'
 #' @docType data
 #' @name abilene
-#' @usage abilene
+#' @usage data(abilene)
 #' @references J. Fang, Y. Vardi, and C.-H. Zhang. An iterative tomogravity
 #' algorithm for the estimation of network traffic. In R. Liu, W. Strawderman,
 #' and C.-H. Zhang, editors, Complex Datasets and Inverse Problems: Tomography,
