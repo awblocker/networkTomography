@@ -18,7 +18,7 @@ each point-to-point flow, as produced by \code{\link{getSrcDstIndices}}}
 
 \item{lambda}{regularization parameter for mutual information prior. Note 
 that this is scaled by the squared total traffic in the objective function 
-before scaling the mututal information prior.}
+before scaling the mutual information prior.}
 }
 \value{
 numeric vector of length k containing gradient of objective function 

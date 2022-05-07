@@ -25,7 +25,7 @@ each point-to-point flow, as produced by \code{\link{getSrcDstIndices}}}
 
 \item{lambda}{regularization parameter for mutual information prior. Note 
 that this is scaled by the squared total traffic in the objective function 
-before scaling the mututal information prior.}
+before scaling the mutual information prior.}
 
 \item{N}{total traffic for normalization. Unused if normalized is FALSE.}
 
@@ -39,7 +39,7 @@ tuning of lambda.}
 }
 \value{
 A list as returned by optim, with element \code{par} containing the
-  estimated point-to-point flows and elementer \code{gr} containing the
+  estimated point-to-point flows and element \code{gr} containing the
   analytic gradient evaluated at the estimate.
 }
 \description{

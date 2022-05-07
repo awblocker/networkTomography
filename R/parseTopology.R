@@ -9,7 +9,7 @@
 #' methods typically make use of such information, which most routers collect.
 #' Note that resulting routing matrix need not be of full row rank.
 #'
-#' @param nodes vector (lenght n) of node identifiers
+#' @param nodes vector (length n) of node identifiers
 #' @param src vector (length m) of sources, one per link, matched with dest
 #' @param dest vector (length n) of destination identifiers, one per link,
 #'          matched with src

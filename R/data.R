@@ -27,7 +27,7 @@
 #'  \itemize{
 #'   \item value, level of traffic recorded
 #'   \item nme, name of flow or load
-#'   \item method, whether flow was directly observered or inferred
+#'   \item method, whether flow was directly observed or inferred
 #'       (all observed)
 #'   \item time, time of observation
 #'   \item od, flag for origin-destination vs. link loads
@@ -67,7 +67,7 @@ NULL
 #'  \item \code{X}, a matrix of origin-destination flows formatted for analysis
 #'  \item \code{Y}, a matrix of link loads formatted for analysis
 #'  \item \code{A.full}, the routing matrix for this network without
-#'  truncatation for full row rank)
+#'  truncation for full row rank)
 #'  \item \code{Y.full}, a matrix of link loads corresponding to code{A.full}
 #' }
 #' In this data, we have \code{A \%*\% t(X) == t(Y)} and
@@ -112,7 +112,7 @@ NULL
 #'  \item \code{X}, a matrix of origin-destination flows formatted for analysis
 #'  \item \code{Y}, a matrix of link loads formatted for analysis
 #'  \item \code{A.full}, the routing matrix for this network without
-#'  truncatation for full row rank)
+#'  truncation for full row rank)
 #'  \item \code{Y.full}, a matrix of link loads corresponding to code{A.full}
 #' }
 #' In this data, we have \code{A \%*\% t(X) == t(Y)} and

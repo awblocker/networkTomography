@@ -12,7 +12,7 @@
 #'   each point-to-point flow, as produced by \code{\link{getSrcDstIndices}}
 #' @param lambda regularization parameter for mutual information prior. Note 
 #'   that this is scaled by the squared total traffic in the objective function 
-#'   before scaling the mututal information prior.
+#'   before scaling the mutual information prior.
 #' @return numeric value of objective function to minimize in tomogravity 
 #'   estimation
 obj.tomogravity <- function(xt, yt, A, srcDstInd, lambda) {
@@ -42,7 +42,7 @@ obj.tomogravity <- function(xt, yt, A, srcDstInd, lambda) {
 #'   each point-to-point flow, as produced by \code{\link{getSrcDstIndices}}
 #' @param lambda regularization parameter for mutual information prior. Note 
 #'   that this is scaled by the squared total traffic in the objective function 
-#'   before scaling the mututal information prior.
+#'   before scaling the mutual information prior.
 #' @return numeric vector of length k containing gradient of objective function 
 #'   with respect to xt
 dobj.dxt.tomogravity <- function(xt, yt, A, srcDstInd, lambda) {
@@ -73,7 +73,7 @@ dobj.dxt.tomogravity <- function(xt, yt, A, srcDstInd, lambda) {
 #'   each point-to-point flow, as produced by \code{\link{getSrcDstIndices}}
 #' @param lambda regularization parameter for mutual information prior. Note 
 #'   that this is scaled by the squared total traffic in the objective function 
-#'   before scaling the mututal information prior.
+#'   before scaling the mutual information prior.
 #' @param N total traffic for normalization. Unused if normalized is FALSE.
 #' @param normalize If TRUE, xt and yt are scaled by N. Typically used in 
 #'   conjunction with calcN to normalize traffic to proportions, easing the 
@@ -81,7 +81,7 @@ dobj.dxt.tomogravity <- function(xt, yt, A, srcDstInd, lambda) {
 #' @param lower Component-wise lower bound for xt in L-BFGS-B optimization.
 #' @param control List of control information for optim.
 #' @return A list as returned by optim, with element \code{par} containing the
-#'   estimated point-to-point flows and elementer \code{gr} containing the
+#'   estimated point-to-point flows and element \code{gr} containing the
 #'   analytic gradient evaluated at the estimate.
 #' @keywords models multivariate ts
 #' @export
@@ -143,13 +143,13 @@ tomogravity.fit <- function(yt, A, srcDstInd, lambda, N=1, normalize=FALSE,
 #' all aggregate source and destination flows.
 #' 
 #' @param Y n x m matrix contain one vector of observed aggregate flows per row.
-#'   This should include all observed aggegrate flows with none removed due to 
+#'   This should include all observed aggregate flows with none removed due to 
 #'   redundancy.
 #' @param A m x k routing matrix. This need not be of full row rank and must 
 #'   include all source and destination flows.
 #' @param lambda Regularization parameter for mutual information prior. Note 
 #'   that this is scaled by the squared total traffic in the objective function 
-#'   before scaling the mututal information prior.
+#'   before scaling the mutual information prior.
 #' @param lower Component-wise lower bound for xt in L-BFGS-B optimization.
 #' @param normalize If TRUE, xt and yt are scaled by N. Typically used in 
 #'   conjunction with calcN to normalize traffic to proportions, easing the 

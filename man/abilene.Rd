@@ -21,7 +21,7 @@ The list abilene, which contains several objects:
  \item \code{X}, a matrix of origin-destination flows formatted for analysis
  \item \code{Y}, a matrix of link loads formatted for analysis
  \item \code{A.full}, the routing matrix for this network without
- truncatation for full row rank)
+ truncation for full row rank)
  \item \code{Y.full}, a matrix of link loads corresponding to code{A.full}
 }
 In this data, we have \code{A \%*\% t(X) == t(Y)} and

@@ -36,7 +36,7 @@ The list bell.labs contains the following:
  \itemize{
   \item value, level of traffic recorded
   \item nme, name of flow or load
-  \item method, whether flow was directly observered or inferred
+  \item method, whether flow was directly observed or inferred
       (all observed)
   \item time, time of observation
   \item od, flag for origin-destination vs. link loads

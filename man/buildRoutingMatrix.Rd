@@ -16,7 +16,7 @@ buildRoutingMatrix(
 )
 }
 \arguments{
-\item{nodes}{vector (lenght n) of node identifiers}
+\item{nodes}{vector (length n) of node identifiers}
 
 \item{src}{vector (length m) of sources, one per link, matched with dest}
 

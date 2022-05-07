@@ -16,7 +16,7 @@ tomogravity(
 }
 \arguments{
 \item{Y}{n x m matrix contain one vector of observed aggregate flows per row.
-This should include all observed aggegrate flows with none removed due to 
+This should include all observed aggregate flows with none removed due to 
 redundancy.}
 
 \item{A}{m x k routing matrix. This need not be of full row rank and must 
@@ -24,7 +24,7 @@ include all source and destination flows.}
 
 \item{lambda}{Regularization parameter for mutual information prior. Note 
 that this is scaled by the squared total traffic in the objective function 
-before scaling the mututal information prior.}
+before scaling the mutual information prior.}
 
 \item{lower}{Component-wise lower bound for xt in L-BFGS-B optimization.}
 
